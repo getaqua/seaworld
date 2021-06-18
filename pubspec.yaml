@@ -1,0 +1,56 @@
+name: seaworld
+description: The official Aqua client app
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# When updating this, make sure everything before the +
+# matches everything before the + in assets/raw/version.txt.
+# Here at Aqua, we use semver, so we can take advantage of
+# pre-release, beta, alpha, and dev build indicators.
+version: 0.0.0-dev+0
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  mdi: ^5.0.0-nullsafety.0
+  get: ^4.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # We're keeping this.
+  flutter_lints: ^1.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/raw/version.txt 
+    # Used to load version information
+    # - assets/raw/notification.mp3
+    # # Used as a default notification sound
+
+    # == Translations ==
+    # - assets/lang/en_US.json
+
+  fonts:
+    - family: DM Sans
+      fonts:
+        - asset: assets/fonts/DMSans-Regular.ttf
+        - asset: assets/fonts/DMSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/DMSans-Italic.ttf
+          style: italic
+    - family: Public Sans
+      fonts:
+        - asset: assets/fonts/PublicSans.ttf
+        - asset: assets/fonts/PublicSans-Italic.ttf
+          style: italic
