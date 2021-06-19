@@ -1,3 +1,6 @@
 {
-    "login.login": "LOGIN"
+    "login.login": "LOGIN",
+    "login.register": "REGISTER",
+    "login.select_server": "Select server",
+    "settings.darkmode": "Dark mode"
 }
