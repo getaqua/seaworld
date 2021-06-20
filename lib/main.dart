@@ -51,10 +51,18 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: "/", page: () => Material(color: Colors.deepPurple[900]), middlewares: [HomeRedirect()]),
         GetPage(name: "/login", page: () => const LoginView(), middlewares: [HomeRedirect()]),
-        GetPage(name: "/home", page: () => 
+        GetPage(name: "/home", page: () =>
           API.get.isReady
             ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
-            : Material(color: Colors.black, child: Center(child: CircularProgressIndicator(value: null))),
+            : FutureBuilder(
+              future: API.get.ready,
+              builder: (context, snap) => snap.connectionState == ConnectionState.done
+                ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
+                : Material(
+                  color: Colors.black, 
+                  child: CircularProgressIndicator(value: null),
+                )
+            ),
           middlewares: [HomeRedirect()]
         )
       ],

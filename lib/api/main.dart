@@ -12,8 +12,8 @@ class API {
   String get urlScheme => isServerInsecure ? "http://" : "https://";
   late String token;
 
-  Future get ready => _ready.future;
-  final Completer _ready = Completer();
+  Future<bool> get ready => _ready.future;
+  final Completer<bool> _ready = Completer<bool>();
 
   /// Whether the API initialization process has completed.
   bool isReady = false;
@@ -28,14 +28,15 @@ class API {
     this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
     system = SystemAPI(token, urlScheme+Config.server);
     await system.getSystemInfo().then((value) {
-      Config.cache.serverName = value.body["data"]["getSystemInfo"]["name"];
-      Config.cache.serverVersion = value.body["data"]["getSystemInfo"]["version"];
+      Config.cache.serverName = value.body["getSystemInfo"]["name"];
+      Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
     });
     await system.getMe().then((value) {
-      Config.cache.userId = value.body["data"]["getMe"]["user"]["id"];
-      Config.cache.scopes = value.body["data"]["getMe"]["tokenPermissions"];
+      Config.cache.userId = value.body["getMe"]["user"]["id"];
+      Config.cache.scopes = List.castFrom(value.body["getMe"]["tokenPermissions"]);
     });
-    _ready.complete();
+    isReady = true;
+    _ready.complete(true);
   }
   //final _flowApi;
   late final SystemAPI system;

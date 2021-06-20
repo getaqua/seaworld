@@ -1,11 +1,11 @@
-import 'package:get/get_connect/connect.dart';
+import 'package:get/get.dart';
 
 class SystemAPI extends GetConnect {
   final String token;
   final String url;
 
   SystemAPI(this.token, this.url) {
-    baseUrl = url+"/_gridless/graphql";
+    baseUrl = url+"/_gridless/graphql/";
   }
 
   Future<GraphQLResponse> getSystemInfo() async => query(r"""query getSystemInfo {
