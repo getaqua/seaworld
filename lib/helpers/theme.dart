@@ -15,13 +15,13 @@ class SeaworldTheme {
       )
     ),
     textTheme: TextTheme(
-      button: TextStyle(fontWeight: FontWeight.w700),
-      headline1: TextStyle(fontFamily: "DM Sans"),
-      headline2: TextStyle(fontFamily: "DM Sans"),
-      headline3: TextStyle(fontFamily: "DM Sans"),
-      headline4: TextStyle(fontFamily: "DM Sans"),
-      headline5: TextStyle(fontFamily: "DM Sans"),
-      headline6: TextStyle(fontFamily: "DM Sans"),
-    )
+      button: ThemeData.fallback().textTheme.button?.apply(fontFamily: "DM Sans"),
+      headline1: ThemeData.fallback().textTheme.headline1?.apply(fontFamily: "DM Sans"),
+      headline2: ThemeData.fallback().textTheme.headline2?.apply(fontFamily: "DM Sans"),
+      headline3: ThemeData.fallback().textTheme.headline3?.apply(fontFamily: "DM Sans"),
+      headline4: ThemeData.fallback().textTheme.headline4?.apply(fontFamily: "DM Sans"),
+      headline5: ThemeData.fallback().textTheme.headline5?.apply(fontFamily: "DM Sans"),
+      headline6: ThemeData.fallback().textTheme.headline6?.apply(fontFamily: "DM Sans"),
+    ),
   );
 }

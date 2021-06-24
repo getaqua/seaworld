@@ -12,6 +12,7 @@ import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
 import 'package:seaworld/views/home/wide.dart';
 import 'package:seaworld/views/login.dart';
+import 'package:seaworld/views/settings/main.dart';
 
 
 late final String kVersion;
@@ -60,11 +61,12 @@ class MyApp extends StatelessWidget {
                 ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
                 : Material(
                   color: Colors.black, 
-                  child: CircularProgressIndicator(value: null),
+                  child: Center(child: CircularProgressIndicator(value: null)),
                 )
             ),
           middlewares: [HomeRedirect()]
-        )
+        ),
+        GetPage(name: "/settings", page: () => SettingsRoot(), middlewares: [EnsureLoggedIn()], binding: SettingsBindings()),
       ],
     );
   }

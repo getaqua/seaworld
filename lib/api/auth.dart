@@ -54,6 +54,14 @@ class AuthenticationAPI extends GetConnect {
     }
     return true;
   }
+
+  Future<bool> healthCheck() async {
+    var _response = await get(urlScheme+server+"/_gridless/healthcheck");
+    if (_response.statusCode != 200) {
+      return false;
+    }
+    return _response.bodyString == "OK";
+  }
 }
 
 enum AuthenticationStage {
