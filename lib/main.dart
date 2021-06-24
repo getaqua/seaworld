@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: Locale("en", "US"),
       getPages: [
         GetPage(name: "/", page: () => Material(color: Colors.deepPurple[900]), middlewares: [HomeRedirect()]),
-        GetPage(name: "/login", page: () => const LoginView(), middlewares: [HomeRedirect()]),
+        GetPage(name: "/login", page: () => Material(child: LoginView()), middlewares: [HomeRedirect()]),
         GetPage(name: "/home", page: () =>
           API.get.isReady
             ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()

@@ -1,6 +1,8 @@
 {
     "login.login": "LOGIN",
     "login.register": "REGISTER",
+    "login.connectionerror": "Connection error",
+    "login.cannotreach": "Cannot reach server (@url)",
     "login.select_server": "Select server",
     "settings.darkmode": "Dark mode",
     "settings.logout": "Log out",

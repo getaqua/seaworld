@@ -51,8 +51,11 @@ class _LoginViewState extends State<LoginView> {
                         } else if (snapshot.hasError || (snapshot.hasData && snapshot.data == false)) {
                           return IconButton(
                             onPressed: () => Get.snackbar(
-                              "Connection error",
-                              "Cannot reach server ($_serverUrl)",
+                              "login.connectionerror",
+                              "login.cannotreach".trParams({"url": _serverUrl}) ?? "login.cannotreach".tr,
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.grey[900],
+                              colorText: Colors.white,
                               duration: Duration(seconds: 10),
                               isDismissible: true
                             ),

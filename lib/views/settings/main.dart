@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/views/settings/theming.dart';
 
 class SettingsRoot extends GetView<_TabController> {
   // ignore: prefer_final_fields
@@ -31,11 +32,12 @@ class SettingsRoot extends GetView<_TabController> {
                 // GeneralSettingsPage(),
                 // ThemeSettingsPage()
                 Center(child: Icon(Mdi.account)),
-                Center(child: Icon(Mdi.palette)),
+                ThemingSettings(),
                 Center(child: Icon(Mdi.security)),
                 Center(child: Icon(Mdi.eye))
               ][controller.index.value]
-          ))
+            )
+          )
         ],
       )
     );
