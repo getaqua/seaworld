@@ -17,7 +17,7 @@ class Content {
 
     author = PartialFlow.fromJSON(data["author"]),
     timestamp = DateTime.parse(data["timestamp"]),
-    editedTimestamp = data.containsKey("editedTimestamp") ? DateTime.parse(data["editedTimestamp"]) : null,
+    editedTimestamp = data["editedTimestamp"] != null ? DateTime.parse(data["editedTimestamp"]) : null,
     isEdited = data["edited"] ?? false,
     isPinned = data["pinned"] ?? false,
     inFlowId = data["inFlowId"];

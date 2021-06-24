@@ -1,8 +1,13 @@
 import 'dart:async';
 
 import 'package:get/get_connect/connect.dart';
+import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/models/content.dart';
+import 'package:seaworld/models/flow.dart';
+
+import 'flow.dart';
 
 class API {
   static API get get => _instance ??= API();
@@ -27,6 +32,8 @@ class API {
   Future<void> init(String token, [bool? isServerInsecure]) async {
     this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
     system = SystemAPI(token, urlScheme+Config.server);
+    flow = FlowAPI(token, urlScheme+Config.server);
+    content = ContentAPI(token, urlScheme+Config.server);
     await system.getSystemInfo().then((value) {
       Config.cache.serverName = value.body["getSystemInfo"]["name"];
       Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
@@ -40,6 +47,8 @@ class API {
   }
   //final _flowApi;
   late final SystemAPI system;
+  late final FlowAPI flow;
+  late final ContentAPI content;
 
   /// Get system information.
   /// Get these values from it like a Map:
@@ -55,4 +64,10 @@ class API {
   /// * `username`
   /// * `user`.`id`
   static Future<GraphQLResponse> getMe() => get.system.getMe();
+
+  /// Get the Flows the user is following.
+  static Future<List<Flow>> followedFlows() => get.flow.followedFlows();
+  
+  /// Get the latest Content from the Flows the user is following.
+  static Future<List<Content>> followedContent() => get.content.followedContent();
 }
