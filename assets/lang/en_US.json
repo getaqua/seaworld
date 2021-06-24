@@ -18,5 +18,14 @@
     "settings.privacypolicy": "Privacy Policy",
     "settings.tos": "Terms of Service",
     "dialog.yes": "Yes",
-    "dialog.no": "No"
+    "dialog.no": "No",
+    "post.newtext": "New text post...",
+    "post.target.profile": "Posting to your profile",
+    "post.target.flow": "Posting to @flow",
+    "post.newimage": "Upload image",
+    "post.newpoll": "Create a poll",
+    "post.uploadfile": "Upload a file",
+    "post.newevent": "New event",
+    "post.send": "Send",
+    "content.inflow": "In @flow"
 }

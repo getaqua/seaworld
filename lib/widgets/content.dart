@@ -40,7 +40,10 @@ class _ContentWidgetState extends State<ContentWidget> {
                   child: Column(
                     children: [
                       Text(widget.content.author.name, style: Get.textTheme.subtitle1),
-                      Text(widget.content.author.id, style: Get.textTheme.caption)
+                      Text([
+                        widget.content.author.id, 
+                        if (widget.content.inFlowId != widget.content.author.id) "content.inflow".trParams({"flow": widget.content.inFlowId})
+                      ].join(" • "), style: Get.textTheme.caption)
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
