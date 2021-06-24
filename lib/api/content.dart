@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 //import 'package:seaworld/models/flow.dart';
 
@@ -32,4 +33,15 @@ class ContentAPI extends GetConnect {
       snowflake
     }
   }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFollowedContent"].map<Content>((v) => Content.fromJSON(v)).toList();
+
+  Future<GraphQLResponse> postContent({required String toFlow, String? text}) async => mutation(r"""mutation postToFlow($id: String!, $data: NewContent!) {
+    postContent(to: $id, data: $data) {
+      snowflake
+    }
+  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl, variables: {
+    "id": toFlow,
+    "data": {
+      if (text != null) "text": text
+    }
+  });
 }

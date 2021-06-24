@@ -70,4 +70,7 @@ class API {
   
   /// Get the latest Content from the Flows the user is following.
   static Future<List<Content>> followedContent() => get.content.followedContent();
+
+  /// Post Content to a Flow.
+  static final postContent = get.content.postContent;
 }

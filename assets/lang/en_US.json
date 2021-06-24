@@ -27,5 +27,6 @@
     "post.uploadfile": "Upload a file",
     "post.newevent": "New event",
     "post.send": "Send",
+    "post.expand": "Create richer Content...",
     "content.inflow": "In @flow"
 }

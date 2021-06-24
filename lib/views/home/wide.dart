@@ -14,12 +14,14 @@ class WideHomeView extends StatefulWidget {
 
 class _WideHomeViewState extends State<WideHomeView> {
   static const int _widthBreakpoint = 872;
+  Future<List<Content>> _content = API.followedContent();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(Config.cache.serverName),
         actions: [
+          IconButton(onPressed: () => setState(() {_content = API.followedContent();}), icon: Icon(Mdi.refresh)),
           IconButton(onPressed: () => Get.toNamed("/settings"), icon: Icon(Mdi.cog))
         ],
         shape: RoundedRectangleBorder(
@@ -48,7 +50,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                   width: 480,
                   margin: EdgeInsets.all(8.0),
                   child: FutureBuilder<List<Content>>(
-                    future: API.followedContent(),
+                    future: _content,
                     builder: (context, snapshot) => 
                     (!snapshot.hasData && !snapshot.hasError) ? Center(child: CircularProgressIndicator(value: null))
                     : (snapshot.hasData) ? ListView.builder(

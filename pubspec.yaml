@@ -54,6 +54,18 @@ flutter:
           style: italic
     - family: Public Sans
       fonts:
-        - asset: assets/fonts/PublicSans.ttf
-        - asset: assets/fonts/PublicSans-Italic.ttf
+        - asset: assets/fonts/PublicSans-Regular.otf
+          weight: 400
+        - asset: assets/fonts/PublicSans-Italic.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/PublicSans-Medium.otf
+          weight: 500
+        - asset: assets/fonts/PublicSans-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/PublicSans-Bold.otf
+          weight: 700
+        - asset: assets/fonts/PublicSans-BoldItalic.otf
+          weight: 700
           style: italic
