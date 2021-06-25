@@ -33,5 +33,10 @@
     "crash.connectionerror.title": "Connection error",
     "crash.generic.title": "View crashed",
     "crash.developererror.generic": "This is a developer error.",
-    "crash.tryagain": "Try Again"
+    "crash.tryagain": "Try Again",
+    "content.like": "Like",
+    "content.dislike": "Dislike",
+    "content.forward": "Forward",
+    "content.reply": "Reply",
+    "content.readmore": "Read more"
 }
