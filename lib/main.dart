@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
+import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/views/home/wide.dart';
 import 'package:seaworld/views/login.dart';
 import 'package:seaworld/views/settings/main.dart';
@@ -68,6 +70,22 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(name: "/settings", page: () => SettingsRoot(), middlewares: [EnsureLoggedIn()], binding: SettingsBindings()),
       ],
+      builder: (BuildContext context, Widget? widget) {
+        Widget Function(FlutterErrorDetails? errorDetails) error = (FlutterErrorDetails? errorDetails) => Text(errorDetails?.summary.toString() ?? "Error");
+        if (widget is Scaffold || widget is Navigator) {
+          error = (details) => CrashedView(
+            title: "View crashed",
+            helptext: details?.summary.toString() ?? "This is a developer error.",
+            isRenderError: true,
+          );
+        }
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) => error(errorDetails);
+        return widget ?? CrashedView(
+          title: "Widget not found",
+          helptext: "This is a developer error.",
+          isRenderError: true,
+        );
+      },
     );
   }
 }
@@ -78,7 +96,7 @@ class HomeRedirect extends GetMiddleware {
     if (Config.token == null && route != "/login") {
       return RouteSettings(name: "/login");
     } else if (Config.token != null && route != "/home") {
-      API.get.init(Config.token!);
+      if (!API.get.isReady) API.get.init(Config.token!);
       return RouteSettings(name: "/home");
     }
   }

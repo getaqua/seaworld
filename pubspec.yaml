@@ -40,6 +40,7 @@ flutter:
     # Used to load version information
     # - assets/raw/notification.mp3
     # # Used as a default notification sound
+    - assets/img/static.gif
 
     # == Translations ==
     - assets/lang/en_US.json

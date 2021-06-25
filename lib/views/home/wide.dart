@@ -48,7 +48,8 @@ class _WideHomeViewState extends State<WideHomeView> {
               child: Center(
                 child: Container(
                   width: 480,
-                  margin: EdgeInsets.all(8.0),
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: EdgeInsets.symmetric(vertical: 0),
                   child: FutureBuilder<List<Content>>(
                     future: _content,
                     builder: (context, snapshot) => 
@@ -66,6 +67,29 @@ class _WideHomeViewState extends State<WideHomeView> {
             ),
           ),
         ]
+      ),
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8.0), bottom: Radius.zero),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Get.theme.colorScheme.primary,
+          selectedItemColor: Get.theme.colorScheme.onPrimary,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.water_rounded),
+              label: "Flows",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Mdi.home),
+              label: "Feed",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Mdi.message),
+              label: "Chat",
+            ),
+          ],
+          currentIndex: 1,
+        ),
       ),
     );
   }

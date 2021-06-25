@@ -1,6 +1,6 @@
 {
-    "login.login": "LOGIN",
-    "login.register": "REGISTER",
+    "login.login": "Login",
+    "login.register": "Register",
     "login.connectionerror": "Connection error",
     "login.cannotreach": "Cannot reach server (@url)",
     "login.select_server": "Select server",
@@ -28,5 +28,10 @@
     "post.newevent": "New event",
     "post.send": "Send",
     "post.expand": "Create richer Content...",
-    "content.inflow": "In @flow"
+    "content.inflow": "In @flow",
+    "crash.connectionerror.generic": "Check your connection to the Internet.",
+    "crash.connectionerror.title": "Connection error",
+    "crash.generic.title": "View crashed",
+    "crash.developererror.generic": "This is a developer error.",
+    "crash.tryagain": "Try Again"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/views/settings/theming.dart';
 
@@ -103,7 +104,9 @@ class SettingsRoot extends GetView<_TabController> {
                 ],
               ));
               if (_result == false) return;
-              Config.token = null; Get.offAndToNamed("/");
+              Config.token = null;
+              API.get.isReady = false;
+              Get.offAllNamed("/");
             }
           ),
           // TabButton(

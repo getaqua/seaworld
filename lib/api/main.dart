@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:get/get_connect/connect.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
+import 'package:seaworld/views/crash.dart';
 
 import 'flow.dart';
 
@@ -13,7 +15,7 @@ class API {
   static API get get => _instance ??= API();
   static API? _instance;
   
-  late final bool isServerInsecure;
+  late bool isServerInsecure;
   String get urlScheme => isServerInsecure ? "http://" : "https://";
   late String token;
 
@@ -34,21 +36,30 @@ class API {
     system = SystemAPI(token, urlScheme+Config.server);
     flow = FlowAPI(token, urlScheme+Config.server);
     content = ContentAPI(token, urlScheme+Config.server);
-    await system.getSystemInfo().then((value) {
-      Config.cache.serverName = value.body["getSystemInfo"]["name"];
-      Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
-    });
-    await system.getMe().then((value) {
-      Config.cache.userId = value.body["getMe"]["user"]["id"];
-      Config.cache.scopes = List.castFrom(value.body["getMe"]["tokenPermissions"]);
-    });
-    isReady = true;
-    _ready.complete(true);
+    try {
+      await system.getSystemInfo().then((value) {
+        Config.cache.serverName = value.body["getSystemInfo"]["name"];
+        Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
+      });
+      await system.getMe().then((value) {
+        Config.cache.userId = value.body["getMe"]["user"]["id"];
+        Config.cache.scopes = List.castFrom(value.body["getMe"]["tokenPermissions"]);
+      });
+      isReady = true;
+      _ready.complete(true);
+    } catch(e) {
+      Get.to(CrashedView(
+        title: "crash.connectionerror.title".tr,
+        helptext: e.toString().contains('[]("errors")')
+        ? "crash.connectionerror.generic".tr
+        : e.toString()
+      ));
+    }
   }
   //final _flowApi;
-  late final SystemAPI system;
-  late final FlowAPI flow;
-  late final ContentAPI content;
+  late SystemAPI system;
+  late FlowAPI flow;
+  late ContentAPI content;
 
   /// Get system information.
   /// Get these values from it like a Map:
