@@ -38,5 +38,12 @@
     "content.dislike": "Dislike",
     "content.forward": "Forward",
     "content.reply": "Reply",
-    "content.readmore": "Read more"
+    "content.readmore": "Read more",
+    "content.delete": "Delete",
+    "content.confirmdelete.title": "Delete this Content?",
+    "content.deletefailed.title": "Delete failed",
+    "content.deletefailed.message": "You do not have permission to delete this content.",
+    "content.deletesuccess.title": "Delete succeeded",
+    "flow.showpreview": "Show profile",
+    "flow.open": "Open @id"
 }

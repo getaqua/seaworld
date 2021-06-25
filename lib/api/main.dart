@@ -84,4 +84,7 @@ class API {
 
   /// Post Content to a Flow.
   static final postContent = get.content.postContent;
+
+  /// Delete Content.
+  static final deleteContent = get.content.deleteContent;
 }

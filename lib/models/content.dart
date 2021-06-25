@@ -10,6 +10,7 @@ class Content {
   final bool isEdited;
   final bool isPinned;
   final String inFlowId;
+  final String snowflake;
 
   Content.fromJSON(Map data):
     text = data["text"],
@@ -20,5 +21,6 @@ class Content {
     editedTimestamp = data["editedTimestamp"] != null ? DateTime.parse(data["editedTimestamp"]) : null,
     isEdited = data["edited"] ?? false,
     isPinned = data["pinned"] ?? false,
-    inFlowId = data["inFlowId"];
+    inFlowId = data["inFlowId"],
+    snowflake = data["snowflake"];
 }

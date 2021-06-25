@@ -1,14 +1,18 @@
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/main.dart';
+import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
 
 class ContentWidget extends StatefulWidget {
   final Content content;
+  final bool embedded;
 
   ContentWidget(this.content, {
-    Key? key
+    Key? key,
+    this.embedded = false
   }) : super(key: key);
 
   @override
@@ -17,10 +21,11 @@ class ContentWidget extends StatefulWidget {
 
 class _ContentWidgetState extends State<ContentWidget> {
   bool _viewProfilePrompt = false;
+  bool _deleted = false;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return _deleted ? Container() : Card(
       child: Column(
         children: [
           Container( // Profile
@@ -31,74 +36,126 @@ class _ContentWidgetState extends State<ContentWidget> {
             // ),
             child: Row(
               children: [
-                Container(
-                  height: 48,
-                  width: 48,
-                  margin: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0, right: 8.0),
-                  alignment: Alignment.centerLeft,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(64),
-                    color: Get.theme.colorScheme.primary,
-                    child: InkWell(
-                      onTap: () {},
-                      // onTapDown: (details) => showMenu(
-                      //   context: context, 
-                      //   position: RelativeRect.fromRect(
-                      //     details.globalPosition & Size(40, 40), 
-                      //     Offset.zero & Get.mediaQuery.size
-                      //   ),
-                      //   items: [
-                      //     FlowPreviewPopupMenu()
-                      //   ]
-                      // ),
-                      onTapDown: (details) => FlowPreviewPopupMenu().show(
-                        context: context, 
-                        flow: widget.content.author, 
-                        //position: details.globalPosition & Size(40, 40)
-                      ),
+                Tooltip(
+                  message: "flow.showpreview".tr,
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    margin: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0, right: 8.0),
+                    alignment: Alignment.centerLeft,
+                    child: Material(
                       borderRadius: BorderRadius.circular(64),
-                      onHover: (nv) => _viewProfilePrompt = nv,
-                      child: Stack(children: [
-                        if (_viewProfilePrompt) ...[
-                          Center(child: Icon(Mdi.account, color: Colors.white)),
-                          Material(color: Colors.black54)
-                        ],
-                        Center(child: Text("X", style: Get.textTheme.headline6)),
-                      ])
+                      color: Get.theme.colorScheme.primary,
+                      child: InkWell(
+                        onTap: () {},
+                        // onTapDown: (details) => showMenu(
+                        //   context: context, 
+                        //   position: RelativeRect.fromRect(
+                        //     details.globalPosition & Size(40, 40), 
+                        //     Offset.zero & Get.mediaQuery.size
+                        //   ),
+                        //   items: [
+                        //     FlowPreviewPopupMenu()
+                        //   ]
+                        // ),
+                        onTapDown: (details) => FlowPreviewPopupMenu().show(
+                          context: context, 
+                          flow: widget.content.author, 
+                          //position: details.globalPosition & Size(40, 40)
+                        ),
+                        borderRadius: BorderRadius.circular(64),
+                        onHover: (nv) => setState(() => _viewProfilePrompt = nv),
+                        child: Stack(children: [
+                          Center(child: Text("X", style: Get.textTheme.headline6)),
+                          if (_viewProfilePrompt) ...[
+                            Container(decoration:BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(64))),
+                            Center(child: Icon(Mdi.accountBox, color: Colors.white)),
+                          ],
+                        ])
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
-                  child: InkWell(
-                    onTap: () => {},
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              children: [
-                                Text(widget.content.author.name, style: Get.textTheme.subtitle1),
-                                Text([
-                                  widget.content.author.id, 
-                                  if (widget.content.inFlowId != widget.content.author.id) "content.inflow".trParams({"flow": widget.content.inFlowId})
-                                ].join(" • "), style: Get.textTheme.caption)
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Tooltip(
+                    message: "flow.open".trParams({"id": widget.content.inFlowId}) ?? "flow.open",
+                    child: InkWell(
+                      onTap: () => {},
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                children: [
+                                  Text(widget.content.author.name, style: Get.textTheme.subtitle1),
+                                  Text([
+                                    widget.content.author.id, 
+                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".trParams({"flow": widget.content.inFlowId})
+                                  ].join(" • "), style: Get.textTheme.caption)
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                              ),
                             ),
-                          ),
-                          Expanded(child: Container()),
-                        ],
+                            Expanded(child: Container()),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-                PopupMenuButton(
+                if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
-                    PopupMenuItem(child: Text("settings.tos".tr, style: Get.textTheme.overline))
+                    if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
+                      onTap: () => {},
+                      child: GestureDetector(
+                        child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
+                        onTap: () => (() async {
+                          final bool? _result = await showDialog(context: context, builder: (context) => AlertDialog(
+                            title: Text("content.confirmdelete.title".tr),
+                            content: ContentWidget(widget.content, embedded: true),
+                            actions: [
+                              TextButton(onPressed: () {
+                                Get.back(result: true);
+                                //Get.back();
+                              }, child: Text("dialog.yes".tr)),
+                              TextButton(onPressed: () {
+                                Get.back(result: false);
+                                //Get.back();
+                              }, child: Text("dialog.no".tr)),
+                            ],
+                          ));
+                          if (_result != true) return;
+                          try {
+                            final _response = await API.deleteContent(snowflake: widget.content.snowflake);
+                            if (_response.graphQLErrors?.isNotEmpty ?? false) {
+                              Get.snackbar(
+                                "content.deletefailed.title".tr,
+                                "content.deletefailed.message".tr,
+                                duration: Duration(seconds: 10)
+                              );
+                            } else {
+                              Get.snackbar(
+                                "content.deletesuccess".tr,
+                                "",
+                                duration: Duration(seconds: 5)
+                              );
+                              setState(() => _deleted = true);
+                            }
+                          } catch(e) {
+                            Get.snackbar(
+                              "content.deletefailed.title: crash.connectionerror.title".tr,
+                              "crash.connectionerror.generic".tr,
+                              duration: Duration(seconds: 10)
+                            );
+                          }
+                          Get.back();
+                        })(),
+                      )
+                    )
                   ],
                 )
               ]
@@ -111,7 +168,7 @@ class _ContentWidgetState extends State<ContentWidget> {
             child: Text(widget.content.text ?? "<No text provided>")
           ),
           //Divider(),
-          Row(
+          if (!widget.embedded) Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Tooltip(

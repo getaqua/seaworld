@@ -44,4 +44,10 @@ class ContentAPI extends GetConnect {
       if (text != null) "text": text
     }
   });
+
+  Future<GraphQLResponse> deleteContent({required String snowflake, String? text}) async => mutation(r"""mutation deleteContent($id: String!) {
+    deleteContent(snowflake: $id)
+  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl, variables: {
+    "id": snowflake
+  });
 }
