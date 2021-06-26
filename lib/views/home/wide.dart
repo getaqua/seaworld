@@ -105,8 +105,8 @@ class _WideHomeViewState extends State<WideHomeView> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(8.0), bottom: Radius.zero),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Get.theme.colorScheme.primary,
-          selectedItemColor: Get.theme.colorScheme.onPrimary,
+          backgroundColor: Get.theme.brightness == Brightness.light ? Get.theme.colorScheme.primary : Get.theme.primaryColor,
+          selectedItemColor: Get.theme.brightness == Brightness.light ? Get.theme.colorScheme.onPrimary : Get.theme.colorScheme.onSurface,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.water_rounded),
