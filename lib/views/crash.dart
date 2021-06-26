@@ -7,12 +7,14 @@ class CrashedView extends StatefulWidget {
   final String? title;
   final String helptext;
   final bool isRenderError;
+  final bool retryBack;
 
   const CrashedView({
     Key? key,
     this.title,
     required this.helptext,
-    this.isRenderError = false
+    this.isRenderError = false,
+    this.retryBack = false
   }) : super(key: key);
 
   @override
@@ -46,7 +48,9 @@ class _CrashedViewState extends State<CrashedView> {
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () => Get.offNamed("/"), 
+                        onPressed: () => widget.retryBack
+                          ? Get.back()
+                          : Get.offNamed("/login"),
                         child: Text("crash.tryagain".tr)
                       )
                     ),

@@ -13,6 +13,7 @@ class ThemingSettings extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("settings.theme".tr, style: Get.textTheme.subtitle1),
               SizedBox(height: 16),

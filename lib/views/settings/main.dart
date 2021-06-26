@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/views/settings/about.dart';
 import 'package:seaworld/views/settings/theming.dart';
 
 class SettingsRoot extends GetView<_TabController> {
@@ -28,14 +29,15 @@ class SettingsRoot extends GetView<_TabController> {
             child: Builder(builder: (bc) => _sidebarcontent(bc))
           ),
           Expanded(
-            child: Obx(() => controller.index.value >= 4 ? Center(child: Icon(Mdi.alert)) : 
+            child: Obx(() => controller.index.value >= 5 ? Center(child: Icon(Mdi.alert)) : 
               [
                 // GeneralSettingsPage(),
                 // ThemeSettingsPage()
                 Center(child: Icon(Mdi.account)),
                 ThemingSettings(),
                 Center(child: Icon(Mdi.security)),
-                Center(child: Icon(Mdi.eye))
+                Center(child: Icon(Mdi.eye)),
+                AboutPage()
               ][controller.index.value]
             )
           )
@@ -75,10 +77,10 @@ class SettingsRoot extends GetView<_TabController> {
             child: Divider(),
           ),
           // about, log out, licenses, legalese/compliance
-          _SettingsButton(
+          TabButton(
             icon: Mdi.information,
             label: "settings.about".tr,
-            onPressed: () {}
+            index: 4
           ),
           _SettingsButton(
             icon: Mdi.lockOutline,
