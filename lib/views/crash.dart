@@ -29,7 +29,7 @@ class _CrashedViewState extends State<CrashedView> {
           child: Image.asset("assets/img/static.gif", alignment: Alignment.center, fit: BoxFit.cover)
         ),
         Positioned.fill(
-          child: Container(color: widget.isRenderError ? Colors.red.withOpacity(0.87) : Colors.black87),
+          child: Container(color: widget.isRenderError ? Colors.red.shade900.withOpacity(0.87) : Colors.black87),
         ),
         Positioned.fill(
           child: Container(
@@ -54,9 +54,9 @@ class _CrashedViewState extends State<CrashedView> {
                       padding: EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          Config.token = "";
-                          API.get.isReady = false;
-                          Get.offAllNamed("/");
+                          Config.token = null;
+                          API.get.reset();
+                          Get.offAllNamed("/login");
                         }, 
                         child: Text("settings.logout".tr),
                         style: ElevatedButton.styleFrom(primary: Colors.red),

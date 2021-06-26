@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Seaworld/Aqua',
-      theme: SeaworldTheme().data,
+      theme: SeaworldTheme.fromConfig().data,
       color: Colors.lightBlue,
       initialRoute: "/",
       translationsKeys: {

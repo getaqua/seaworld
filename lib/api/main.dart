@@ -15,12 +15,12 @@ class API {
   static API get get => _instance ??= API();
   static API? _instance;
   
-  late bool isServerInsecure;
+  bool isServerInsecure = false;
   String get urlScheme => isServerInsecure ? "http://" : "https://";
   late String token;
 
   Future<bool> get ready => _ready.future;
-  final Completer<bool> _ready = Completer<bool>();
+  Completer<bool> _ready = Completer<bool>();
 
   /// Whether the API initialization process has completed.
   bool isReady = false;
@@ -30,6 +30,11 @@ class API {
     && (url.startsWith("localhost:") || url == "localhost");
 
   API();
+
+  void reset() {
+    isReady = false;
+    _ready = Completer<bool>();
+  }
 
   Future<void> init(String token, [bool? isServerInsecure]) async {
     this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
@@ -48,7 +53,7 @@ class API {
       isReady = true;
       _ready.complete(true);
     } catch(e) {
-      Get.to(CrashedView(
+      Get.off(() => CrashedView(
         title: "crash.connectionerror.title".tr,
         helptext: e.toString().contains('[]("errors")')
         ? "crash.connectionerror.generic".tr

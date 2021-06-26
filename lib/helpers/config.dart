@@ -10,7 +10,7 @@ class Config {
   _CachedValues? _cache;
 
   /// Whether the user has engaged darkmode.
-  static bool get darkmode => _self.box.get("darkmode", defaultValue: true);
+  static bool get darkmode => _self.box.get("darkmode", defaultValue: false);
   static set darkmode(bool v) => _self.box.put("darkmode", v);
   /// Which layout the user is using. From [HomeLayouts].
   static int get homeLayout => _self.box.get("homelayout", defaultValue: 0);
