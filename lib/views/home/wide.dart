@@ -4,6 +4,7 @@ import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
+import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/post.dart';
 
@@ -15,6 +16,7 @@ class WideHomeView extends StatefulWidget {
 class _WideHomeViewState extends State<WideHomeView> {
   static const int _widthBreakpoint = 872;
   Future<List<Content>> _content = API.followedContent();
+  List<Content> _lastContent = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,15 +54,46 @@ class _WideHomeViewState extends State<WideHomeView> {
                   padding: EdgeInsets.symmetric(vertical: 0),
                   child: FutureBuilder<List<Content>>(
                     future: _content,
-                    builder: (context, snapshot) => 
-                    (!snapshot.hasData && !snapshot.hasError) ? Center(child: CircularProgressIndicator(value: null))
-                    : (snapshot.hasData) ? ListView.builder(
-                      itemBuilder: (context, index) => 
-                        index == 0 && Get.mediaQuery.size.width < _widthBreakpoint ? NewContentCard()
-                        : index == 0 ? Container()
-                        : ContentWidget(snapshot.data![index-1]),
-                      itemCount: snapshot.data!.length + 1,
-                    ) : Center(child: Icon(Mdi.alert, color: Colors.red))
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) _lastContent = snapshot.data!;
+                      final _prefixes = Column(children:[
+                        if (Get.mediaQuery.size.width < _widthBreakpoint) NewContentCard(),
+                        if (snapshot.hasError) Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(Mdi.weatherLightning, color: Colors.red),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("crash.connectionerror.title".tr, style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("crash.connectionerror.generic".tr, style: Get.textTheme.bodyText2),
+                                ),
+                              ]
+                            )
+                          ]
+                        )
+                      ]);
+                      return (!snapshot.hasData && !snapshot.hasError) ? Center(child: CircularProgressIndicator(value: null))
+                        : (snapshot.hasData) ? ListView.builder(
+                          itemBuilder: (context, index) => 
+                            index == 0 ? _prefixes : ContentWidget(snapshot.data![index-1]),
+                          itemCount: snapshot.data!.length + 1
+                      ) : (snapshot.hasError) ? ListView.builder(
+                          itemBuilder: (context, index) => 
+                            index == 0 ? _prefixes : ContentWidget(_lastContent[index-1]),
+                          itemCount: _lastContent.length + 1
+                      ) : Center(child: Icon(Mdi.alert, color: Colors.red));
+                    }
                   ),
                 ),
               ),
