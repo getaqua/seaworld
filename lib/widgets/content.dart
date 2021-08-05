@@ -110,7 +110,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                 if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
-                      onTap: () => {},
+                      //onTap: () => {},
                       child: GestureDetector(
                         child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
                         onTap: () => (() async {

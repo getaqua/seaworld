@@ -29,6 +29,7 @@ void main() async {
     Hive.init(
       (Platform.isAndroid ? await getApplicationDocumentsDirectory()
       : Platform.isLinux ? Directory(Platform.environment["HOME"]!) //for now
+      : Platform.isWindows ? await getApplicationSupportDirectory()
       : await getLibraryDirectory())
       .path+"/.aqua-seaworld-database");
   }
