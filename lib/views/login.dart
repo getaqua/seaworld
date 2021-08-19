@@ -23,7 +23,7 @@ class _LoginViewState extends State<LoginView> {
   // ignore: prefer_final_fields
   String _serverUrl = "localhost:3000";
   // ignore: prefer_final_fields
-  String _clientId = "AQUA-4c6fe156afbd511f4e8e5ecb3606adabb7bba61c155e78bf2501c5cf59d3563bfcfede04";
+  String _clientId = "AQUA-e7a4b74f08be3f4181dc6c9ee162d5839071f3ac298ddd0195dcbb70b2cdf74c4358bbbc";
   late final Rx<Future<bool>> _healthCheckFuture;
 
   @override
@@ -61,7 +61,7 @@ class _LoginViewState extends State<LoginView> {
                           return IconButton(
                             onPressed: () => Get.snackbar(
                               "login.connectionerror".tr,
-                              "login.cannotreach".trParams({"url": _api.server}) ?? "login.cannotreach".tr,
+                              "login.cannotreach".trParams({"url": _api.server}),
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: Colors.grey[900],
                               colorText: Colors.white,
@@ -187,7 +187,7 @@ class _LoginViewState extends State<LoginView> {
                                                 title: Text("Local Development"),
                                                 onTap: () {
                                                   _newClientId = _keyController.value.text == ""
-                                                  ? "AQUA-4c6fe156afbd511f4e8e5ecb3606adabb7bba61c155e78bf2501c5cf59d3563bfcfede04"
+                                                  ? "AQUA-e7a4b74f08be3f4181dc6c9ee162d5839071f3ac298ddd0195dcbb70b2cdf74c4358bbbc"
                                                   : _keyController.value.text;
                                                   _newServerUrl = "http://localhost:3000";
                                                 },

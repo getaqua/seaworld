@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 //import 'package:seaworld/models/flow.dart';
 
@@ -32,13 +31,13 @@ class ContentAPI extends GetConnect {
       editedTimestamp
       snowflake
     }
-  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFollowedContent"].map<Content>((v) => Content.fromJSON(v)).toList();
+  }""", headers: {"Authorization": "Bearer $token"}, url: "/")).body["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
 
   Future<GraphQLResponse> postContent({required String toFlow, String? text}) async => mutation(r"""mutation postToFlow($id: String!, $data: NewContent!) {
     postContent(to: $id, data: $data) {
       snowflake
     }
-  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl, variables: {
+  }""", headers: {"Authorization": "Bearer $token"}, url: "/", variables: {
     "id": toFlow,
     "data": {
       if (text != null) "text": text
@@ -47,7 +46,7 @@ class ContentAPI extends GetConnect {
 
   Future<GraphQLResponse> deleteContent({required String snowflake, String? text}) async => mutation(r"""mutation deleteContent($id: String!) {
     deleteContent(snowflake: $id)
-  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl, variables: {
+  }""", headers: {"Authorization": "Bearer $token"}, url: "/", variables: {
     "id": snowflake
   });
 }

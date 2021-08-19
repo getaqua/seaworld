@@ -19,7 +19,7 @@ dependencies:
     sdk: flutter
 
   mdi: ^5.0.0-nullsafety.0
-  get: ^4.1.4
+  get:
   hive: ^2.0.4
   path_provider: ^2.0.2
   url_launcher: ^6.0.6
@@ -41,6 +41,7 @@ flutter:
     # - assets/raw/notification.mp3
     # # Used as a default notification sound
     - assets/img/static.gif
+    # Used as the background of the crash screen
 
     # == Translations ==
     - assets/lang/en_US.json

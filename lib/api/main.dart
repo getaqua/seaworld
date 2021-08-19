@@ -41,6 +41,7 @@ class API {
     system = SystemAPI(token, urlScheme+Config.server);
     flow = FlowAPI(token, urlScheme+Config.server);
     content = ContentAPI(token, urlScheme+Config.server);
+    this.token = token;
     try {
       await system.getSystemInfo().then((value) {
         Config.cache.serverName = value.body["getSystemInfo"]["name"];

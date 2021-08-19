@@ -10,7 +10,7 @@ class ContentWidget extends StatefulWidget {
   final Content content;
   final bool embedded;
 
-  ContentWidget(this.content, {
+  const ContentWidget(this.content, {
     Key? key,
     this.embedded = false
   }) : super(key: key);
@@ -78,7 +78,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 Expanded(
                   child: Tooltip(
-                    message: "flow.open".trParams({"id": widget.content.inFlowId}) ?? "flow.open",
+                    message: "flow.open".trParams({"id": widget.content.inFlowId}),
                     child: InkWell(
                       onTap: () => {},
                       child: Padding(
