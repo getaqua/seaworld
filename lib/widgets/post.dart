@@ -6,12 +6,14 @@ import 'package:seaworld/helpers/config.dart';
 
 class NewContentCard extends StatelessWidget {
   final String? flow;
+  final void Function()? refreshContent;
   final TextEditingController _controller = TextEditingController();
   final RxBool _posting = false.obs;
 
   NewContentCard({
     Key? key,
-    this.flow
+    this.flow,
+    this.refreshContent
   }) : super(key: key);
 
   @override
@@ -102,10 +104,14 @@ class NewContentCard extends StatelessWidget {
                   message: "post.send".tr,
                   child: IconButton(onPressed: () async {
                     _posting.update((val) => val = true);
+                    // this is a variable for debugging purposes
                     var x = await API.postContent(toFlow: Config.cache.userId, text: _controller.value.text);
                     _posting.update((val) => val = false);
                     _controller.clear();
                     _cobs.update((_) => _controller);
+                    // The following hack calls refreshContent if it exists,
+                    // and otherwise calls a void function.
+                    (refreshContent ?? (() => {}))();
                   }, icon: Icon(Mdi.send), color: Get.theme.colorScheme.primary)
                 ))
               ],

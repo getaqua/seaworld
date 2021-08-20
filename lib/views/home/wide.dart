@@ -17,13 +17,18 @@ class _WideHomeViewState extends State<WideHomeView> {
   static const int _widthBreakpoint = 872;
   Future<List<Content>> _content = API.followedContent();
   List<Content> _lastContent = [];
+
+  void refreshContent() {
+    setState(() {_content = API.followedContent();});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(Config.cache.serverName),
         actions: [
-          IconButton(onPressed: () => setState(() {_content = API.followedContent();}), icon: Icon(Mdi.refresh)),
+          IconButton(onPressed: () => refreshContent(), icon: Icon(Mdi.refresh)),
           IconButton(onPressed: () => Get.toNamed("/settings"), icon: Icon(Mdi.cog))
         ],
         shape: RoundedRectangleBorder(
@@ -39,7 +44,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                 width: 360,
                 alignment: Alignment.topCenter,
                 margin: EdgeInsets.all(8.0),
-                child: NewContentCard(),
+                child: NewContentCard(refreshContent: refreshContent),
               ),
             ],
           ),
