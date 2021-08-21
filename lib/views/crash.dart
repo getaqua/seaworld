@@ -50,7 +50,7 @@ class _CrashedViewState extends State<CrashedView> {
                       child: ElevatedButton(
                         onPressed: () => widget.retryBack
                           ? Get.back()
-                          : Get.offNamed("/login"),
+                          : Get.offNamed(Get.currentRoute),
                         child: Text("crash.tryagain".tr)
                       )
                     ),
@@ -61,7 +61,7 @@ class _CrashedViewState extends State<CrashedView> {
                           Config.token = null;
                           API.get.reset();
                           Get.offAllNamed("/login");
-                        }, 
+                        },
                         child: Text("settings.logout".tr),
                         style: ElevatedButton.styleFrom(primary: Colors.red),
                       )
