@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
-import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/post.dart';
 
@@ -15,11 +16,18 @@ class WideHomeView extends StatefulWidget {
 
 class _WideHomeViewState extends State<WideHomeView> {
   static const int _widthBreakpoint = 872;
-  Future<List<Content>> _content = API.followedContent();
+  //Future<List<Content>> _content = API.followedContent();
   List<Content> _lastContent = [];
+  final StreamController<List<Content>> _content = StreamController.broadcast();
+  void refreshContent() async {
+    //setState(() {});
+    _content.add(await API.followedContent());
+  }
 
-  void refreshContent() {
-    setState(() {_content = API.followedContent();});
+  @override
+  void initState() {
+    super.initState();
+    refreshContent();
   }
 
   @override
@@ -51,14 +59,24 @@ class _WideHomeViewState extends State<WideHomeView> {
           Expanded(
             flex: (Get.mediaQuery.size.width < _widthBreakpoint) ? 1 : 0,
             child: RefreshIndicator(
-              onRefresh: () async => refreshContent(),
+              onRefresh: () async {
+                refreshContent();
+                try {
+                  await for (var _ in _content.stream) {
+                    return;
+                  }
+                } catch (e) {
+                  return;
+                }
+                //await Future.doWhile(() => (_refreshing));
+              },
               child: Center(
                 child: Container(
                   width: 480,
                   margin: EdgeInsets.symmetric(horizontal: 8.0),
                   padding: EdgeInsets.symmetric(vertical: 0),
-                  child: FutureBuilder<List<Content>>(
-                    future: _content,
+                  child: StreamBuilder<List<Content>>(
+                    stream: _content.stream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) _lastContent = snapshot.data!;
                       final _prefixes = Column(children:[

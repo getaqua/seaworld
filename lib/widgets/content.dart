@@ -21,11 +21,11 @@ class ContentWidget extends StatefulWidget {
 
 class _ContentWidgetState extends State<ContentWidget> {
   bool _viewProfilePrompt = false;
-  bool _deleted = false;
+  String? _deleted;
 
   @override
   Widget build(BuildContext context) {
-    return _deleted ? Container() : Card(
+    return _deleted == widget.content.snowflake ? Container() : Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -148,7 +148,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                                 "",
                                 duration: Duration(seconds: 5)
                               );
-                              setState(() => _deleted = true);
+                              setState(() => _deleted = widget.content.snowflake);
                             }
                           } catch(e) {
                             Get.snackbar(
