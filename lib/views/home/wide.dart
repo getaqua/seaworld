@@ -7,6 +7,7 @@ import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/widgets/content.dart';
+import 'package:seaworld/widgets/empty.dart';
 import 'package:seaworld/widgets/post.dart';
 
 class WideHomeView extends StatefulWidget {
@@ -108,7 +109,11 @@ class _WideHomeViewState extends State<WideHomeView> {
                         )
                       ]);
                       return (!snapshot.hasData && !snapshot.hasError) ? Center(child: CircularProgressIndicator(value: null))
-                        : (snapshot.hasData) ? ListView.builder(
+                        : (snapshot.hasData && snapshot.data!.isEmpty) ? ListView.builder(
+                          itemBuilder: (context, index) => 
+                            index == 0 ? _prefixes : NormalEmptyState(),
+                          itemCount: snapshot.data!.length + 2
+                      ) : (snapshot.hasData) ? ListView.builder(
                           itemBuilder: (context, index) => 
                             index == 0 ? _prefixes : ContentWidget(snapshot.data![index-1]),
                           itemCount: snapshot.data!.length + 1

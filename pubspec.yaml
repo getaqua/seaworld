@@ -42,6 +42,8 @@ flutter:
     # # Used as a default notification sound
     - assets/img/static.gif
     # Used as the background of the crash screen
+    - assets/img/emptystate-normal.png
+    # Used in empty states
 
     # == Translations ==
     - assets/lang/en_US.json

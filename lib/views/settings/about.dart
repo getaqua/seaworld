@@ -47,7 +47,7 @@ class AboutPage extends StatelessWidget {
                     ),
                     ListTile(
                       leading: Icon(Mdi.alertCircleOutline),
-                      onTap: () => Get.to(CrashedView(
+                      onTap: () => Get.to(() => CrashedView(
                         title: "crash.generic.title".tr, 
                         helptext: "crash.developererror.generic".tr,
                         retryBack: true,

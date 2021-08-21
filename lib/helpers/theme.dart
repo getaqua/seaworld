@@ -17,6 +17,18 @@ class SeaworldTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(onPrimary: themeColor.shade400.computeLuminance() > 0.5 ? Colors.black : Colors.white)
     ),
+    switchTheme: SwitchThemeData(
+      thumbColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? themeColor : Colors.grey),
+      trackColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? themeColor.shade300 : Colors.grey.shade300)
+    ),
+    // bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    //   selectedIconTheme: IconThemeData(color: Colors.white),
+    //   selectedLabelStyle: TextStyle(color: Colors.white),
+    //   selectedItemColor: Colors.white,
+    //   unselectedIconTheme: IconThemeData(color: Colors.white),
+    //   unselectedLabelStyle: TextStyle(color: Colors.white),
+    //   unselectedItemColor: Colors.white,
+    // ),
     textTheme: TextTheme(
       button: _default.textTheme.button?.apply(fontFamily: "DM Sans"),
       headline1: _default.textTheme.headline1?.apply(fontFamily: "DM Sans"),
