@@ -27,6 +27,7 @@ class _ContentWidgetState extends State<ContentWidget> {
   Widget build(BuildContext context) {
     return _deleted ? Container() : Card(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container( // Profile
             padding: EdgeInsets.only(right: 16.0),
@@ -110,11 +111,15 @@ class _ContentWidgetState extends State<ContentWidget> {
                 if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
-                      //onTap: () => {},
-                      child: GestureDetector(
-                        child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
-                        onTap: () => (() async {
-                          final bool? _result = await showDialog(context: context, builder: (context) => AlertDialog(
+                      child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
+                      value: "delete"
+                    )
+                  ],
+                  onSelected: (value) {
+                    switch (value) {
+                      case "delete": 
+                        (() async {
+                          final bool? _result = await Get.dialog(AlertDialog(
                             title: Text("content.confirmdelete.title".tr),
                             content: ContentWidget(widget.content, embedded: true),
                             actions: [
@@ -131,7 +136,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                           if (_result != true) return;
                           try {
                             final _response = await API.deleteContent(snowflake: widget.content.snowflake);
-                            if (_response.graphQLErrors?.isNotEmpty ?? false) {
+                            if (_response.graphQLErrors?.isNotEmpty ?? false || _response.body["deleteContent"] != true) {
                               Get.snackbar(
                                 "content.deletefailed.title".tr,
                                 "content.deletefailed.message".tr,
@@ -153,10 +158,12 @@ class _ContentWidgetState extends State<ContentWidget> {
                             );
                           }
                           Get.back();
-                        })(),
-                      )
-                    )
-                  ],
+                        })();
+                        return;
+                      default:
+                        return;
+                    }
+                  }
                 )
               ]
             ),
