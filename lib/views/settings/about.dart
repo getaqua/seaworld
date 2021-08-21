@@ -17,18 +17,26 @@ class AboutPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               Text("Seaworld", style: Get.textTheme.headline2),
               Text(kVersion, style: Get.textTheme.headline6),
-              if (!kReleaseMode) Padding(
+              Padding(
                 padding: EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () => Get.to(CrashedView(
-                    title: "crash.generic.title".tr, 
-                    helptext: "crash.developererror.generic".tr,
-                    retryBack: true,
-                  )), 
-                  child: Text("Test crash!")),
+                child: SingleChildScrollView(child: Column(children: [
+                  ListTile(
+                    onTap: () => Get.toNamed("/licenses"), 
+                    title: Text("Open-source licenses")
+                  ),
+                  if (!kReleaseMode) ListTile(
+                    onTap: () => Get.to(CrashedView(
+                      title: "crash.generic.title".tr, 
+                      helptext: "crash.developererror.generic".tr,
+                      retryBack: true,
+                    )), 
+                    title: Text("Test crash!")
+                  ),
+                ]))
               )
             ]
           )

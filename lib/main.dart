@@ -70,6 +70,7 @@ class MyApp extends StatelessWidget {
           middlewares: [HomeRedirect()]
         ),
         GetPage(name: "/settings", page: () => SettingsRoot(), middlewares: [EnsureLoggedIn()], binding: SettingsBindings()),
+        GetPage(name: "/licenses", page: () => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
       ],
       builder: (BuildContext context, Widget? widget) {
         Widget Function(FlutterErrorDetails? errorDetails) error = (FlutterErrorDetails? errorDetails) => Text(errorDetails?.summary.toString() ?? "Error");
