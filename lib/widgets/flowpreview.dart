@@ -30,7 +30,7 @@ class _FlowPreviewPopupMenu extends StatefulWidget {
   @override
   _FlowPreviewPopupMenuState createState() => _FlowPreviewPopupMenuState();
 
-  _FlowPreviewPopupMenu({
+  const _FlowPreviewPopupMenu({
     Key? key,
     required this.flow
   }) : super(key: key);

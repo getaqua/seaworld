@@ -53,5 +53,10 @@
     "content.deletefailed.message": "You do not have permission to delete this content.",
     "content.deletesuccess.title": "Delete succeeded",
     "flow.showpreview": "Show profile",
-    "flow.open": "Open @id"
+    "flow.open": "Open @id",
+    "post.rich.editortitle": "Create Content",
+    "post.rich.title": "Title",
+    "post.rich.text": "Text",
+    "post.rich.media": "Media",
+    "post.rich.submit": "Post"
 }

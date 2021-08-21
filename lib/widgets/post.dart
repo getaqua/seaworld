@@ -3,6 +3,8 @@ import "package:get/get.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/views/richeditor.dart';
+import 'package:seaworld/widgets/semitransparent.dart';
 
 class NewContentCard extends StatelessWidget {
   final String? flow;
@@ -99,19 +101,27 @@ class NewContentCard extends StatelessWidget {
                 Obx(() => _posting.value ? CircularProgressIndicator(value: null)
                 : _cobs.value.value.text == "" ? Tooltip(
                   message: "post.expand".tr,
-                  child: IconButton(onPressed: () => {}, icon: Icon(Mdi.cardBulleted), color: Get.theme.colorScheme.primary)
+                  child: IconButton(onPressed: () async {
+                    await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
+                      alignment: Alignment.topCenter,
+                      width: 720,
+                      child: RichEditorPage(flow: flow))
+                    ));
+                    (refreshContent ?? (() => {}))();
+                  }, icon: Icon(Mdi.cardBulleted), color: Get.theme.colorScheme.primary)
                 ) : Tooltip(
                   message: "post.send".tr,
                   child: IconButton(onPressed: () async {
                     _posting.update((val) => val = true);
-                    // this is a variable for debugging purposes
-                    var x = await API.postContent(toFlow: Config.cache.userId, text: _controller.value.text);
+                    var resp = await API.postContent(toFlow: Config.cache.userId, text: _controller.value.text);
                     _posting.update((val) => val = false);
-                    _controller.clear();
-                    _cobs.update((_) => _controller);
-                    // The following hack calls refreshContent if it exists,
-                    // and otherwise calls a void function.
-                    (refreshContent ?? (() => {}))();
+                    if (resp.isOk && resp.body["postContent"] != null) {
+                      _controller.clear();
+                      _cobs.update((_) => _controller);
+                      // The following hack calls refreshContent if it exists,
+                      // and otherwise calls a void function.
+                      (refreshContent ?? (() => {}))();
+                    }
                   }, icon: Icon(Mdi.send), color: Get.theme.colorScheme.primary)
                 ))
               ],
