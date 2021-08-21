@@ -23,7 +23,7 @@ late final Map<String, String> lang$en_US;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  lang$en_US = Map.castFrom(jsonDecode(await rootBundle.loadString("assets/lang/en_US.json")));
+  await loadTranslations();
   kVersion = await rootBundle.loadString("assets/raw/version.txt");
   if (!kIsWeb) {
     Hive.init(
@@ -35,6 +35,15 @@ void main() async {
   }
   await Hive.openBox("config");
   runApp(const MyApp());
+}
+
+Future<void> loadTranslations() async {
+  lang$en_US = Map.castFrom(jsonDecode(await rootBundle.loadString("assets/lang/en_US.json")));
+}
+Future<void> reloadTranslations() async {
+  Get.addTranslations({
+    "en_US": Map.castFrom(jsonDecode(await rootBundle.loadString("assets/lang/en_US.json", cache: false)))
+  });
 }
 
 class MyApp extends StatelessWidget {

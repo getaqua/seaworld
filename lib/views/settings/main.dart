@@ -22,24 +22,27 @@ class SettingsRoot extends GetView<_TabController> {
       body: Row(
         children: [
           if (width > 640) Container(
-            margin: EdgeInsets.only(right: 32),
+            //margin: EdgeInsets.only(right: 32),
             width: 280,
             alignment: Alignment.topLeft,
             color: Get.theme.colorScheme.primary.withAlpha(16),
             child: Builder(builder: (bc) => _sidebarcontent(bc))
           ),
           Expanded(
-            child: Obx(() => controller.index.value >= 5 ? Center(child: Icon(Mdi.alert)) : 
-              [
-                // GeneralSettingsPage(),
-                // ThemeSettingsPage()
-                Center(child: Icon(Mdi.account)),
-                ThemingSettings(),
-                Center(child: Icon(Mdi.security)),
-                Center(child: Icon(Mdi.eye)),
-                AboutPage()
-              ][controller.index.value]
-            )
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+              child: Obx(() => controller.index.value >= 5 ? Center(child: Icon(Mdi.alert)) : 
+                [
+                  // GeneralSettingsPage(),
+                  // ThemeSettingsPage()
+                  Center(child: Icon(Mdi.account)),
+                  ThemingSettings(),
+                  Center(child: Icon(Mdi.security)),
+                  Center(child: Icon(Mdi.eye)),
+                  AboutPage()
+                ][controller.index.value]
+              ),
+            ),
           )
         ],
       )
