@@ -30,7 +30,7 @@ class _CachedValues {
   /// The server's reported (software and) version.
   String serverVersion = "v0.0.0-null.0";
   /// The user ID.
-  String userId = "example.net//user";
+  String userId = "//exampleuser";
   /// The scopes granted to the client.
   List<String> scopes = [];
 }

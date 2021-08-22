@@ -31,6 +31,10 @@ dev_dependencies:
   # We're keeping this.
   flutter_lints: ^1.0.0
 
+  # For test purposes...
+  mockito: ^5.0.14
+  hive_test: ^1.0.1
+
 flutter:
 
   uses-material-design: true
