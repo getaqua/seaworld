@@ -31,9 +31,21 @@ class API {
 
   API();
 
-  void reset() {
-    isReady = false;
-    _ready = Completer<bool>();
+  /// The `to` parameter is used for tests ONLY.
+  /// There's another way for what you're doing
+  /// if this isn't used for tests.
+  /// Figure it out.
+  /// 
+  /// Otherwise, this function resets the API,
+  /// like what should happen on logout or user
+  /// change.
+  void reset({dynamic to}) {
+    if (to == null) {
+      isReady = false;
+      _ready = Completer<bool>();
+    } else {
+      _instance = to;
+    }
   }
 
   Future<void> init(String token, [bool? isServerInsecure]) async {
@@ -87,6 +99,12 @@ class API {
   
   /// Get the latest Content from the Flows the user is following.
   static Future<List<Content>> followedContent() => get.content.followedContent();
+
+  /// Get a Flow by its ID.
+  static final getFlow = get.flow.getFlow;
+
+  /// Gets a Flow with its Content, good for the Flow home view.
+  static final getFlowAndContent = get.flow.getFlowAndContent;
 
   /// Post Content to a Flow.
   static final postContent = get.content.postContent;

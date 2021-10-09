@@ -1,3 +1,5 @@
+import 'package:seaworld/models/content.dart';
+
 class PartialFlow {
   final String name;
   final String? description;
@@ -19,6 +21,13 @@ class Flow extends PartialFlow {
     alternativeIds = data["alternative_ids"],
     publicPermissions = FlowPermissions.fromJSON(data["public_permissions"]),
     joinedPermissions = FlowPermissions.fromJSON(data["joined_permissions"]),
+    super.fromJSON(data);
+}
+class FlowWithContent extends Flow {
+  final List<Content> content;
+
+  FlowWithContent.fromJSON(Map data):
+    content = data['content'].map<Content>((v) => Content.fromJSON(v)).toList(),
     super.fromJSON(data);
 }
 class FlowPermissions {

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:seaworld/helpers/apierror.dart';
 import 'package:seaworld/models/flow.dart';
 
 class FlowAPI extends GetConnect {
@@ -9,19 +10,51 @@ class FlowAPI extends GetConnect {
     baseUrl = url+"/_gridless/graphql/";
   }
 
-  Future<List<Flow>> followedFlows() async => (await query(r"""query followedFlows {
+  Future<List<Flow>> followedFlows() async => Future<List<Flow>>(() async => (await query(r"""query followedFlows {
     followedFlows {
       name
       id
     }
-  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body.map((v) => Flow.fromJSON(v["followedFlows"]));
+  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["followedFlows"].map((v) => Flow.fromJSON(v)))
+  .catchError((error) => throw APIErrorHandler.handleError(error) ?? error);
 
-  Future<Flow> getFlow(String id) async => Flow.fromJSON((await query(r"""query followedFlows($id: String) {
+  Future<Flow> getFlow(String id) async => Future(() async => Flow.fromJSON((await query(r"""query getFlow($id: String) {
     getFlow(id: $id) {
       name
+      description
       id
     }
-  }""", variables: {id: id}, headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFlow"]);
+  }""", variables: {id: id}, headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFlow"]))
+  .catchError((error) => throw APIErrorHandler.handleError(error) ?? error);
+
+  Future<FlowWithContent> getFlowAndContent(String id) async => Future(() async => FlowWithContent.fromJSON((await query(r"""query getFlowWithContent($id: String) {
+    getFlow(id: $id) {
+      name
+      description
+      id
+      content {
+        text
+        origin {
+          text
+          author {
+            name
+            id
+          }
+        }
+        pinned
+        author {
+          name
+          id
+        }
+        inFlowId
+        timestamp
+        # edited
+        editedTimestamp
+        snowflake
+      }
+    }
+  }""", variables: {id: id}, headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFlow"]))
+  .catchError((error) => throw APIErrorHandler.handleError(error) ?? error);
 
   /* Mutations to implement:
   createFlow(flow: NewFlow, parentId: String) : Flow

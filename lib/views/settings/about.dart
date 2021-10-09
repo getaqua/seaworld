@@ -54,6 +54,28 @@ class AboutPage extends StatelessWidget {
                       )), 
                       title: Text("Test crash!")
                     ),
+                    ListTile(
+                      leading: Icon(Mdi.fileTree),
+                      onTap: () async {
+                        final TextEditingController controller = TextEditingController(text: Get.currentRoute);
+                        final res = await Get.dialog<String?>(AlertDialog(
+                          title: Text("Go where?"),
+                          content: TextField(
+                            controller: controller,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            )
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Get.back(result: null), child: Text("dialog.cancel")),
+                            TextButton(onPressed: () => Get.back(result: controller.value.text), child: Text("dialog.ok")),
+                          ],
+                        ));
+                        if (res == null) return;
+                        Get.offNamed(res, preventDuplicates: false);
+                      },
+                      title: Text("Navigate")
+                    ),
                   ]
                 ]))
               )

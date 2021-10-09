@@ -50,8 +50,10 @@ class _CrashedViewState extends State<CrashedView> {
                       child: ElevatedButton(
                         onPressed: () => widget.retryBack
                           ? Get.back()
-                          : Get.offNamed(Get.currentRoute),
-                        child: Text("crash.tryagain".tr)
+                          : Get.offNamed("/"), //Get.offNamed(Get.currentRoute),
+                        child: widget.retryBack
+                          ? Text("crash.goback".tr)
+                          : Text("crash.tryagain".tr)
                       )
                     ),
                     Padding(

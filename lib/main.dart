@@ -11,7 +11,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
+import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/crash.dart';
+import 'package:seaworld/views/flow/home.dart';
 import 'package:seaworld/views/home/wide.dart';
 import 'package:seaworld/views/login.dart';
 import 'package:seaworld/views/settings/main.dart';
@@ -80,6 +82,15 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(name: "/settings", page: () => SettingsRoot(), middlewares: [EnsureLoggedIn()], binding: SettingsBindings()),
         GetPage(name: "/licenses", page: () => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
+        GetPage(name: "/flow/:id", page: () => FutureBuilder<FlowWithContent>(
+          future: API.getFlowAndContent(Get.parameters["id"] ?? ""),
+          builder: (context, snapshot) => snapshot.hasData ? FlowHomeView(flow: snapshot.data!)
+          : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
+            title: "crash.connectionerror.title".tr,
+            helptext: "crash.connectionerror.generic".tr
+          ) : snapshot.hasError ? CrashedView(helptext: snapshot.error!.toString())
+          : Material(color: Colors.black, child: Center(child: CircularProgressIndicator(value: null)))
+        ))
       ],
       builder: (BuildContext context, Widget? widget) {
         Widget Function(FlutterErrorDetails? errorDetails) error = (FlutterErrorDetails? errorDetails) => Text(errorDetails?.summary.toString() ?? "Error");
