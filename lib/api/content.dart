@@ -31,7 +31,7 @@ class ContentAPI extends GetConnect {
       editedTimestamp
       snowflake
     }
-  }""", headers: {"Authorization": "Bearer $token"}, url: "/")).body["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
+  }""", headers: {"Authorization": "Bearer $token"}, url: "/")).body?["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
 
   Future<GraphQLResponse> postContent({required String toFlow, String? text}) async => mutation(r"""mutation postToFlow($id: String!, $data: NewContent!) {
     postContent(to: $id, data: $data) {

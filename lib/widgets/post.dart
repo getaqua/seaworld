@@ -111,18 +111,22 @@ class NewContentCard extends StatelessWidget {
                   }, icon: Icon(Mdi.cardBulleted), color: Get.theme.colorScheme.primary)
                 ) : Tooltip(
                   message: "post.send".tr,
-                  child: IconButton(onPressed: () async {
-                    _posting.update((val) => val = true);
-                    var resp = await API.postContent(toFlow: Config.cache.userId, text: _controller.value.text);
-                    _posting.update((val) => val = false);
-                    if (resp.isOk && resp.body["postContent"] != null) {
-                      _controller.clear();
-                      _cobs.update((_) => _controller);
-                      // The following hack calls refreshContent if it exists,
-                      // and otherwise calls a void function.
-                      (refreshContent ?? (() => {}))();
-                    }
-                  }, icon: Icon(Mdi.send), color: Get.theme.colorScheme.primary)
+                  child: IconButton(
+                    onPressed: !_posting.value ? () async {
+                      _posting.update((val) => val = true);
+                      var resp = await API.postContent(toFlow: Config.cache.userId, text: _controller.value.text);
+                      _posting.update((val) => val = false);
+                      if (resp.isOk && resp.body["postContent"] != null) {
+                        _controller.clear();
+                        _cobs.update((_) => _controller);
+                        // The following hack calls refreshContent if it exists,
+                        // and otherwise calls a void function.
+                        (refreshContent ?? (() => {}))();
+                      }
+                    } : null,
+                    icon: Icon(Mdi.send),
+                    color: Get.theme.colorScheme.primary,
+                  )
                 ))
               ],
             )

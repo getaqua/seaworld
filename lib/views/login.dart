@@ -23,7 +23,7 @@ class _LoginViewState extends State<LoginView> {
   // ignore: prefer_final_fields
   String _serverUrl = "localhost:3000";
   // ignore: prefer_final_fields
-  String _clientId = "AQUA-e7a4b74f08be3f4181dc6c9ee162d5839071f3ac298ddd0195dcbb70b2cdf74c4358bbbc";
+  String _clientId = "AQUA-397bd2a38f2727988667d1fda6bbd363c7a74441dac0567d8b726b7ce0fab78955179d7e";
   late final Rx<Future<bool>> _healthCheckFuture;
 
   @override
