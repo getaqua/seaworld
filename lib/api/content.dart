@@ -43,6 +43,16 @@ class ContentAPI extends GetConnect {
       if (text != null) "text": text
     }
   });
+  Future<GraphQLResponse> updateContent({required String id, String? text}) async => mutation(r"""mutation editContent($id: String!, $data: EditedContent!) {
+    updateContent(id: $id, data: $data) {
+      snowflake
+    }
+  }""", headers: {"Authorization": "Bearer $token"}, url: "/", variables: {
+    "id": id,
+    "data": {
+      if (text != null) "text": text
+    }
+  });
 
   Future<GraphQLResponse> deleteContent({required String snowflake, String? text}) async => mutation(r"""mutation deleteContent($id: String!) {
     deleteContent(snowflake: $id)

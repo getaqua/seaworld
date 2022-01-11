@@ -6,6 +6,7 @@ import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
 import 'package:seaworld/main.dart';
 import 'package:seaworld/views/crash.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -53,6 +54,16 @@ class AboutPage extends StatelessWidget {
                         retryBack: true,
                       )), 
                       title: Text("Test crash!")
+                    ),
+                    ListTile(
+                      leading: Icon(Mdi.bellAlert),
+                      onTap: () => InAppNotification.showOverlayIn(context, InAppNotification(
+                        title: Text("System message"),
+                        text: Text("This is a test message. With all due respect, Sir, I think we should go this way."),
+                        icon: Icon(Mdi.spiderWeb, color: Colors.amber),
+                        corner: Corner.bottomStart,
+                      )),
+                      title: Text("Test in-app notification")
                     ),
                     ListTile(
                       leading: Icon(Mdi.fileTree),

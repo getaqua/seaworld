@@ -3,14 +3,20 @@ import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/models/content.dart';
 
 class RichEditorPage extends StatefulWidget {
   final String? flow;
+  final Content? content;
+  final bool isEditing;
 
+  // ignore: prefer_const_constructors_in_immutables
   RichEditorPage({ 
     Key? key,
-    this.flow
-  }) : super(key: key);
+    this.flow,
+    this.content,
+    this.isEditing = false
+  }) : assert(isEditing ? content != null : true), super(key: key);
 
   @override
   _RichEditorPageState createState() => _RichEditorPageState();
@@ -37,6 +43,12 @@ class _RichEditorPageState extends State<RichEditorPage> {
   }
 
   @override
+  void initState() {
+    _controller.text = widget.content?.text ?? "";
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //final _cobs = _controller.obs;
     return Material(
@@ -55,7 +67,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Padding(
+              if (!widget.isEditing) Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: !_posting ? () async {
@@ -69,6 +81,23 @@ class _RichEditorPageState extends State<RichEditorPage> {
                     }
                   } : null,
                   child: !_posting ? Text("post.rich.submit".tr) : CircularProgressIndicator(value: null)
+                ),
+              ) else Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: !_posting ? () async {
+                    if (_posting) return;
+                    setState(() {_posting = true;});
+                    var resp = await API.editContent(id: widget.content!.snowflake, text: _controller.value.text);
+                    if (resp.isOk && resp.body["updateContent"] != null) {
+                      _controller.clear();
+                      setState(() {_posting = false;});
+                      Get.back();
+                    } else {
+                      setState(() {_posting = false;});
+                    }
+                  } : null,
+                  child: !_posting ? Text("post.rich.submit.edit".tr) : CircularProgressIndicator(value: null)
                 ),
               )
             ],
@@ -99,7 +128,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                   enabled: !_posting,
                 ),
               ),
-              SingleChildScrollView(
+              if (!widget.isEditing) SingleChildScrollView(
                 child: Row(children: [
                   // The row of field chips
                   _buildFieldChip(icon: Mdi.formatTitle, label: "post.rich.title".tr, value: "title"),

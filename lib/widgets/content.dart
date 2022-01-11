@@ -4,7 +4,9 @@ import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
+import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
+import 'package:seaworld/widgets/semitransparent.dart';
 
 class ContentWidget extends StatefulWidget {
   final Content content;
@@ -113,6 +115,10 @@ class _ContentWidgetState extends State<ContentWidget> {
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
                       child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
                       value: "delete"
+                    ),
+                    if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
+                      child: Text("content.edit".tr),
+                      value: "edit"
                     )
                   ],
                   onSelected: (value) {
@@ -158,6 +164,16 @@ class _ContentWidgetState extends State<ContentWidget> {
                             );
                           }
                           Get.back();
+                        })();
+                        return;
+                      case "edit":
+                        //spawn the edit screen, prefill it, set it to an edit mode
+                        (() async {
+                          await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
+                            alignment: Alignment.topCenter,
+                            width: 720,
+                            child: RichEditorPage(content: widget.content, isEditing: true))
+                          ));
                         })();
                         return;
                       default:

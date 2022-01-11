@@ -111,4 +111,7 @@ class API {
 
   /// Delete Content.
   static final deleteContent = get.content.deleteContent;
+
+  /// Edit or update Content.
+  static final editContent = get.content.updateContent;
 }

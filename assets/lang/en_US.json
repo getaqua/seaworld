@@ -49,6 +49,7 @@
     "crash.goback": "Go back",
     "crash.flow.title": "Could not find Flow",
     "crash.flow.generic": "An error occurred when trying to fetch the Flow.",
+    "crash.inappnotify.generic": "An in-app notification could not be displayed.",
     "error.emptycontent.title": "No Content",
     "error.emptycontent.encouragement": "There's nothing here! Try posting something to fill the void.",
     "error.emptycontent.flow": "There's nothing here! @name hasn't posted anything. Try again later; maybe there will be Content here!",
@@ -59,6 +60,7 @@
     "content.reply": "Reply",
     "content.readmore": "Read more",
     "content.delete": "Delete",
+    "content.edit": "Edit",
     "content.confirmdelete.title": "Delete this Content?",
     "content.deletefailed.title": "Delete failed",
     "content.deletefailed.message": "You do not have permission to delete this content.",
@@ -69,5 +71,6 @@
     "post.rich.title": "Title",
     "post.rich.text": "Text",
     "post.rich.media": "Media",
-    "post.rich.submit": "Post"
+    "post.rich.submit": "Post",
+    "post.rich.submit.edit": "Update"
 }
