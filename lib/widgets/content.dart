@@ -5,8 +5,11 @@ import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/views/richeditor.dart';
+import 'package:seaworld/widgets/content/filepreview.dart';
+import 'package:seaworld/widgets/content/imagepreview.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContentWidget extends StatefulWidget {
   final Content content;
@@ -191,23 +194,10 @@ class _ContentWidgetState extends State<ContentWidget> {
             child: Text(widget.content.text ?? "<No text provided>")
           ),
           for (final attachment in widget.content.attachments)
-            if (attachment.mimeType?.startsWith("image/") ?? false) Image.network(
-              API.get.urlScheme+Config.server+attachment.url,
-              fit: BoxFit.scaleDown, //experiment with this, maybe
-              errorBuilder: (context, error, st) => Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Mdi.imageBroken, color: Colors.orange),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(error.toString(), style: TextStyle(color: Colors.orange)),
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              )),
+            if (attachment.mimeType?.startsWith("image/") ?? false) 
+              if (widget.embedded) EmbeddedImageAttachmentPreview(attachment: attachment) 
+              else ImageAttachmentPreview(attachment: attachment)
+            else FallbackAttachmentPreview(attachment: attachment, embedded: widget.embedded),
           //Divider(),
           if (!widget.embedded) Row(
             mainAxisAlignment: MainAxisAlignment.start,

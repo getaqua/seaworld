@@ -17,6 +17,7 @@ class SeaworldTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(onPrimary: themeColor.shade400.computeLuminance() > 0.5 ? Colors.black : Colors.white)
     ),
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: themeColor, accentColor: Colors.deepPurple, brightness: brightness),
     switchTheme: SwitchThemeData(
       thumbColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? themeColor : Colors.grey),
       trackColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.selected) ? themeColor.shade300 : Colors.grey.shade300)

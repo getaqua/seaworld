@@ -22,7 +22,7 @@ class ThemingSettings extends StatelessWidget {
                 onChanged: (nv) {
                   Config.darkmode = nv;
                   Get.changeTheme(SeaworldTheme.fromConfig().data);
-                  Get.forceAppUpdate(); 
+                  Get.forceAppUpdate();
                   // ^^^ this is necessary to apply the theme change
                 },
                 title: Text("settings.darkmode".tr)

@@ -63,6 +63,8 @@
     "content.readmore": "Read more",
     "content.delete": "Delete",
     "content.edit": "Edit",
+    "content.attachment.remove": "Remove attachment",
+    "content.attachment.download": "Download @filename",
     "content.confirmdelete.title": "Delete this Content?",
     "content.deletefailed.title": "Delete failed",
     "content.deletefailed.message": "You do not have permission to delete this content.",
