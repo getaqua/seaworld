@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
-class SystemAPI extends GetConnect {
+import 'apiclass.dart';
+
+class SystemAPI extends APIConnect {
   final String token;
   final String url;
 

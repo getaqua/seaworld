@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:get/get_connect/connect.dart';
 
-class AuthenticationAPI extends GetConnect {
+import 'apiclass.dart';
+
+class AuthenticationAPI extends APIConnect {
   String? token;
   String? _code;
   final String server;

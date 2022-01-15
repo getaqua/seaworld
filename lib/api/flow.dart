@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:seaworld/helpers/apierror.dart';
 import 'package:seaworld/models/flow.dart';
 
-class FlowAPI extends GetConnect {
+import 'apiclass.dart';
+
+class FlowAPI extends APIConnect {
   final String token;
   final String url;
 

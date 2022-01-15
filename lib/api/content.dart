@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart' show Overlay;
 import 'package:get/get.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/models/content.dart';
 //import 'package:seaworld/models/flow.dart';
 
-class ContentAPI extends GetConnect {
+class ContentAPI extends APIConnect {
   final String token;
   final String url;
 
@@ -13,6 +15,15 @@ class ContentAPI extends GetConnect {
   Future<List<Content>> followedContent() async => (await query(r"""query followedContent {
     getFollowedContent {
       text
+      attachments {
+        url
+        #downloadUrl
+        mimeType
+        #downloadMimeType
+        filename
+        yours
+        snowflake
+      }
       origin {
         text
         author {
@@ -31,16 +42,22 @@ class ContentAPI extends GetConnect {
       editedTimestamp
       snowflake
     }
-  }""", headers: {"Authorization": "Bearer $token"}, url: "/")).body?["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
+  }""", headers: {"Authorization": "Bearer $token"}, url: "/"))
+  .body?["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
 
-  Future<GraphQLResponse> postContent({required String toFlow, String? text}) async => mutation(r"""mutation postToFlow($id: String!, $data: NewContent!) {
+  Future<GraphQLResponse> postContent({
+    required String toFlow,
+    String? text,
+    List<String>? attachments
+  }) async => mutation(r"""mutation postToFlow($id: String!, $data: NewContent!) {
     postContent(to: $id, data: $data) {
       snowflake
     }
   }""", headers: {"Authorization": "Bearer $token"}, url: "/", variables: {
     "id": toFlow,
     "data": {
-      if (text != null) "text": text
+      if (text != null) "text": text,
+      if (attachments != null) "attachments": attachments
     }
   });
   Future<GraphQLResponse> updateContent({required String id, String? text}) async => mutation(r"""mutation editContent($id: String!, $data: EditedContent!) {

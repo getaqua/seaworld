@@ -54,6 +54,8 @@
     "error.emptycontent.encouragement": "There's nothing here! Try posting something to fill the void.",
     "error.emptycontent.flow": "There's nothing here! @name hasn't posted anything. Try again later; maybe there will be Content here!",
     "error.emptycontent.error": "There's nothing here. Try again later.",
+    "error.permissiondenied.generic": "You don't have permission to do this.",
+    "error.permissiondenied.specific": "You do not have permission in @name to @perm.",
     "content.like": "Like",
     "content.dislike": "Dislike",
     "content.forward": "Forward",
@@ -72,5 +74,11 @@
     "post.rich.text": "Text",
     "post.rich.media": "Media",
     "post.rich.submit": "Post",
-    "post.rich.submit.edit": "Update"
+    "post.rich.submit.edit": "Update",
+    "upload.failed.title": "Upload failed",
+    "upload.failed.generic": "The file was not uploaded.",
+    "permission.flow.post": "Post Content",
+    "permission.flow.read": "Read Content",
+    "permission.flow.view": "View the Flow's profile",
+    "permission.flow.join": "Join this Flow"
 }

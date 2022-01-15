@@ -1,13 +1,19 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
+import 'package:flutter/material.dart' show Icon, Text, Colors;
 import 'package:get/get.dart';
 import 'package:get/get_connect/connect.dart';
+import 'package:mdi/mdi.dart';
+import 'package:mime_type/mime_type.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/crash.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 
 import 'flow.dart';
 
@@ -114,4 +120,41 @@ class API {
 
   /// Edit or update Content.
   static final editContent = get.content.updateContent;
+
+  static Future<Response?> uploadFile({String? fromPath, XFile? file}) async {
+    return GetHttpClient(baseUrl: get.urlScheme+Config.server).post("/_gridless/media", 
+    body: FormData({
+      "file": (fromPath?.isEmpty ?? false) ? MultipartFile(await File(fromPath!).readAsBytes(),
+        filename: Uri.file(fromPath).pathSegments.last,
+        contentType: mime(Uri.file(fromPath).pathSegments.last) ?? "application/octet-stream")
+        : MultipartFile(await file!.readAsBytes(),
+        filename: file.name,
+        contentType: mime(file.name) ?? "application/octet-stream")
+    }),
+    headers: {
+      "Authorization": "Bearer "+get.token
+    }).catchError((e) {
+      print(e);
+      InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+        icon: Icon(Mdi.uploadOff, color: Colors.red),
+        title: Text("upload.failed.title".tr),
+        text: Text("upload.failed.generic".tr),
+        corner: Corner.bottomStart,
+      ));
+    }).then((value) {
+      if (!value.isOk) {
+        print(value.bodyString);
+        print(value.statusCode);
+        InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+          icon: Icon(Mdi.uploadOff, color: Colors.red),
+          title: Text("upload.failed.title".tr),
+          text: Text("upload.failed.generic".tr),
+          corner: Corner.bottomStart,
+        ));
+        return value;
+      } else {
+        return value;
+      }
+    });
+  }
 }

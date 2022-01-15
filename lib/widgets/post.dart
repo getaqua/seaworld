@@ -1,9 +1,11 @@
+import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
 import "package:get/get.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/views/richeditor.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
 
 class NewContentCard extends StatelessWidget {
@@ -84,7 +86,40 @@ class NewContentCard extends StatelessWidget {
               children: [
                 Tooltip(
                   message: "post.newimage".tr,
-                  child: IconButton(onPressed: null, icon: Icon(Mdi.image))
+                  child: IconButton(onPressed: () async {
+                    if (_posting.value) return;
+                    _posting.update((val) => val = true);
+                    var file = await API.uploadFile(file: await openFile(acceptedTypeGroups: [XTypeGroup(
+                      extensions: [".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif"],
+                      label: "Images",
+                      mimeTypes: ["image/png", "image/jpeg", "image/gif"],
+                      webWildCards: ["image/*"]
+                    )]));
+                    if (file?.isOk ?? false) {
+                      var resp = await API.postContent(
+                        toFlow: Config.cache.userId,
+                        attachments: [file?.body["url"]],
+                        text: _controller.value.text
+                      );
+                      _posting.update((val) => val = false);
+                      if (resp.isOk && resp.body["postContent"] != null) {
+                        _controller.clear();
+                        _cobs.update((_) => _controller);
+                        // The following hack calls refreshContent if it exists,
+                        // and otherwise calls a void function.
+                        (refreshContent ?? (() => {}))();
+                      }
+                    } else {
+                      // Failure!
+                      _posting.update((val) => val = false);
+                      InAppNotification.showOverlayIn(Get.context!, InAppNotification(
+                        icon: Icon(Mdi.uploadOff, color: Colors.red),
+                        title: Text("upload.failed.title".tr),
+                        text: Text("upload.failed.generic".tr),
+                        corner: Corner.bottomStart,
+                      ));
+                    }
+                  }, icon: Icon(Mdi.image))
                 ),
                 Tooltip(
                   message: "post.newpoll".tr,
@@ -92,7 +127,35 @@ class NewContentCard extends StatelessWidget {
                 ),
                 Tooltip(
                   message: "post.uploadfile".tr,
-                  child: IconButton(onPressed: null, icon: Icon(Mdi.file))
+                  child: IconButton(onPressed: () async {
+                    if (_posting.value) return;
+                    _posting.update((val) => val = true);
+                    var file = await API.uploadFile(file: await openFile());
+                    if (file?.isOk ?? false) {
+                      var resp = await API.postContent(
+                        toFlow: Config.cache.userId,
+                        attachments: [file?.body["url"]],
+                        text: _controller.value.text
+                      );
+                      _posting.update((val) => val = false);
+                      if (resp.isOk && resp.body["postContent"] != null) {
+                        _controller.clear();
+                        _cobs.update((_) => _controller);
+                        // The following hack calls refreshContent if it exists,
+                        // and otherwise calls a void function.
+                        (refreshContent ?? (() => {}))();
+                      }
+                    } else {
+                      // Failure!
+                      _posting.update((val) => val = false);
+                      InAppNotification.showOverlayIn(Get.context!, InAppNotification(
+                        icon: Icon(Mdi.uploadOff, color: Colors.red),
+                        title: Text("upload.failed.title".tr),
+                        text: Text("upload.failed.generic".tr),
+                        corner: Corner.bottomStart,
+                      ));
+                    }
+                  }, icon: Icon(Mdi.file))
                 ),
                 Tooltip(
                   message: "post.newevent".tr,

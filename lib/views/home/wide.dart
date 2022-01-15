@@ -22,7 +22,11 @@ class _WideHomeViewState extends State<WideHomeView> {
   final StreamController<List<Content>> _content = StreamController.broadcast();
   void refreshContent() async {
     //setState(() {});
-    _content.add(await API.followedContent());
+    try {
+      _content.add(await API.followedContent());
+    } catch(e) {
+      _content.addError(e);
+    }
   }
 
   @override

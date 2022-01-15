@@ -23,6 +23,10 @@ dependencies:
   hive: ^2.0.4
   path_provider: ^2.0.2
   url_launcher: ^6.0.6
+  mime_type: ^1.0.0
+  file_selector: ^0.8.2+1
+  file_selector_windows:
+  # probably have to add all the platforms for this bad boy
 
 dev_dependencies:
   flutter_test:

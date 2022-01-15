@@ -185,11 +185,29 @@ class _ContentWidgetState extends State<ContentWidget> {
             ),
           ),
           Divider(),
-          Container(
+          if (widget.content.text?.isEmpty == false) Container(
             padding: EdgeInsets.all(16.0),
             alignment: Alignment.topLeft,
             child: Text(widget.content.text ?? "<No text provided>")
           ),
+          for (final attachment in widget.content.attachments)
+            if (attachment.mimeType?.startsWith("image/") ?? false) Image.network(
+              API.get.urlScheme+Config.server+attachment.url,
+              fit: BoxFit.scaleDown, //experiment with this, maybe
+              errorBuilder: (context, error, st) => Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Mdi.imageBroken, color: Colors.orange),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(error.toString(), style: TextStyle(color: Colors.orange)),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              )),
           //Divider(),
           if (!widget.embedded) Row(
             mainAxisAlignment: MainAxisAlignment.start,
