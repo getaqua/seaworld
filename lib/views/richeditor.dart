@@ -1,9 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/content.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 
 class RichEditorPage extends StatefulWidget {
   final String? flow;
@@ -25,6 +30,8 @@ class RichEditorPage extends StatefulWidget {
 class _RichEditorPageState extends State<RichEditorPage> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
+  List<String> _attachments = [];
+  List<Uint8List> _pendingAttachments = [];
   bool _posting = false;
   final List<String> enabledFields = ["text"];
 
@@ -44,7 +51,10 @@ class _RichEditorPageState extends State<RichEditorPage> {
 
   @override
   void initState() {
+    if (widget.content?.text?.isEmpty == true) enabledFields.remove("text");
     _controller.text = widget.content?.text ?? "";
+    if (widget.content?.attachments.isNotEmpty == true) enabledFields.add("media");
+    _attachments = widget.content?.attachments.map<String>((e) => e.url).toList() ?? [];
     super.initState();
   }
 
@@ -72,8 +82,30 @@ class _RichEditorPageState extends State<RichEditorPage> {
                 child: ElevatedButton(
                   onPressed: !_posting ? () async {
                     if (_posting) return;
+                    late final bool? _result;
+                    if (_pendingAttachments.isNotEmpty) {
+                      _result = await Get.dialog(AlertDialog(
+                      title: Text("post.rich.submit.pendingattachments.title".tr),
+                      content: Text("post.rich.submit.pendingattachments.message".tr),
+                      actions: [
+                        TextButton(onPressed: () {
+                          Get.back(result: true);
+                          //Get.back();
+                        }, child: Text("dialog.yes".tr)),
+                        TextButton(onPressed: () {
+                          Get.back(result: false);
+                          //Get.back();
+                        }, child: Text("dialog.no".tr)),
+                      ],
+                    ));
+                    } else {_result = true;}
+                    if (_result != true) return;
                     setState(() {_posting = true;});
-                    var resp = await API.postContent(toFlow: Config.cache.userId, text: _controller.value.text);
+                    var resp = await API.postContent(
+                      toFlow: Config.cache.userId,
+                      text: _controller.value.text,
+                      attachments: _attachments
+                    );
                     if (resp.isOk && resp.body["postContent"] != null) {
                       _controller.clear();
                       setState(() {_posting = false;});
@@ -128,18 +160,96 @@ class _RichEditorPageState extends State<RichEditorPage> {
                   enabled: !_posting,
                 ),
               ),
+              if (enabledFields.contains("media")) SizedBox(
+                height: 104,
+                child: ListView.builder(
+                  //padding: const EdgeInsets.all(8.0),
+                  scrollDirection: Axis.horizontal,
+                  //buildDefaultDragHandles: false,
+                  prototypeItem: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: SizedBox(
+                      width: 96,
+                      height: 96,
+                      child: Card(
+                        child: Material(color: Colors.amber),
+                      ),
+                    ),
+                  ),
+                  itemCount: _attachments.length + _pendingAttachments.length,
+                  // onReorder: (a, b) {
+                  //   // Reordering pending attachments is not allowed.
+                  //   if (b >= _attachments.length || a >= _attachments.length) return;
+                  //   if (a < b) {b -= 1;}
+                  //   _attachments.insert(b, _attachments.removeAt(a));
+                  // },
+                  itemBuilder: (context, index) {
+                    final isPending = (index >= _attachments.length);
+                    final dynamic att = isPending ? _pendingAttachments[index-_attachments.length]
+                    : _attachments[index];
+                    return Padding(
+                      key: ValueKey(att),
+                      padding: const EdgeInsets.all(4.0),
+                      child: SizedBox(
+                        width: 96,
+                        height: 96,
+                        child: Card(
+                          child: isPending ? Image.memory(att, opacity: AlwaysStoppedAnimation(0.7)) 
+                          : Image.network(API.get.urlScheme+Config.server+att),
+                        ),
+                      ),
+                    );
+                  }
+                ),
+              ),
+              if (enabledFields.contains("media") && !widget.isEditing) Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton.icon(
+                  icon: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Icon(Mdi.upload),
+                  ),
+                  label: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text("post.rich.media.upload".tr),
+                  ),
+                  onPressed: () async {
+                    var _file = await openFile(acceptedTypeGroups: [XTypeGroup(
+                      extensions: [".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif"],
+                      label: "Images",
+                      mimeTypes: ["image/png", "image/jpeg", "image/gif"],
+                      webWildCards: ["image/*"]
+                    )]);
+                    if (_file == null) return;
+                    final _bytes = await _file.readAsBytes();
+                    _pendingAttachments.add(_bytes);
+                    setState(() {});
+                    var file = await API.uploadFile(file: _file);
+                    if (file?.isOk ?? false) {
+                      // Success!
+                      _pendingAttachments.remove(_bytes);
+                      _attachments.add(file!.body["url"]);
+                    } else {
+                      // Failure!
+                      _pendingAttachments.remove(_bytes);
+                      InAppNotification.showOverlayIn(Get.context!, InAppNotification(
+                        icon: Icon(Mdi.uploadOff, color: Colors.red),
+                        title: Text("upload.failed.title".tr),
+                        text: Text("upload.failed.generic".tr),
+                        corner: Corner.bottomStart,
+                      ));
+                    }
+                  }
+                )
+              ),
               if (!widget.isEditing) SingleChildScrollView(
                 child: Row(children: [
                   // The row of field chips
                   _buildFieldChip(icon: Mdi.formatTitle, label: "post.rich.title".tr, value: "title"),
                   _buildFieldChip(icon: Mdi.text, label: "post.rich.text".tr, value: "text"),
-                  Chip(
-                    avatar: Icon(Mdi.imageMultiple),
-                    label: Text("post.rich.media".tr),
-                  ),
+                  _buildFieldChip(icon: Mdi.imageMultiple, label: "post.rich.media".tr, value: "media"),
                 ]),
               )
-              // TODO: add image attachments
             ]),
           ),
         ),

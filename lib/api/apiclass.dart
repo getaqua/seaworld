@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
@@ -12,7 +13,8 @@ abstract class APIConnect extends GetConnect {
     Map<String, dynamic>? variables,
     Map<String, String>? headers,
   }) async {
-    final result = await super.query<T>(query, url: url, variables: variables, headers: headers);
+    final fragments = await rootBundle.loadString("assets/raw/fragments.gql");
+    final result = await super.query<T>(fragments+query, url: url, variables: variables, headers: headers);
     if (result.hasError) {
       handleError(result);
     }

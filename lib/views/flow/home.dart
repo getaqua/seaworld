@@ -10,6 +10,7 @@ import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
 import 'package:seaworld/widgets/post.dart';
+import 'package:super_scaffold/super_scaffold.dart';
 
 class FlowHomeView extends StatefulWidget {
   final PartialFlow flow;
@@ -38,8 +39,8 @@ class _FlowHomeViewState extends State<FlowHomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return SuperScaffold(
+      appBar: SuperAppBar(
         title: Text(Config.cache.serverName),
         actions: [
           IconButton(onPressed: () => refreshContent(), icon: Icon(Mdi.refresh)),
@@ -47,6 +48,43 @@ class _FlowHomeViewState extends State<FlowHomeView> {
         ],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(8))
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
+                color: Get.theme.colorScheme.secondary,
+              ),
+              child: Column(
+                children: [
+                  // The user's profile picture avatar sphere thing
+                  // The user's name and ID
+                ],
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
+              ),
+            ),
+            ListTile(
+              selected: true,
+              onTap: () {},
+              title: Text("Home"),
+            ),
+            ListTile(
+              onTap: () {},
+              title: Text("Placeholder page"),
+            ),
+            ListTile(
+              onTap: () {},
+              title: Text("Chat"),
+            ),
+            ListTile(
+              onTap: () {},
+              title: Text("Placeholder page #2"),
+            ),
+          ],
         ),
       ),
       body: Row(

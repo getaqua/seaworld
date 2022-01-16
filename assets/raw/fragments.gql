@@ -1,0 +1,60 @@
+fragment partialFlow on PartialFlow {
+  name
+  description
+  avatar_url
+  id
+  snowflake
+}
+fragment fullFlow on Flow {
+  members {
+    ...partialFlow
+  }
+  alternative_ids
+  banner_url
+  public_permissions {
+    ...permissions
+  }
+  joined_permissions {
+    ...permissions
+  }
+}
+fragment permissions on FlowPermissions {
+  join
+  view
+  read
+  post
+  delete
+  pin
+}
+fragment attachment on Attachment {
+  url
+  #downloadUrl
+  mimeType
+  #downloadMimeType
+  filename
+  yours
+  snowflake
+}
+fragment content on Content {
+  text
+  attachments {
+    ...attachment
+  }
+  origin { #TODO: PartialContent for this
+    text
+    author {
+      name
+      id
+    }
+  }
+  pinned
+  author {
+    ...partialFlow
+  }
+  inFlowId
+  timestamp
+  # edited
+  editedTimestamp
+  snowflake
+}
+# keep this newline

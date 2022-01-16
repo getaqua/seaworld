@@ -4,11 +4,19 @@ import 'package:get/get.dart';
 class APIErrorHandler {
   static APIErrorHandler? handleError(Object? error) {
     if (error == null || (error is! Error && error is! Exception)) return null;
-    // ignore: avoid_print
-    if (!kReleaseMode) print(error);
-    if (error is NoSuchMethodError) {
-      return APIErrorHandler.error(title: "crash.notfound.title".tr, message: "crash.notfound.generic".tr);
+    if (kDebugMode) print(error);
+    if (error is NoSuchMethodError || error is TypeError) {
+      return APIErrorHandler.error(
+        title: "crash.notfound.title".tr,
+        message: "crash.notfound.generic".tr,
+        original: error
+      );
     }
+  }
+
+  @override
+  String toString() {
+    return "[$title] $message";
   }
 
   /// The translated title of the error.

@@ -14,33 +14,7 @@ class ContentAPI extends APIConnect {
 
   Future<List<Content>> followedContent() async => (await query(r"""query followedContent {
     getFollowedContent {
-      text
-      attachments {
-        url
-        #downloadUrl
-        mimeType
-        #downloadMimeType
-        filename
-        yours
-        snowflake
-      }
-      origin {
-        text
-        author {
-          name
-          id
-        }
-      }
-      pinned
-      author {
-        name
-        id
-      }
-      inFlowId
-      timestamp
-      # edited
-      editedTimestamp
-      snowflake
+      ...content
     }
   }""", headers: {"Authorization": "Bearer $token"}, url: "/"))
   .body?["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();

@@ -3,22 +3,28 @@ import 'package:seaworld/models/content.dart';
 class PartialFlow {
   final String name;
   final String? description;
+  final String? avatarUrl;
   final String id;
+  final String snowflake;
 
   PartialFlow.fromJSON(Map data):
     name = data["name"] ?? data["id"],
     description = data["description"],
-    id = data["id"];
+    avatarUrl = data["avatar_url"],
+    id = data["id"],
+    snowflake = data["snowflake"];
 }
 class Flow extends PartialFlow {
   final List<PartialFlow> members;
   final List<String> alternativeIds;
+  final String? bannerUrl;
   final FlowPermissions publicPermissions;
   final FlowPermissions joinedPermissions;
 
   Flow.fromJSON(Map data):
-    members = data["members"].map((v) => PartialFlow.fromJSON(v)),
-    alternativeIds = data["alternative_ids"],
+    members = data["members"].map<PartialFlow>((v) => PartialFlow.fromJSON(v)).toList(),
+    alternativeIds = data["alternative_ids"] ?? [],
+    bannerUrl = data["banner_url"],
     publicPermissions = FlowPermissions.fromJSON(data["public_permissions"]),
     joinedPermissions = FlowPermissions.fromJSON(data["joined_permissions"]),
     super.fromJSON(data);

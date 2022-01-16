@@ -66,8 +66,9 @@ class API {
         Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
       });
       await system.getMe().then((value) {
-        Config.cache.userId = value.body["getMe"]["user"]["id"];
+        Config.cache.userId = value.body["getMe"]["flow"]["id"];
         Config.cache.scopes = List.castFrom(value.body["getMe"]["tokenPermissions"]);
+        Config.cache.userFlow = Flow.fromJSON(value.body["getMe"]["flow"]);
       });
       isReady = true;
       _ready.complete(true);

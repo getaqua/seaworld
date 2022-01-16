@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:seaworld/main.dart' show HomeLayouts;
+import 'package:seaworld/models/flow.dart';
 
 class Config {
   static Config get _self => _$inst ??= Config();
@@ -25,6 +26,8 @@ class Config {
 }
 
 class _CachedValues {
+  /// The user's Flow.
+  late Flow userFlow;
   /// The server's display name.
   String serverName = "Untitled server!!";
   /// The server's reported (software and) version.

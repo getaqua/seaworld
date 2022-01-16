@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:seaworld/api/main.dart';
+import 'package:seaworld/helpers/apierror.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
 import 'package:seaworld/models/flow.dart';
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
               builder: (context, snap) => snap.connectionState == ConnectionState.done
                 ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
                 : Material(
-                  color: Colors.black, 
+                  color: Colors.black54, 
                   child: Center(child: CircularProgressIndicator(value: null)),
                 )
             ),
@@ -88,8 +89,13 @@ class MyApp extends StatelessWidget {
           : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
             title: "crash.connectionerror.title".tr,
             helptext: "crash.connectionerror.generic".tr
-          ) : snapshot.hasError ? CrashedView(helptext: snapshot.error!.toString())
-          : Material(color: Colors.black, child: Center(child: CircularProgressIndicator(value: null)))
+          ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
+          ? CrashedView(
+            title: (snapshot.error as APIErrorHandler).title, 
+            helptext: (snapshot.error as APIErrorHandler).message
+            )
+          : CrashedView(helptext: snapshot.error!.toString())
+          : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
         ))
       ],
       builder: (BuildContext context, Widget? widget) {

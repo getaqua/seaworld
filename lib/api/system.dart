@@ -20,8 +20,8 @@ class SystemAPI extends APIConnect {
   Future<GraphQLResponse> getMe() async => query(r"""query getMe {
     getMe {
       tokenPermissions
-      user {
-        id
+      flow {
+        ...fullFlow
       }
     }
   }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl);

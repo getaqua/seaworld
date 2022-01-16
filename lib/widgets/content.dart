@@ -84,9 +84,9 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 Expanded(
                   child: Tooltip(
-                    message: "flow.open".trParams({"id": widget.content.inFlowId}),
+                    message: "flow.open".trParams({"id": widget.content.author.id}),
                     child: InkWell(
-                      onTap: () => {},
+                      onTap: () => Get.toNamed("/flow/"+widget.content.author.snowflake),
                       child: Padding(
                         padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
                         child: Row(
