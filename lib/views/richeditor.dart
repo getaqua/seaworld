@@ -43,7 +43,8 @@ class _RichEditorPageState extends State<RichEditorPage> {
         onTapUp: (details) => setState(() => enabledFields.contains(value) ? enabledFields.remove(value) : enabledFields.add(value)),
         child: Chip(
           avatar: enabledFields.contains(value) ? Icon(Mdi.close) : Icon(icon),
-          label: Text(label),
+          label: Text(label, style: TextStyle(color: enabledFields.contains(value) ? Colors.black : null)),
+          backgroundColor: enabledFields.contains(value) ? Colors.lightBlue : null,
         ),
       ),
     );

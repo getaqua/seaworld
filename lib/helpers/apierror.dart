@@ -16,7 +16,7 @@ class APIErrorHandler {
 
   @override
   String toString() {
-    return "[$title] $message";
+    return "API Error: [$title] $message";
   }
 
   /// The translated title of the error.

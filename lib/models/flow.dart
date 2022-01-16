@@ -6,13 +6,16 @@ class PartialFlow {
   final String? avatarUrl;
   final String id;
   final String snowflake;
+  /// The `effective_permissions` of the acting user.
+  final FlowPermissions myPermissions;
 
   PartialFlow.fromJSON(Map data):
     name = data["name"] ?? data["id"],
     description = data["description"],
     avatarUrl = data["avatar_url"],
     id = data["id"],
-    snowflake = data["snowflake"];
+    snowflake = data["snowflake"],
+    myPermissions = FlowPermissions.fromJSON(data["effective_permissions"]);
 }
 class Flow extends PartialFlow {
   final List<PartialFlow> members;

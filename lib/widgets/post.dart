@@ -6,6 +6,7 @@ import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
+import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
 
 class NewContentCard extends StatelessWidget {
@@ -30,24 +31,20 @@ class NewContentCard extends StatelessWidget {
             padding: EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Container(
-                  height: 48,
-                  width: 48,
-                  margin: EdgeInsets.only(right: 16.0),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(64),
-                    color: Get.theme.colorScheme.primary,
-                    //image: DecorationImage(image: NetworkImage(widget.content.avatarUrl))
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: ProfilePicture(
+                    child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(Config.cache.userFlow.avatarUrl!) : null,
+                    size: 48, notchSize: 12,
+                    fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
                   ),
-                  child: Center(child: Text("X", style: Get.textTheme.headline6)),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Column(
                     children: [
-                      Text(Config.cache.userId, style: Get.textTheme.subtitle1),
-                      Text(Config.cache.userId + " • " + "post.target.profile".tr, style: Get.textTheme.caption)
+                      Text(Config.cache.userFlow.name, style: Get.textTheme.subtitle1),
+                      Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr, style: Get.textTheme.caption)
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +116,7 @@ class NewContentCard extends StatelessWidget {
                         corner: Corner.bottomStart,
                       ));
                     }
-                  }, icon: Icon(Mdi.image))
+                  }, icon: Icon(Mdi.image), color: Colors.amber)
                 ),
                 Tooltip(
                   message: "post.newpoll".tr,
@@ -155,7 +152,7 @@ class NewContentCard extends StatelessWidget {
                         corner: Corner.bottomStart,
                       ));
                     }
-                  }, icon: Icon(Mdi.file))
+                  }, icon: Icon(Mdi.file), color: Colors.pink)
                 ),
                 Tooltip(
                   message: "post.newevent".tr,

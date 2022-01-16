@@ -5,6 +5,9 @@ abstract class Fragments {
     avatar_url
     id
     snowflake
+    effective_permissions {
+      ...flowPermissions
+    }
   }""";
   /// Depends on [partialFlow] and [flowPermissions]
   static const fullFlow = r"""fragment fullFlow on Flow {

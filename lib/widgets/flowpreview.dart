@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/models/flow.dart';
+import 'package:seaworld/widgets/pfp.dart';
 
 class FlowPreviewPopupMenu {
   static const Offset center = Offset(36, 36);
@@ -79,16 +80,10 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                       borderRadius: BorderRadius.circular(64)
                     ),
                     alignment: Alignment.centerLeft,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(64),
-                      color: Get.theme.colorScheme.surface,
-                      child: Stack(children: [
-                        // if (_viewProfilePrompt) ...[
-                        //   Center(child: Icon(Mdi.account, color: Colors.white)),
-                        //   Material(color: Colors.black54)
-                        // ],
-                        Center(child: Text("X", style: Get.textTheme.headline6)),
-                      ]),
+                    child: ProfilePicture(
+                      child: widget.flow.avatarUrl != null ? NetworkImage(widget.flow.avatarUrl!) : null,
+                      size: 72, notchSize: 24,
+                      fallbackChild: FallbackProfilePicture(flow: widget.flow)
                     ),
                   ),
                 ),

@@ -25,6 +25,7 @@ dependencies:
   super_scaffold: ^0.0.4
   url_launcher: ^6.0.6
   mime_type: ^1.0.0
+  # endless: ^1.6.0 # We will use this for chat.
   file_selector: ^0.8.2+1
   file_selector_windows:
   # probably have to add all the platforms for this bad boy
