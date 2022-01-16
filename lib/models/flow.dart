@@ -40,27 +40,31 @@ class FlowWithContent extends Flow {
     super.fromJSON(data);
 }
 class FlowPermissions {
-  final AllowDenyRequest? join;
+  final AllowDeny? join;
   final AllowDeny? view;
   final AllowDeny? read;
   final AllowDeny? post;
   final AllowDeny? delete;
   final AllowDeny? pin;
+  final AllowDeny? update;
   
   FlowPermissions.fromJSON(Map data):
-    join = data["join"] == "allow" ? AllowDenyRequest.allow : data["join"] == "request" ? AllowDenyRequest.request : AllowDenyRequest.deny,
+    join = data["join"] == "allow" ? AllowDeny.allow : data["join"] == "request" ? AllowDeny.request : AllowDeny.deny,
     view = data["view"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
     read = data["read"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
     post = data["post"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
     delete = data["delete"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
-    pin = data["pin"] == "allow" ? AllowDeny.allow : AllowDeny.deny;
+    pin = data["pin"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
+    update = data["update"] == "allow" ? AllowDeny.allow : AllowDeny.deny;
 }
+/// Possible values for permissions. [allow] and [deny] are used by most permissions.
 enum AllowDeny {
+  /// Used by most permissions.
   allow,
-  deny
-}
-enum AllowDenyRequest {
-  allow,
+  /// Used by most permissions.
   deny,
-  request
+  /// Used by [FlowPermissions.join]
+  request,
+  /// Used by [FlowPermissions.impersonate]
+  force
 }

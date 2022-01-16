@@ -161,7 +161,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             ListTile(
               selected: true,
               onTap: () {},
-              title: Text("Home"),
+              title: Text("flow.feature.home".tr),
             ),
             ListTile(
               onTap: () {},
@@ -169,11 +169,15 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             ),
             ListTile(
               onTap: () {},
-              title: Text("Chat"),
+              title: Text("flow.feature.chat".tr),
             ),
             ListTile(
               onTap: () {},
               title: Text("Placeholder page #2"),
+            ),
+            ListTile(
+              onTap: () {},
+              title: Text("flow.feature.update".tr),
             ),
           ],
         ),
@@ -244,7 +248,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                         //RichText(text: TextSpan())
                         // TODO: tagline here, eventually
                         Row(children: [
-                          Padding(
+                          if (widget.flow.myPermissions.join == AllowDeny.allow) Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
                               onPressed: () {}, // check if joined???
