@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/fragments.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 
 abstract class APIConnect extends GetConnect {
@@ -13,12 +15,36 @@ abstract class APIConnect extends GetConnect {
     Map<String, dynamic>? variables,
     Map<String, String>? headers,
   }) async {
-    final fragments = await rootBundle.loadString("assets/raw/fragments.gql");
-    final result = await super.query<T>(fragments+query, url: url, variables: variables, headers: headers);
+    final fragments = (await _prepareFragments(query)).join("\n");
+    final result = await super.query<T>(fragments, url: url, variables: variables, headers: headers);
     if (result.hasError) {
       handleError(result);
     }
     return result;
+  }
+
+  Future<List<String>> _prepareFragments(String query) async {
+    List<String> output = [];
+    while (true) {
+      var _ = [...output, query].join("\n");
+      if (_.contains("...attachment") && !output.contains(Fragments.attachment)) {
+        output.add(Fragments.attachment); continue;
+      }
+      if (_.contains("...content") && !output.contains(Fragments.content)) {
+        output.add(Fragments.content); continue;
+      }
+      if (_.contains("...flowPermissions") && !output.contains(Fragments.flowPermissions)) {
+        output.add(Fragments.flowPermissions); continue;
+      }
+      if (_.contains("...fullFlow") && !output.contains(Fragments.fullFlow)) {
+        output.add(Fragments.fullFlow); continue;
+      }
+      if (_.contains("...partialFlow") && !output.contains(Fragments.partialFlow)) {
+        output.add(Fragments.partialFlow); continue;
+      }
+      break;
+    }
+    return [...output, query];
   }
 
   @override 
@@ -37,20 +63,24 @@ abstract class APIConnect extends GetConnect {
 
   static handleError(GraphQLResponse result) {
     if (kDebugMode) print(result.graphQLErrors);
-    if (result.graphQLErrors?.first.code == "PERMISSION_DENIED") {
-      InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
-        icon: Icon(Mdi.lockMinus),
-        //TODO: check the permission that was missing and on what Flow
-        title: Text("error.permissiondenied.generic".tr),
-        corner: Corner.bottomStart,
-      ));
-    } else {
-      InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
-        icon: Icon(Mdi.alertCircleOutline, color: Colors.red),
-        title: Text("crash.developererror.generic".tr),
-        text: Text(result.graphQLErrors?.first.message ?? "Error message missing"),
-        corner: Corner.bottomStart,
-      ));
+    for (final GraphQLError error in result.graphQLErrors ?? []) {
+      if (RegExp(r'Fragment "(.*?)" is never used.').hasMatch(error.message ?? "")) {
+        continue;
+      } else if (error.code == "PERMISSION_DENIED") {
+        InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+          icon: Icon(Mdi.lockMinus),
+          //TODO: check the permission that was missing and on what Flow
+          title: Text("error.permissiondenied.generic".tr),
+          corner: Corner.bottomStart,
+        ));
+      } else {
+        InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+          icon: Icon(Mdi.alertCircleOutline, color: Colors.red),
+          title: Text("crash.developererror.generic".tr),
+          text: Text(result.graphQLErrors?.first.message ?? "Error message missing"),
+          corner: Corner.bottomStart,
+        ));
+      }
     }
   }
 

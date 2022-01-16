@@ -8,6 +8,7 @@ import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/content/filepreview.dart';
 import 'package:seaworld/widgets/content/imagepreview.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
+import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,7 +52,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                     alignment: Alignment.centerLeft,
                     child: Material(
                       borderRadius: BorderRadius.circular(64),
-                      color: Get.theme.colorScheme.primary,
+                      color: Colors.transparent,
                       child: InkWell(
                         onTap: () {},
                         // onTapDown: (details) => showMenu(
@@ -72,7 +73,13 @@ class _ContentWidgetState extends State<ContentWidget> {
                         borderRadius: BorderRadius.circular(64),
                         onHover: (nv) => setState(() => _viewProfilePrompt = nv),
                         child: Stack(children: [
-                          Center(child: Text("X", style: Get.textTheme.headline6)),
+                          Positioned.fill(
+                            child: ProfilePicture(
+                              child: widget.content.author.avatarUrl != null ? NetworkImage(widget.content.author.avatarUrl!) : null,
+                              size: 48, notchSize: 16,
+                              fallbackChild: FallbackProfilePicture(flow: widget.content.author)
+                            ),
+                          ),
                           if (_viewProfilePrompt) ...[
                             Container(decoration:BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(64))),
                             Center(child: Icon(Mdi.accountBox, color: Colors.white)),

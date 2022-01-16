@@ -12,11 +12,17 @@ class FlowAPI extends APIConnect {
     baseUrl = url+"/_gridless/graphql/";
   }
 
-  Future<List<Flow>> followedFlows() async => Future<List<Flow>>(() async => (await query(r"""query followedFlows {
-    followedFlows {
+  Future<List<T>> followedFlows<T extends PartialFlow>() async => Future<List<T>>(() async => (await query(r"""query followedFlows {
+    getFollowedFlows {
       ...partialFlow
     }
-  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["followedFlows"].map((v) => Flow.fromJSON(v)))
+  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFollowedFlows"].map<T>((v) => T == Flow ? Flow.fromJSON(v) : PartialFlow.fromJSON(v)).toList())
+  .catchError((error) => throw APIErrorHandler.handleError(error) ?? error);
+  Future<List<T>> joinedFlows<T extends PartialFlow>() async => Future<List<T>>(() async => (await query(r"""query followedFlows {
+    getJoinedFlows {
+      ...partialFlow
+    }
+  }""", headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getJoinedFlows"].map<T>((v) => T == Flow ? Flow.fromJSON(v) : PartialFlow.fromJSON(v)).toList())
   .catchError((error) => throw APIErrorHandler.handleError(error) ?? error);
 
   Future<Flow> getFlow(String id) async => Future(() async => Flow.fromJSON((await query(r"""query getFlow($id: String!) {

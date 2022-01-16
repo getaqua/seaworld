@@ -85,5 +85,11 @@
     "permission.flow.post": "Post Content",
     "permission.flow.read": "Read Content",
     "permission.flow.view": "View the Flow's profile",
-    "permission.flow.join": "Join this Flow"
+    "permission.flow.join": "Join this Flow",
+    "permission.flow.delete": "Delete Content",
+    "permission.flow.pin": "Pin Content",
+    "flows.joined": "Flows you are a member of",
+    "flows.following": "Flows you are following",
+    "flows.none": "(none)",
+    "home.content.loading": "Checking for new Content..."
 }

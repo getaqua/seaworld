@@ -102,7 +102,10 @@ class API {
   static Future<GraphQLResponse> getMe() => get.system.getMe();
 
   /// Get the Flows the user is following.
-  static Future<List<Flow>> followedFlows() => get.flow.followedFlows();
+  static Future<List<T>> followedFlows<T extends PartialFlow>() => get.flow.followedFlows<T>();
+
+  /// Get the Flows the user has joined.
+  static Future<List<T>> joinedFlows<T extends PartialFlow>() => get.flow.followedFlows();
   
   /// Get the latest Content from the Flows the user is following.
   static Future<List<Content>> followedContent() => get.content.followedContent();

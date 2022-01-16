@@ -90,13 +90,13 @@ class _FlowHomeViewState extends State<FlowHomeView> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (Get.mediaQuery.size.width >= _widthBreakpoint) Column(
+          if (MediaQuery.of(context).size.width >= _widthBreakpoint) Column(
             children: [
               Container(
                 width: 360,
                 alignment: Alignment.topCenter,
                 margin: EdgeInsets.all(8.0),
-                child: NewContentCard(refreshContent: refreshContent),
+                child: NewContentCard(refreshContent: refreshContent, flow: widget.flow.snowflake),
               ),
             ],
           ),

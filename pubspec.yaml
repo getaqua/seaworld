@@ -54,8 +54,6 @@ flutter:
     # Used as the background of the crash screen
     - assets/img/emptystate-normal.png
     # Used in empty states
-    - assets/raw/fragments.gql
-    # Used to make GraphQL queries easier
 
     # == Translations ==
     - assets/lang/en_US.json

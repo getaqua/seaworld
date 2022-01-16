@@ -23,7 +23,7 @@ class Flow extends PartialFlow {
 
   Flow.fromJSON(Map data):
     members = data["members"].map<PartialFlow>((v) => PartialFlow.fromJSON(v)).toList(),
-    alternativeIds = data["alternative_ids"] ?? [],
+    alternativeIds = data["alternative_ids"].whereType<String>().toList() ?? [],
     bannerUrl = data["banner_url"],
     publicPermissions = FlowPermissions.fromJSON(data["public_permissions"]),
     joinedPermissions = FlowPermissions.fromJSON(data["joined_permissions"]),
