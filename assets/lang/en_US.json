@@ -78,6 +78,8 @@
     "flow.feature.home": "Home",
     "flow.feature.chat": "Chat",
     "flow.feature.settings": "Settings",
+    "flow.settings.header": "Update @id",
+    "flow.settings.header.minimal": "Update Flow",
     "post.rich.editortitle": "Create Content",
     "post.rich.title": "Title",
     "post.rich.text": "Text",

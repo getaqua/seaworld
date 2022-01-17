@@ -6,7 +6,7 @@ import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/views/settings/about.dart';
 import 'package:seaworld/views/settings/theming.dart';
 
-class SettingsRoot extends GetView<_TabController> {
+class SettingsRoot extends GetView<SettingsTabController> {
   // ignore: prefer_final_fields
   
   @override
@@ -17,7 +17,7 @@ class SettingsRoot extends GetView<_TabController> {
         child: Builder(builder: (bc) => _sidebarcontent(bc)),
       ) : null,
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text("settings.title".tr),
       ),
       body: Row(
         children: [
@@ -63,7 +63,7 @@ class SettingsRoot extends GetView<_TabController> {
               color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context)..pop()..pop(),
             ),
-            title: Text("Settings".tr),
+            title: Text("settings.title".tr),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -85,17 +85,17 @@ class SettingsRoot extends GetView<_TabController> {
             label: "settings.about".tr,
             index: 4
           ),
-          _SettingsButton(
+          SettingsViewButton(
             icon: Mdi.lockOutline,
             label: "settings.privacypolicy".tr,
             onPressed: () {}
           ),
-          _SettingsButton(
+          SettingsViewButton(
             icon: Mdi.textBoxOutline,
             label: "settings.tos".tr,
             onPressed: () {}
           ),
-          _SettingsButton(
+          SettingsViewButton(
             icon: Mdi.exitToApp, 
             label: "settings.logout".tr,
             color: Colors.red,
@@ -125,7 +125,7 @@ class SettingsRoot extends GetView<_TabController> {
   }
 }
 
-class _TabController extends GetxController {
+class SettingsTabController extends GetxController {
   RxInt index = (0).obs;
   //int index = 0;
   void switchTo(int newIndex) {
@@ -137,17 +137,17 @@ class _TabController extends GetxController {
 class SettingsBindings extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<_TabController>(() => _TabController());
+    Get.lazyPut<SettingsTabController>(() => SettingsTabController());
   }
 }
 
-class _SettingsButton extends StatelessWidget {
+class SettingsViewButton extends StatelessWidget {
   final Function() onPressed;
   final IconData icon;
   final String label;
   final Color? color;
 
-  const _SettingsButton({
+  const SettingsViewButton({
     Key? key,
     required this.onPressed,
     required this.icon,
@@ -181,7 +181,7 @@ class TabButton extends StatelessWidget {
   final String label;
   final int index;
   final IconData icon;
-  final _TabController? tabController;
+  final SettingsTabController? tabController;
 
   const TabButton({
     Key? key,
@@ -193,7 +193,7 @@ class TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = tabController ?? Get.find<_TabController>();
+    final controller = tabController ?? Get.find<SettingsTabController>();
     return Container(
       padding: EdgeInsets.all(4.0),
       child: Obx(() => (controller.index.value == index) ? ElevatedButton.icon(

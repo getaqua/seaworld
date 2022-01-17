@@ -175,8 +175,8 @@ class _FlowHomeViewState extends State<FlowHomeView> {
               onTap: () {},
               title: Text("Placeholder page #2"),
             ),
-            ListTile(
-              onTap: () {},
+            if (widget.flow.myPermissions.update == AllowDeny.allow) ListTile(
+              onTap: () => Get.toNamed("/flow/"+widget.flow.snowflake+"/settings", arguments: widget.flow),
               title: Text("flow.feature.update".tr),
             ),
           ],

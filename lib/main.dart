@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -15,6 +14,7 @@ import 'package:seaworld/helpers/theme.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/views/flow/home.dart';
+import 'package:seaworld/views/flow/settings/main.dart';
 import 'package:seaworld/views/home/wide.dart';
 import 'package:seaworld/views/login.dart';
 import 'package:seaworld/views/settings/main.dart';
@@ -96,7 +96,23 @@ class MyApp extends StatelessWidget {
             )
           : CrashedView(helptext: snapshot.error!.toString())
           : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
-        ))
+        )),
+        GetPage(name: "/flow/:id/settings", page: () => FutureBuilder<Flow>(
+          future: Get.arguments is PartialFlow && Get.arguments.snowflake == Get.parameters["id"]
+          ? Future.value(Get.arguments)
+          : API.getFlow(Get.parameters["id"] ?? ""),
+          builder: (context, snapshot) => snapshot.hasData ? FlowSettingsRoot(flow: snapshot.data!)
+          : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
+            title: "crash.connectionerror.title".tr,
+            helptext: "crash.connectionerror.generic".tr
+          ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
+          ? CrashedView(
+            title: (snapshot.error as APIErrorHandler).title, 
+            helptext: (snapshot.error as APIErrorHandler).message
+            )
+          : CrashedView(helptext: snapshot.error!.toString())
+          : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
+        ), binding: SettingsBindings())
       ],
       builder: (BuildContext context, Widget? widget) {
         Widget Function(FlutterErrorDetails? errorDetails) error = (FlutterErrorDetails? errorDetails) => Text(errorDetails?.summary.toString() ?? "Error");
