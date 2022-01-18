@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Icon, Text, Colors;
-import 'package:get/get.dart';
-import 'package:get/get_connect/connect.dart';
 import 'package:mdi/mdi.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:seaworld/api/content.dart';
@@ -14,6 +14,9 @@ import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
+import 'package:easy_localization/easy_localization.dart';
+// ignore: implementation_imports
+import 'package:http_parser/src/media_type.dart';
 
 import 'flow.dart';
 
@@ -73,12 +76,13 @@ class API {
       isReady = true;
       _ready.complete(true);
     } catch(e) {
-      Get.off(() => CrashedView(
-        title: "crash.connectionerror.title".tr,
-        helptext: e.toString().contains('[]("errors")')
-        ? "crash.connectionerror.generic".tr
-        : e.toString()
-      ));
+      rethrow;
+      // Get.off(() => CrashedView(
+      //   title: "crash.connectionerror.title".tr,
+      //   helptext: e.toString().contains('[]("errors")')
+      //   ? "crash.connectionerror.generic".tr
+      //   : e.toString()
+      // ));
     }
   }
   //final _flowApi;
@@ -86,76 +90,38 @@ class API {
   late FlowAPI flow;
   late ContentAPI content;
 
-  /// Get system information.
-  /// Get these values from it like a Map:
-  /// * `name`
-  /// * `version`
-  /// 
-  /// Alternatively, retrieve the values from Config.cache, as the API
-  /// initializer sets them there.
-  static Future<GraphQLResponse> getSystemInfo() => get.system.getSystemInfo();
-
-  /// Get the user to whom the token corresponds.
-  /// Get these values from it like a Map:
-  /// * `username`
-  /// * `user`.`id`
-  static Future<GraphQLResponse> getMe() => get.system.getMe();
-
-  /// Get the Flows the user is following.
-  static Future<List<T>> followedFlows<T extends PartialFlow>() => get.flow.followedFlows<T>();
-
-  /// Get the Flows the user has joined.
-  static Future<List<T>> joinedFlows<T extends PartialFlow>() => get.flow.followedFlows();
-  
-  /// Get the latest Content from the Flows the user is following.
-  static Future<List<Content>> followedContent() => get.content.followedContent();
-
-  /// Get a Flow by its ID.
-  static final getFlow = get.flow.getFlow;
-
-  /// Gets a Flow with its Content, good for the Flow home view.
-  static final getFlowAndContent = get.flow.getFlowAndContent;
-  
-  /// Edit or update properties of a Flow.
-  static final updateFlow = get.flow.updateFlow;
-
-  /// Post Content to a Flow.
-  static final postContent = get.content.postContent;
-
-  /// Delete Content.
-  static final deleteContent = get.content.deleteContent;
-
-  /// Edit or update Content.
-  static final editContent = get.content.updateContent;
-
   static Future<Response?> uploadFile({String? fromPath, XFile? file}) async {
-    return GetHttpClient(baseUrl: get.urlScheme+Config.server).post("/_gridless/media", 
-    body: FormData({
-      "file": (fromPath?.isEmpty ?? false) ? MultipartFile(await File(fromPath!).readAsBytes(),
-        filename: Uri.file(fromPath).pathSegments.last,
-        contentType: mime(Uri.file(fromPath).pathSegments.last) ?? "application/octet-stream")
-        : MultipartFile(await file!.readAsBytes(),
-        filename: file.name,
-        contentType: mime(file.name) ?? "application/octet-stream")
-    }),
-    headers: {
-      "Authorization": "Bearer "+get.token
-    }).catchError((e) {
-      print(e);
+    return Dio().post(get.urlScheme+Config.server+"/_gridless/media", 
+      data: FormData.fromMap({
+        "file": (fromPath?.isEmpty ?? false) ? MultipartFile(File(fromPath!).openRead(),
+          await File(fromPath).length(),
+          filename: Uri.file(fromPath).pathSegments.last,
+          contentType: MediaType.parse(mime(Uri.file(fromPath).pathSegments.last) ?? "application/octet-stream"))
+          : MultipartFile(file!.openRead(), await file.length(),
+          filename: file.name,
+          contentType: MediaType.parse(mime(file.name) ?? "application/octet-stream"))
+      }),
+      options: Options(headers: {
+        "Authorization": "Bearer "+get.token
+      })
+    ).catchError((e) {
+      if (kDebugMode) print(e);
       InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
         icon: Icon(Mdi.uploadOff, color: Colors.red),
-        title: Text("upload.failed.title".tr),
-        text: Text("upload.failed.generic".tr),
+        title: Text("upload.failed.title".tr()),
+        text: Text("upload.failed.generic".tr()),
         corner: Corner.bottomStart,
       ));
     }).then((value) {
-      if (!value.isOk) {
-        print(value.bodyString);
-        print(value.statusCode);
+      if ((value.statusCode ?? 0) < 200 || (value.statusCode ?? 0) >= 300) {
+        if (kDebugMode) {
+          print(value.data);
+          print(value.statusCode);
+        }
         InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
           icon: Icon(Mdi.uploadOff, color: Colors.red),
-          title: Text("upload.failed.title".tr),
-          text: Text("upload.failed.generic".tr),
+          title: Text("upload.failed.title".tr()),
+          text: Text("upload.failed.generic".tr()),
           corner: Corner.bottomStart,
         ));
         return value;

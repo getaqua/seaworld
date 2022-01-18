@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';

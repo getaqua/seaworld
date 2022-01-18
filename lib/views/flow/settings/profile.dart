@@ -1,6 +1,5 @@
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart" hide Flow;
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';

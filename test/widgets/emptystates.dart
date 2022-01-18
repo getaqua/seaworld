@@ -1,6 +1,5 @@
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 import 'package:seaworld/widgets/empty.dart';
 
 void main() {

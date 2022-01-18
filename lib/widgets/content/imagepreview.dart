@@ -1,7 +1,4 @@
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
