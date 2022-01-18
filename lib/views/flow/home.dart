@@ -59,7 +59,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
         title: Row(
           children: [
             ProfilePicture(
-              child: widget.flow.avatarUrl != null ? NetworkImage(widget.flow.avatarUrl!) : null,
+              child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,
               size: 36, notchSize: 8,
               fallbackChild: FallbackProfilePicture(flow: widget.flow)
             ),
@@ -102,7 +102,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: ProfilePicture(
-                                child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(Config.cache.userFlow.avatarUrl!) : null,
+                                child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
                                 size: 48, notchSize: 16,
                                 fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
                               ),
@@ -177,7 +177,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             ),
             if (widget.flow.myPermissions.update == AllowDeny.allow) ListTile(
               onTap: () => Get.toNamed("/flow/"+widget.flow.snowflake+"/settings", arguments: widget.flow),
-              title: Text("flow.feature.update".tr),
+              title: Text("flow.feature.settings".tr),
             ),
           ],
         ),

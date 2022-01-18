@@ -34,7 +34,7 @@ class NewContentCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 16.0),
                   child: ProfilePicture(
-                    child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(Config.cache.userFlow.avatarUrl!) : null,
+                    child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
                     size: 48, notchSize: 12,
                     fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
                   ),

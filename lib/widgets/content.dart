@@ -75,7 +75,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                         child: Stack(children: [
                           Positioned.fill(
                             child: ProfilePicture(
-                              child: widget.content.author.avatarUrl != null ? NetworkImage(widget.content.author.avatarUrl!) : null,
+                              child: widget.content.author.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.content.author.avatarUrl!) : null,
                               size: 48, notchSize: 16,
                               fallbackChild: FallbackProfilePicture(flow: widget.content.author)
                             ),

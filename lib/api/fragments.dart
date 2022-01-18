@@ -3,6 +3,7 @@ abstract class Fragments {
     name
     description
     avatar_url
+    banner_url
     id
     snowflake
     effective_permissions {
@@ -16,7 +17,6 @@ abstract class Fragments {
       ...partialFlow
     }
     alternative_ids
-    banner_url
     public_permissions {
       ...flowPermissions
     }

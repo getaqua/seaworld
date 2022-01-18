@@ -42,6 +42,20 @@ class FlowAPI extends APIConnect {
   }""", variables: {"id": id}, headers: {"Authorization": "Bearer $token"}, url: baseUrl)).body["getFlow"]))
   .catchError((error) => throw APIErrorHandler.handleError(error) ?? error);
 
+  Future<GraphQLResponse> updateFlow({required String id, String? name, String? description, String? avatarUrl, String? bannerUrl}) => mutation(r"""mutation updateFlow($id: String!, $data: PatchedFlow!) {
+    updateFlow(id: $id, data: $data) {
+      snowflake
+    }
+  }""", variables: {
+    "id": id,
+    "data": {
+      if (name != null) "name": name,
+      if (description != null) "description": description,
+      if (avatarUrl != null) "avatar_url": avatarUrl,
+      if (bannerUrl != null) "banner_url": bannerUrl
+    }
+  }, headers: {"Authorization": "Bearer $token"}, url: baseUrl);
+
   /* Mutations to implement:
   createFlow(flow: NewFlow, parentId: String) : Flow
   updateFlow(id: String!, data: PatchedFlow!): Flow

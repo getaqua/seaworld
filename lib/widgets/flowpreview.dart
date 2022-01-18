@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/main.dart';
+import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/pfp.dart';
 
@@ -40,16 +42,18 @@ class _FlowPreviewPopupMenu extends StatefulWidget {
 class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
   @override
   Widget build(BuildContext context) {
+    final hasBanner = widget.flow.bannerUrl != null;
     return Container(
       width: 320,
       //height: 480,
       decoration: BoxDecoration(
-        color: Get.theme.colorScheme.primaryVariant,
+        color: Colors.grey.shade800,
         borderRadius: BorderRadius.all(Radius.circular(8.0))
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          if (hasBanner) Container(
             height: 192,
             decoration: BoxDecoration(
               color: Get.theme.colorScheme.primary,
@@ -59,9 +63,14 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
               alignment: Alignment.center,
               children: [
                 Positioned(
-                  child: Material(
-                    color: Colors.green.shade900,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(8), bottom: Radius.zero)
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(8), bottom: Radius.zero),
+                      image: DecorationImage(
+                        image: NetworkImage(API.get.urlScheme+Config.server+widget.flow.bannerUrl!),
+                        fit: BoxFit.cover
+                      )
+                    ),
                   ),
                   height: 96,
                   left: 0,
@@ -80,25 +89,77 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                       borderRadius: BorderRadius.circular(64)
                     ),
                     alignment: Alignment.centerLeft,
-                    child: ProfilePicture(
-                      child: widget.flow.avatarUrl != null ? NetworkImage(widget.flow.avatarUrl!) : null,
-                      size: 72, notchSize: 24,
-                      fallbackChild: FallbackProfilePicture(flow: widget.flow)
+                    child: Tooltip(
+                      message: "flow.open".trParams({"id": widget.flow.id}),
+                      child: InkResponse(
+                        onTap: () async {
+                          Get.back();
+                          Get.toNamed("/flow/"+widget.flow.snowflake);
+                        },
+                        child: ProfilePicture(
+                          child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,
+                          size: 72, notchSize: 24,
+                          fallbackChild: FallbackProfilePicture(flow: widget.flow)
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
                   top: 136,
-                  child: Text(widget.flow.name, style: Get.textTheme.headline6)
+                  child: Text(widget.flow.name, style: Get.textTheme.headline6?.copyWith(color: Colors.black))
                 ),
                 Positioned(
                   top: 164,
-                  child: Text(widget.flow.id, style: Get.textTheme.bodyText2)
+                  child: Text(widget.flow.id, style: Get.textTheme.bodyText2?.copyWith(color: Colors.black))
                 )
               ],
             ),
+          )
+          else Container(
+            height: 96,
+            decoration: BoxDecoration(
+              color: Get.theme.colorScheme.primary,
+              borderRadius: BorderRadius.circular(8)
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ProfilePicture(
+                    child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,
+                    size: 72, notchSize: 24,
+                    fallbackChild: FallbackProfilePicture(flow: widget.flow)
+                  ),
+                ),
+                Expanded(child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(widget.flow.name, 
+                        style: Get.textTheme.headline6?.copyWith(color: Colors.black),
+                        maxLines: 1,
+                        overflow: TextOverflow.fade
+                      ),
+                      Text(widget.flow.id,
+                        style: Get.textTheme.bodyText2?.copyWith(color: Colors.black),
+                        maxLines: 1,
+                        overflow: TextOverflow.fade
+                      ),
+                    ],
+                  ),
+                )),
+              ],
+            ),
           ),
-          Text("TEST")
+          //Text("TEST")
+          if (widget.flow.description?.isNotEmpty == true) Padding(
+            child: Text(widget.flow.description!),
+            padding: EdgeInsets.all(8),
+          )
         ],
       )
     );

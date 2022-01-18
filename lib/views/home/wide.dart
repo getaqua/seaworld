@@ -24,6 +24,8 @@ class _WideHomeViewState extends State<WideHomeView> {
   final StreamController<List<Content>> _content = StreamController.broadcast();
   int _page = 1;
   final PageController pageController = PageController(initialPage: 1);
+  final ScrollController homeController = ScrollController();
+  final ScrollController flowsController = ScrollController();
 
   void refreshContent() async {
     //setState(() {});
@@ -64,6 +66,7 @@ class _WideHomeViewState extends State<WideHomeView> {
             child: SizedBox(
               width: 480,
               child: ListView(
+                controller: flowsController,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
@@ -77,8 +80,8 @@ class _WideHomeViewState extends State<WideHomeView> {
                         for (final flow in snapshot.data!) if (flow.snowflake != Config.cache.userFlow.snowflake) 
                         ListTile(
                           leading: ProfilePicture(
-                            child: flow.avatarUrl != null ? NetworkImage(flow.avatarUrl!) : null,
-                            size: 48, notchSize: 16,
+                            child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
+                            size: 48, notchSize: 12,
                             fallbackChild: FallbackProfilePicture(flow: flow)
                           ),
                           title: Text(flow.name),
@@ -104,7 +107,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                         for (final flow in snapshot.data!) if (flow.snowflake != Config.cache.userFlow.snowflake) 
                         ListTile(
                           leading: ProfilePicture(
-                            child: flow.avatarUrl != null ? NetworkImage(flow.avatarUrl!) : null,
+                            child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
                             size: 48, notchSize: 16,
                             fallbackChild: FallbackProfilePicture(flow: flow)
                           ),
@@ -217,14 +220,17 @@ class _WideHomeViewState extends State<WideHomeView> {
                           ]);
                           return (!snapshot.hasData && !snapshot.hasError && _lastContent.isEmpty) ? Center(child: CircularProgressIndicator(value: null))
                             : (snapshot.hasData && snapshot.data!.isEmpty) ? ListView.builder(
+                              controller: homeController,
                               itemBuilder: (context, index) => 
                                 index == 0 ? _prefixes : NormalEmptyState(),
                               itemCount: snapshot.data!.length + 2
                           ) : (snapshot.hasData) ? ListView.builder(
+                              controller: homeController,
                               itemBuilder: (context, index) => 
                                 index == 0 ? _prefixes : ContentWidget(snapshot.data![index-1]),
                               itemCount: snapshot.data!.length + 1
                           ) : (!snapshot.hasData && _lastContent.isNotEmpty) ? ListView.builder(
+                              controller: homeController,
                               itemBuilder: (context, index) => 
                                 index == 0 ? _prefixes : ContentWidget(_lastContent[index-1]),
                               itemCount: _lastContent.length + 1

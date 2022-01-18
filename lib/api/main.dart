@@ -115,6 +115,9 @@ class API {
 
   /// Gets a Flow with its Content, good for the Flow home view.
   static final getFlowAndContent = get.flow.getFlowAndContent;
+  
+  /// Edit or update properties of a Flow.
+  static final updateFlow = get.flow.updateFlow;
 
   /// Post Content to a Flow.
   static final postContent = get.content.postContent;

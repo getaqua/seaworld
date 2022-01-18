@@ -4,6 +4,7 @@ class PartialFlow {
   final String name;
   final String? description;
   final String? avatarUrl;
+  final String? bannerUrl;
   final String id;
   final String snowflake;
   /// The `effective_permissions` of the acting user.
@@ -13,6 +14,7 @@ class PartialFlow {
     name = data["name"] ?? data["id"],
     description = data["description"],
     avatarUrl = data["avatar_url"],
+    bannerUrl = data["banner_url"],
     id = data["id"],
     snowflake = data["snowflake"],
     myPermissions = FlowPermissions.fromJSON(data["effective_permissions"]);
@@ -20,14 +22,12 @@ class PartialFlow {
 class Flow extends PartialFlow {
   final List<PartialFlow> members;
   final List<String> alternativeIds;
-  final String? bannerUrl;
   final FlowPermissions publicPermissions;
   final FlowPermissions joinedPermissions;
 
   Flow.fromJSON(Map data):
     members = data["members"].map<PartialFlow>((v) => PartialFlow.fromJSON(v)).toList(),
     alternativeIds = data["alternative_ids"].whereType<String>().toList() ?? [],
-    bannerUrl = data["banner_url"],
     publicPermissions = FlowPermissions.fromJSON(data["public_permissions"]),
     joinedPermissions = FlowPermissions.fromJSON(data["joined_permissions"]),
     super.fromJSON(data);
