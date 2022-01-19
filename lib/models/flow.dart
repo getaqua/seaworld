@@ -1,6 +1,8 @@
+import 'package:seaworld/models/base.dart';
 import 'package:seaworld/models/content.dart';
 
 class PartialFlow {
+  final Map _map;
   final String name;
   final String? description;
   final String? avatarUrl;
@@ -11,6 +13,7 @@ class PartialFlow {
   final FlowPermissions myPermissions;
 
   PartialFlow.fromJSON(Map data):
+    _map = data,
     name = data["name"] ?? data["id"],
     description = data["description"],
     avatarUrl = data["avatar_url"],
@@ -18,7 +21,9 @@ class PartialFlow {
     id = data["id"],
     snowflake = data["snowflake"],
     myPermissions = FlowPermissions.fromJSON(data["effective_permissions"]);
+  Map toJSON() => _map;
 }
+
 class Flow extends PartialFlow {
   final List<PartialFlow> members;
   final List<String> alternativeIds;
@@ -49,22 +54,26 @@ class FlowPermissions {
   final AllowDeny? update;
   
   FlowPermissions.fromJSON(Map data):
-    join = data["join"] == "allow" ? AllowDeny.allow : data["join"] == "request" ? AllowDeny.request : AllowDeny.deny,
-    view = data["view"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
-    read = data["read"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
-    post = data["post"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
-    delete = data["delete"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
-    pin = data["pin"] == "allow" ? AllowDeny.allow : AllowDeny.deny,
-    update = data["update"] == "allow" ? AllowDeny.allow : AllowDeny.deny;
+    join = data["join"] == "allow" ? AllowDeny.ALLOW : data["join"] == "request" ? AllowDeny.REQUEST : AllowDeny.DENY,
+    view = data["view"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
+    read = data["read"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
+    post = data["post"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
+    delete = data["delete"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
+    pin = data["pin"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
+    update = data["update"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY;
 }
-/// Possible values for permissions. [allow] and [deny] are used by most permissions.
+/// Possible values for permissions. [ALLOW] and [DENY] are used by most permissions.
 enum AllowDeny {
   /// Used by most permissions.
-  allow,
+  // ignore: constant_identifier_names
+  ALLOW,
   /// Used by most permissions.
-  deny,
+  // ignore: constant_identifier_names
+  DENY,
   /// Used by [FlowPermissions.join]
-  request,
+  // ignore: constant_identifier_names
+  REQUEST,
   /// Used by [FlowPermissions.impersonate]
-  force
+  // ignore: constant_identifier_names
+  FORCE
 }

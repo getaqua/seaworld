@@ -43,10 +43,10 @@ class _LoginViewState extends State<LoginView> {
         Positioned(
           bottom: 0,
           top: null,
-          width: Get.mediaQuery.size.width > 640 ? 640 : Get.mediaQuery.size.width,
+          width: MediaQuery.of(context).size.width > 640 ? 640 : MediaQuery.of(context).size.width,
           child: Container(
             padding: const EdgeInsets.all(4.0),
-            width: Get.mediaQuery.size.width > 640 ? 640 : Get.mediaQuery.size.width,
+            width: MediaQuery.of(context).size.width > 640 ? 640 : MediaQuery.of(context).size.width,
             child: Column(
               children: [
                 Row(

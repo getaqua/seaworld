@@ -6,6 +6,7 @@ import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:seaworld/api/main.dart';
@@ -22,6 +23,13 @@ import 'package:seaworld/views/settings/main.dart';
 late final String kVersion;
 //late Map<String, Box> accounts;
 
+ValueNotifier<GraphQLClient> gqlClient = ValueNotifier(
+  GraphQLClient(
+    link: HttpLink(Config.server),
+    cache: GraphQLCache(store: InMemoryStore())
+  )
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   kVersion = await rootBundle.loadString("assets/raw/version.txt");
@@ -34,7 +42,12 @@ void main() async {
       .path+"/.aqua-seaworld-database");
   }
   await Hive.openBox("config");
-  runApp(ProviderScope(child: MyApp()));
+  runApp(GraphQLProvider(
+    client: gqlClient,
+    child: ProviderScope(
+      child: MyApp()
+    )
+  ));
 }
 
 final themeProvider = StateProvider<ThemeData>((ref) {

@@ -60,7 +60,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                         //   context: context, 
                         //   position: RelativeRect.fromRect(
                         //     details.globalPosition & Size(40, 40), 
-                        //     Offset.zero & Get.mediaQuery.size
+                        //     Offset.zero & MediaQuery.of(context).size
                         //   ),
                         //   items: [
                         //     FlowPreviewPopupMenu()

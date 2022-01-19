@@ -142,7 +142,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                 ],
               ),
               Expanded(
-                flex: (Get.mediaQuery.size.width < _widthBreakpoint) ? 1 : 0,
+                flex: (MediaQuery.of(context).size.width < _widthBreakpoint) ? 1 : 0,
                 child: RefreshIndicator(
                   onRefresh: () async {
                     refreshContent();
@@ -166,7 +166,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                           if (snapshot.hasData) _lastContent = snapshot.data!;
                           final _prefixes = Column(children:[
                             Container(height: 8), // top padding the hard way
-                            if (Get.mediaQuery.size.width < _widthBreakpoint) NewContentCard(),
+                            if (MediaQuery.of(context).size.width < _widthBreakpoint) NewContentCard(),
                             if (snapshot.hasError) Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,

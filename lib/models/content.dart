@@ -1,6 +1,9 @@
+import 'package:seaworld/models/base.dart';
+
 import 'flow.dart';
 
 class Content {
+  final Map _map;
   final String? text;
   final Content? original;
   final List<ContentAttachment> attachments;
@@ -14,6 +17,7 @@ class Content {
   final String snowflake;
 
   Content.fromJSON(Map data):
+    _map = data,
     text = data["text"],
     original = data["origin"] != null ? Content.fromJSON(data["origin"]) : null,
     attachments = data["attachments"]?.map<ContentAttachment>((att) => ContentAttachment.fromJSON(att)).toList() ?? [],
@@ -25,8 +29,10 @@ class Content {
     isPinned = data["pinned"] ?? false,
     inFlowId = data["inFlowId"],
     snowflake = data["snowflake"];
+  Map toJSON() => _map;
 }
 class ContentAttachment {
+  final Map _map;
   final String url;
   final String? downloadUrl;
   final String? mimeType;
@@ -36,6 +42,7 @@ class ContentAttachment {
   final String snowflake;
 
   ContentAttachment.fromJSON(Map data):
+    _map = data,
     url = data["url"],
     downloadUrl = data["downloadUrl"],
     mimeType = data["mimeType"],
@@ -43,4 +50,5 @@ class ContentAttachment {
     filename = data["filename"],
     yours = data["yours"] ?? false,
     snowflake = data["snowflake"];
+  Map toJSON() => _map;
 }

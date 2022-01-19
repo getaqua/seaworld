@@ -5,11 +5,14 @@ import 'package:dio/dio.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Icon, Text, Colors;
+import 'package:graphql_flutter/graphql_flutter.dart' hide Response;
+import 'package:hive/hive.dart';
 import 'package:mdi/mdi.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -56,20 +59,43 @@ class API {
   }
 
   Future<void> init(String token, [bool? isServerInsecure]) async {
+    final HttpLink httpLink = HttpLink(
+      urlScheme+Config.server+"/_gridless/graphql",
+    );
+    final AuthLink authLink = AuthLink(
+      getToken: () => 'Bearer '+token,
+    );
+    final Link link = authLink.concat(httpLink);
+
+    gqlClient.value = GraphQLClient(
+      link: link,
+      // The default store is the InMemoryStore, which does NOT persist to disk
+      cache: GraphQLCache(
+        store: HiveStore(Hive.box("gql")),
+        dataIdFromObject: (data) {
+          final typename = data['__typename'] ?? "";
+          final id = data['snowflake'] ?? data['id'] ?? data['_id'];
+          return id == null ? null : '$typename:$id';
+        },
+      ),
+    );
+
     this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
     system = SystemAPI(token, urlScheme+Config.server);
     flow = FlowAPI(token, urlScheme+Config.server);
     content = ContentAPI(token, urlScheme+Config.server);
     this.token = token;
     try {
-      await system.getSystemInfo().then((value) {
-        Config.cache.serverName = value.body["getSystemInfo"]["name"];
-        Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
+      await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo))).then((value) {
+        if (value.hasException) throw value.exception!;
+        Config.cache.serverName = value.data!["getSystemInfo"]["name"];
+        Config.cache.serverVersion = value.data!["getSystemInfo"]["version"];
       });
-      await system.getMe().then((value) {
-        Config.cache.userId = value.body["getMe"]["flow"]["id"];
-        Config.cache.scopes = List.castFrom(value.body["getMe"]["tokenPermissions"]);
-        Config.cache.userFlow = Flow.fromJSON(value.body["getMe"]["flow"]);
+      await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getMe))).then((value) {
+        if (value.hasException) throw value.exception!;
+        Config.cache.userId = value.data!["getMe"]["flow"]["id"];
+        Config.cache.scopes = List.castFrom(value.data!["getMe"]["tokenPermissions"]);
+        Config.cache.userFlow = Flow.fromJSON(value.data!["getMe"]["flow"]);
       });
       isReady = true;
       _ready.complete(true);
