@@ -1,35 +1,41 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 import '../api/auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LoginView extends StatefulWidget {
+final _healthCheckProvider = FutureProvider.family<bool, AuthenticationAPI>((ref, api) async {
+  return api.healthCheck();
+});
+
+class LoginView extends ConsumerStatefulWidget {
 
   const LoginView({
     Key? key
   }) : super(key: key);
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   late AuthenticationAPI _api;
   // ignore: prefer_final_fields
   String _serverUrl = "localhost:3000";
   // ignore: prefer_final_fields
   String _clientId = "AQUA-397bd2a38f2727988667d1fda6bbd363c7a74441dac0567d8b726b7ce0fab78955179d7e";
-  late final Rx<Future<bool>> _healthCheckFuture;
+  //late final Future<bool> _healthCheckFuture;
 
   @override
   void initState() {
     super.initState();
     _api = AuthenticationAPI(_serverUrl, _clientId);
-    _healthCheckFuture = _api.healthCheck().obs;
+    //_healthCheckFuture = _api.healthCheck();
   }
 
   @override
@@ -51,22 +57,18 @@ class _LoginViewState extends State<LoginView> {
               children: [
                 Row(
                   children: [
-                    Obx(() => FutureBuilder(
-                      future: _healthCheckFuture.value,
+                    FutureBuilder(
+                      future: ref.watch(_healthCheckProvider(_api).future),
                       builder: (context, snapshot) {
                         if (snapshot.data == true) {
                           return Container();
                         } else if (snapshot.hasError || (snapshot.hasData && snapshot.data == false)) {
                           return IconButton(
-                            onPressed: () => Get.snackbar(
-                              "login.connectionerror".tr(),
-                              "login.cannotreach".tr(namedArgs: {"url": _api.server}),
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.grey[900],
-                              colorText: Colors.white,
-                              duration: Duration(seconds: 10),
-                              isDismissible: true
-                            ),
+                            onPressed: () => InAppNotification.showOverlayIn(context, InAppNotification(
+                              title: Text("login.connectionerror".tr()),
+                              text: Text("login.cannotreach".tr(namedArgs: {"url": _api.server})),
+                              corner: Corner.bottomStart,
+                            )),
                             icon: Icon(Mdi.alert, color: Colors.red)
                           );
                         } else {
@@ -76,7 +78,7 @@ class _LoginViewState extends State<LoginView> {
                           );
                         }
                       }
-                    )),
+                    ),
                   ],
                 ),
                 Card(
@@ -92,16 +94,20 @@ class _LoginViewState extends State<LoginView> {
                                 await for (var stage in _api.login()) {
                                   switch (stage) {
                                     case AuthenticationStage.starting:
-                                      Get.dialog(Center(child: CircularProgressIndicator(value: null)), barrierDismissible: false);
+                                      showDialog(
+                                        context: context, 
+                                        builder: (context) => Center(child: CircularProgressIndicator(value: null)),
+                                        barrierDismissible: false
+                                      );
                                       break;
                                     case AuthenticationStage.gotCode:
                                       launch(_api.authorizationUrl()!);
                                       //await Get.defaultDialog(title: "Waiting for you", middleText: "Login to the app, and press OK when you're done.", textConfirm: "OK");
-                                      await Get.dialog(AlertDialog(
+                                      await showDialog(context: context, builder: (context) => AlertDialog(
                                         title: Text("login.authorizing.title".tr()),
                                         content: Text("login.authorizing.message".tr()),
                                         actions: [
-                                          TextButton(onPressed: () => Navigator.pop(context)(), child: Text("dialog.ok".tr())),
+                                          TextButton(onPressed: () => Navigator.pop(context), child: Text("dialog.ok".tr())),
                                         ],
                                       ));
                                       _api.userReady();
@@ -208,11 +214,11 @@ class _LoginViewState extends State<LoginView> {
                                       Flex(direction: Axis.horizontal,  children: [
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: OutlinedButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.cancel".tr())),
+                                          child: OutlinedButton(onPressed: () => Navigator.pop(context, false), child: Text("dialog.cancel".tr())),
                                         )),
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.apply".tr())),
+                                          child: ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text("dialog.apply".tr())),
                                         )),
                                       ])
                                     ],
@@ -225,7 +231,7 @@ class _LoginViewState extends State<LoginView> {
                                 _serverUrl = _uri.authority;
                                 _clientId = _newClientId;
                                 _api = AuthenticationAPI(_serverUrl, _clientId, !_uri.scheme.startsWith("https"));
-                                _healthCheckFuture.update((_) => _api.healthCheck().obs);
+                                //ref.refresh(_healthCheckProvider(_api)); // re-add this if needed
                                 setState(() {});
                               } else if (_result == true) {
                                 setState(() {});

@@ -114,7 +114,7 @@ class API {
   late FlowAPI flow;
   late ContentAPI content;
 
-  static Future<Response?> uploadFile({String? fromPath, XFile? file}) async {
+  static Future<Response?> uploadFile({String? fromPath, XFile? file, void Function(int, int)? sendProgress}) async {
     return Dio().post(get.urlScheme+Config.server+"/_gridless/media", 
       data: FormData.fromMap({
         "file": (fromPath?.isEmpty ?? false) ? MultipartFile(File(fromPath!).openRead(),
@@ -130,24 +130,25 @@ class API {
       })
     ).catchError((e) {
       if (kDebugMode) print(e);
-      InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
-        icon: Icon(Mdi.uploadOff, color: Colors.red),
-        title: Text("upload.failed.title".tr()),
-        text: Text("upload.failed.generic".tr()),
-        corner: Corner.bottomStart,
-      ));
+      // InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+      //   icon: Icon(Mdi.uploadOff, color: Colors.red),
+      //   title: Text("upload.failed.title".tr()),
+      //   text: Text("upload.failed.generic".tr()),
+      //   corner: Corner.bottomStart,
+      // ));
+      throw e;
     }).then((value) {
       if ((value.statusCode ?? 0) < 200 || (value.statusCode ?? 0) >= 300) {
         if (kDebugMode) {
           print(value.data);
           print(value.statusCode);
         }
-        InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
-          icon: Icon(Mdi.uploadOff, color: Colors.red),
-          title: Text("upload.failed.title".tr()),
-          text: Text("upload.failed.generic".tr()),
-          corner: Corner.bottomStart,
-        ));
+        // InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+        //   icon: Icon(Mdi.uploadOff, color: Colors.red),
+        //   title: Text("upload.failed.title".tr()),
+        //   text: Text("upload.failed.generic".tr()),
+        //   corner: Corner.bottomStart,
+        // ));
         return value;
       } else {
         return value;

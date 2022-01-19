@@ -3,10 +3,14 @@ import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/content.dart';
+import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 
@@ -78,59 +82,110 @@ class _RichEditorPageState extends State<RichEditorPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: [
-              if (!widget.isEditing) Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: !_posting ? () async {
-                    if (_posting) return;
-                    late final bool? _result;
-                    if (_pendingAttachments.isNotEmpty) {
-                      _result = await Get.dialog(AlertDialog(
-                      title: Text("post.rich.submit.pendingattachments.title".tr()),
-                      content: Text("post.rich.submit.pendingattachments.message".tr()),
-                      actions: [
-                        TextButton(onPressed: () {
-                          Navigator.pop(context)(result: true);
-                          //Navigator.pop(context)();
-                        }, child: Text("dialog.yes".tr())),
-                        TextButton(onPressed: () {
-                          Navigator.pop(context)(result: false);
-                          //Navigator.pop(context)();
-                        }, child: Text("dialog.no".tr())),
-                      ],
-                    ));
-                    } else {_result = true;}
-                    if (_result != true) return;
-                    setState(() {_posting = true;});
-                    var resp = await API.postContent(
-                      toFlow: Config.cache.userId,
-                      text: _controller.value.text,
-                      attachments: _attachments
-                    );
-                    if (resp.isOk && resp.body["postContent"] != null) {
-                      _controller.clear();
-                      setState(() {_posting = false;});
-                      Navigator.pop(context)();
-                    }
-                  } : null,
-                  child: !_posting ? Text("post.rich.submit".tr()) : CircularProgressIndicator(value: null)
-                ),
-              ) else Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: !_posting ? () async {
-                    if (_posting) return;
-                    setState(() {_posting = true;});
-                    var resp = await API.editContent(id: widget.content!.snowflake, text: _controller.value.text);
-                    if (resp.isOk && resp.body["updateContent"] != null) {
-                      _controller.clear();
-                      setState(() {_posting = false;});
-                      Navigator.pop(context)();
+              if (!widget.isEditing) Mutation(
+                options: MutationOptions(
+                  document: gql(ContentAPI.postContent),
+                  onCompleted: (data) {
+                    if (data["postContent"] == null) return;
+                    _controller.clear();
+                    setState(() {_posting = false;});
+                    Navigator.pop(context);
+                  },
+                  onError: (error) {
+                    if (error?.graphqlErrors.indexWhere((element) => element.extensions?["code"] == "PERMISSION_DENIED") != -1) {
+                      gqlClient.value.query(QueryOptions(document: gql(FlowAPI.getFlow), fetchPolicy: FetchPolicy.cacheOnly, variables: {"id": widget.flow})).then((value) {
+                        InAppNotification.showOverlayIn(context, InAppNotification(
+                          icon: Icon(Mdi.lock, color: Colors.red),
+                          title: Text("error.permissiondenied.title".tr()),
+                          text: value.data?["getFlow"]["name"] 
+                          ? Text("error.permissiondenied.specific".tr(args: [value.data?["getFlow"]["name"], "permission.post".tr()]))
+                          : Text("error.permissiondenied.generic".tr()),
+                        ));
+                      });
                     } else {
-                      setState(() {_posting = false;});
+                      InAppNotification.showOverlayIn(context, InAppNotification(
+                        icon: Icon(Mdi.uploadOff, color: Colors.red),
+                        title: Text("content.post.failed".tr()),
+                      ));
                     }
-                  } : null,
-                  child: !_posting ? Text("post.rich.submit.edit".tr()) : CircularProgressIndicator(value: null)
+                    setState(() {_posting = false;});
+                  }
+                ),
+                builder: (runMutation, result) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: !_posting ? () async {
+                      if (_posting) return;
+                      late final bool? _result;
+                      if (_pendingAttachments.isNotEmpty) {
+                        _result = await showDialog(context: context, builder: (context) => AlertDialog(
+                        title: Text("post.rich.submit.pendingattachments.title".tr()),
+                        content: Text("post.rich.submit.pendingattachments.message".tr()),
+                        actions: [
+                          TextButton(onPressed: () {
+                            Navigator.pop(context, true);
+                            //Navigator.pop(context);
+                          }, child: Text("dialog.yes".tr())),
+                          TextButton(onPressed: () {
+                            Navigator.pop(context, false);
+                            //Navigator.pop(context);
+                          }, child: Text("dialog.no".tr())),
+                        ],
+                      ));
+                      } else {_result = true;}
+                      if (_result != true) return;
+                      setState(() {_posting = true;});
+                      runMutation({
+                        "toFlow": Config.cache.userId,
+                        "data": {
+                          "text": _controller.value.text,
+                          "attachments": _attachments
+                        }
+                      });
+                    } : null,
+                    child: !_posting ? Text("post.rich.submit".tr()) : CircularProgressIndicator(value: null)
+                  ),
+                ),
+              ) else Mutation(
+                options: MutationOptions(
+                  document: gql(ContentAPI.updateContent),
+                  onCompleted: (data) {
+                    if (data["updateContent"] == null) return;
+                    _controller.clear();
+                    setState(() {_posting = false;});
+                    Navigator.pop(context);
+                  },
+                  onError: (error) {
+                    if (error?.graphqlErrors.indexWhere((element) => element.extensions?["code"] == "PERMISSION_DENIED") != -1) {
+                      InAppNotification.showOverlayIn(context, InAppNotification(
+                        icon: Icon(Mdi.lock, color: Colors.red),
+                        title: Text("error.permissiondenied.title".tr()),
+                        text: Text("error.permissiondenied.generic".tr()),
+                      ));
+                    } else {
+                      InAppNotification.showOverlayIn(context, InAppNotification(
+                        icon: Icon(Mdi.uploadOff, color: Colors.red),
+                        title: Text("content.post.failed".tr()),
+                      ));
+                    }
+                    setState(() {_posting = false;});
+                  }
+                ),
+                builder: (runMutation, result) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: !_posting ? () async {
+                      if (_posting) return;
+                      setState(() {_posting = true;});
+                      runMutation({
+                        "id": widget.content!.snowflake, 
+                        "data": {
+                          "text": _controller.value.text
+                        }
+                      });
+                    } : null,
+                    child: !_posting ? Text("post.rich.submit.edit".tr()) : CircularProgressIndicator(value: null)
+                  ),
                 ),
               )
             ],
@@ -229,11 +284,11 @@ class _RichEditorPageState extends State<RichEditorPage> {
                     if (file?.isOk ?? false) {
                       // Success!
                       _pendingAttachments.remove(_bytes);
-                      _attachments.add(file!.body["url"]);
+                      _attachments.add(file!.data["url"]);
                     } else {
                       // Failure!
                       _pendingAttachments.remove(_bytes);
-                      InAppNotification.showOverlayIn(Get.context!, InAppNotification(
+                      InAppNotification.showOverlayIn(context, InAppNotification(
                         icon: Icon(Mdi.uploadOff, color: Colors.red),
                         title: Text("upload.failed.title".tr()),
                         text: Text("upload.failed.generic".tr()),

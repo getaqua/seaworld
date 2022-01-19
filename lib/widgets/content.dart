@@ -1,15 +1,19 @@
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/content/filepreview.dart';
 import 'package:seaworld/widgets/content/imagepreview.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
 
@@ -136,45 +140,47 @@ class _ContentWidgetState extends State<ContentWidget> {
                     switch (value) {
                       case "delete": 
                         (() async {
-                          final bool? _result = await Get.dialog(AlertDialog(
+                          final bool? _result = await showDialog(context: context, builder: (context) => AlertDialog(
                             title: Text("content.confirmdelete.title".tr()),
                             content: ContentWidget(widget.content, embedded: true),
                             actions: [
                               TextButton(onPressed: () {
-                                Navigator.pop(context)(result: true);
-                                //Navigator.pop(context)();
+                                Navigator.pop(context, true);
+                                //Navigator.pop(context);
                               }, child: Text("dialog.yes".tr())),
                               TextButton(onPressed: () {
-                                Navigator.pop(context)(result: false);
-                                //Navigator.pop(context)();
+                                Navigator.pop(context, false);
+                                //Navigator.pop(context);
                               }, child: Text("dialog.no".tr())),
                             ],
                           ));
                           if (_result != true) return;
                           try {
-                            final _response = await API.deleteContent(snowflake: widget.content.snowflake);
-                            if (_response.graphQLErrors?.isNotEmpty ?? false || _response.body["deleteContent"] != true) {
-                              Get.snackbar(
-                                "content.deletefailed.title".tr(),
-                                "content.deletefailed.message".tr(),
-                                duration: Duration(seconds: 10)
-                              );
+                            final _response = await gqlClient.value.mutate(MutationOptions(
+                              document: gql(ContentAPI.deleteContent), 
+                              variables: {"id": widget.content.snowflake}
+                            ));
+                            if (_response.exception?.graphqlErrors.isNotEmpty ?? false || _response.data?["deleteContent"] != true) {
+                              InAppNotification.showOverlayIn(context, InAppNotification(
+                                title: Text("content.deletefailed.title".tr()),
+                                text: Text("content.deletefailed.message".tr()),
+                                icon: Icon(Mdi.alertCircleOutline, color: Colors.red),
+                              ));
                             } else {
-                              Get.snackbar(
-                                "content.deletesuccess".tr(),
-                                "",
-                                duration: Duration(seconds: 5)
-                              );
+                              InAppNotification.showOverlayIn(context, InAppNotification(
+                                title: Text("content.deletesuccess".tr()),
+                                icon: Icon(Mdi.check, color: Colors.green),
+                              ));
                               setState(() => _deleted = widget.content.snowflake);
                             }
                           } catch(e) {
-                            Get.snackbar(
-                              "content.deletefailed.title: crash.connectionerror.title".tr(),
-                              "crash.connectionerror.generic".tr(),
-                              duration: Duration(seconds: 10)
-                            );
+                            InAppNotification.showOverlayIn(context, InAppNotification(
+                              title: Text("crash.connectionerror.title".tr()),
+                              text: Text("content.deletefailed.title".tr()),
+                              icon: Icon(Mdi.lightningBolt, color: Colors.red),
+                            ));
                           }
-                          Navigator.pop(context)();
+                          Navigator.pop(context);
                         })();
                         return;
                       case "edit":

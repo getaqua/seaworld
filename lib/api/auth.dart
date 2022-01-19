@@ -24,7 +24,7 @@ class AuthenticationAPI extends APIConnect {
   Future<bool> _getAuthCode() async {
     var _response = await post(urlScheme+server+"/_gridless/authorize?client_id=$clientId&scopes=client&response_type=code");
     if (_response.statusCode != 200) {
-      // Navigator.pop(context)();
+      // Navigator.pop(context);
       // Get.snackbar("Error", _response.statusCode.toString());
       return false;
     }
@@ -42,7 +42,7 @@ class AuthenticationAPI extends APIConnect {
   Future<bool> _getToken() async {
     var _response = await post(urlScheme+server+"/_gridless/claimtoken?client_id=$clientId&code=$_code");
     if (_response.statusCode != 200) {
-      //Navigator.pop(context)(); // move this logic to where this is received
+      //Navigator.pop(context); // move this logic to where this is received
       // TODO: report the error to the error reporter
       //Get.snackbar("Error", _response.statusCode.toString());
       return false;

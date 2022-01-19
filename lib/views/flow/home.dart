@@ -112,7 +112,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                             // Align(
                             //   heightFactor: 1,
                             //   alignment: Alignment.topLeft,
-                            //   child: IconButton(onPressed: () => Navigator.pop(context)(), icon: Icon(Mdi.arrowLeft)),
+                            //   child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Mdi.arrowLeft)),
                             // ),
                             Expanded(child: Container()),
                             Align(

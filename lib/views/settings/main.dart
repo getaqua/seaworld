@@ -104,7 +104,7 @@ class SettingsRoot extends ConsumerWidget {
             label: "settings.logout".tr(),
             color: Colors.red,
             onPressed: () async {
-              final bool _result = await Get.dialog(AlertDialog(
+              final bool _result = await showDialog(context: context, builder: (context) => AlertDialog(
                 title: Text("settings.logout".tr()),
                 content: Text("settings.logout.warning".tr()),
                 actions: [
