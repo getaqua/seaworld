@@ -1,4 +1,3 @@
-import 'package:seaworld/models/base.dart';
 import 'package:seaworld/models/content.dart';
 
 class PartialFlow {

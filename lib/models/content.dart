@@ -1,5 +1,3 @@
-import 'package:seaworld/models/base.dart';
-
 import 'flow.dart';
 
 class Content {

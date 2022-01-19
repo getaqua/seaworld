@@ -4,18 +4,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show Icon, Text, Colors;
 import 'package:graphql_flutter/graphql_flutter.dart' hide Response;
 import 'package:hive/hive.dart';
-import 'package:mdi/mdi.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/main.dart';
 import 'package:seaworld/models/flow.dart';
-import 'package:seaworld/widgets/inappnotif.dart';
-import 'package:easy_localization/easy_localization.dart';
 // ignore: implementation_imports
 import 'package:http_parser/src/media_type.dart';
 

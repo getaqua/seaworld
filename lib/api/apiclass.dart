@@ -78,7 +78,7 @@ abstract class APIConnect {
   //     } else if (error.code == "PERMISSION_DENIED") {
   //       InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
   //         icon: Icon(Mdi.lockMinus),
-  //         //TODO: check the permission that was missing and on what Flow
+  //         //T-D-: check the permission that was missing and on what Flow
   //         title: Text("error.permissiondenied.generic".tr()),
   //         corner: Corner.bottomStart,
   //       ));

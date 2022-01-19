@@ -35,6 +35,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   List<String> _attachments = [];
+  // ignore: prefer_final_fields
   List<Uint8List> _pendingAttachments = [];
   bool _posting = false;
   final List<String> enabledFields = ["text"];

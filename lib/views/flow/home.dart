@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart" hide Flow;
 import 'package:go_router/go_router.dart';
@@ -9,7 +7,6 @@ import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
-import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
@@ -28,8 +25,8 @@ class FlowHomeView extends StatefulWidget {
 class _FlowHomeViewState extends State<FlowHomeView> {
   //static const int _widthBreakpoint = 872;
   //Future<List<Content>> _content = API.followedContent();
-  List<Content> _lastContent = [];
-  final StreamController<List<Content>> _content = StreamController.broadcast();
+  //List<Content> _lastContent = []; //graphQL cache does this for us now
+  //final StreamController<List<Content>> _content = StreamController.broadcast();
   ScrollController drawerScrollController = ScrollController();
   ScrollController scrollController = ScrollController();
   // bool _lastSeenAboveTheThreshold = true;
@@ -316,6 +313,34 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
                             ),
+                          ]
+                        )
+                      ]
+                    ),
+                    if (result.isLoading) Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: SizedBox(
+                            height: 32,
+                            width: 32,
+                            child: CircularProgressIndicator(value: null, color: context.theme().colorScheme.secondary)
+                          ),
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text("home.content.loading".tr(), style: context.textTheme().headline6?.copyWith(color: context.theme().colorScheme.secondary)),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(8.0),
+                            //   child: Text("home.".tr(), style: context.textTheme().bodyText2),
+                            // ),
                           ]
                         )
                       ]
