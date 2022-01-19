@@ -48,8 +48,9 @@ class _CrashedViewState extends State<CrashedView> {
                       padding: EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () => widget.retryBack
-                          ? Get.back()
-                          : Get.offNamed("/"), //Get.offNamed(Get.currentRoute),
+                          ? Navigator.pop(context)
+                          : Navigator.pushReplacementNamed(context, "/"),
+                           //Get.offNamed(Get.currentRoute),
                         child: widget.retryBack
                           ? Text("crash.goback".tr)
                           : Text("crash.tryagain".tr)
@@ -61,7 +62,7 @@ class _CrashedViewState extends State<CrashedView> {
                         onPressed: () {
                           Config.token = null;
                           API.get.reset();
-                          Get.offAllNamed("/login");
+                          Navigator.popAndPushNamed(context, "/login");
                         },
                         child: Text("settings.logout".tr),
                         style: ElevatedButton.styleFrom(primary: Colors.red),

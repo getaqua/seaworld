@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:seaworld/api/main.dart';
@@ -36,7 +38,7 @@ void main() async {
       .path+"/.aqua-seaworld-database");
   }
   await Hive.openBox("config");
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 Future<void> loadTranslations() async {
@@ -49,21 +51,23 @@ Future<void> reloadTranslations() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp.router(
       title: 'Seaworld/Aqua',
       theme: SeaworldTheme.fromConfig().data,
       color: Colors.lightBlue,
-      initialRoute: "/",
-      translationsKeys: {
-        "en_US": lang$en_US,
-      },
-      locale: Locale("en", "US"),
-      fallbackLocale: Locale("en", "US"),
-      getPages: [
+      //initialRoute: "/",
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+      // translationsKeys: {
+      //   "en_US": lang$en_US,
+      // },
+      // locale: Locale("en", "US"),
+      // fallbackLocale: Locale("en", "US"),
+      /* getPages: [
         GetPage(name: "/", page: () => Material(color: Colors.deepPurple[900]), middlewares: [HomeRedirect()]),
         GetPage(name: "/login", page: () => Material(child: LoginView()), middlewares: [HomeRedirect()]),
         GetPage(name: "/home", page: () =>
@@ -128,29 +132,43 @@ class MyApp extends StatelessWidget {
           helptext: "This is a developer error.",
           isRenderError: true,
         );
-      },
+      }, */
     );
   }
-}
 
-class HomeRedirect extends GetMiddleware {
-  @override
-  RouteSettings? redirect(String? route) {
-    if (Config.token == null && route != "/login") {
-      return RouteSettings(name: "/login");
-    } else if (Config.token != null && route != "/home") {
-      if (!API.get.isReady) API.get.init(Config.token!);
-      return RouteSettings(name: "/home");
-    }
-  }
-}
-class EnsureLoggedIn extends GetMiddleware {
-  @override
-  RouteSettings? redirect(String? route) {
+  static ensureLoggedIn(GoRouterState state) {
     if (Config.token == null) {
-      return RouteSettings(name: "/login");
+      return "/login";
     }
   }
+
+  final router = GoRouter(
+    routes: [
+      GoRoute(path: "/", redirect: (state) => Config.token == null ? "/login" : "/home"),
+      GoRoute(path: "/home", builder: (context, state) => WideHomeView()),
+      GoRoute(path: "/settings", builder: (context, state) => SettingsRoot()),
+      GoRoute(path: "/licenses", builder: (context, state) => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
+      GoRoute(
+        path: "/flow/:flow",
+        builder: (context, state) => FlowHomeView(flow: Flow.fromJSON({"snowflake": state.params["flow"]})),
+        routes: [
+          GoRoute(path: "settings", builder: (context, state) => FlowSettingsRoot(flow: state.extra as Flow? ?? Flow.fromJSON({"snowflake": state.params["flow"]})))
+        ]
+      ),
+    ],
+    redirect: (state) {
+      if (Config.token == null && state.fullpath != "/login" && state.fullpath?.startsWith("/settings") != true) {
+        return "/login";
+      } else if (Config.token != null && state.fullpath == "/login") {
+        if (!API.get.isReady) API.get.init(Config.token!);
+        return "/home";
+      }
+    },
+    errorPageBuilder: (context, state) => MaterialPage(child: CrashedView(
+      title: "error.notfound.title".tr(),
+      helptext: "error.notfound.router".tr(),
+    ))
+  );
 }
 
 abstract class HomeLayouts {

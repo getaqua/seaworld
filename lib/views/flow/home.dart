@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import "package:flutter/material.dart";
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -68,7 +69,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
         ),
         actions: [
           IconButton(onPressed: () => refreshContent(), icon: Icon(Mdi.refresh)),
-          //IconButton(onPressed: () => Get.toNamed("/settings"), icon: Icon(Mdi.cog))
+          //IconButton(onPressed: () => context.go("/settings"), icon: Icon(Mdi.cog))
         ],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(8))
@@ -92,7 +93,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                           // Align(
                           //   heightFactor: 1,
                           //   alignment: Alignment.topLeft,
-                          //   child: IconButton(onPressed: () => Get.back(), icon: Icon(Mdi.arrowLeft)),
+                          //   child: IconButton(onPressed: () => Navigator.pop(context)(), icon: Icon(Mdi.arrowLeft)),
                           // ),
                           Expanded(child: Container()),
                           Align(
@@ -149,7 +150,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                         top: -8, left: -8,
                         child: IconButton(
                           icon: Icon(Mdi.arrowLeft),
-                          onPressed: () => Get.back()
+                          onPressed: () => Navigator.pop(context)()
                         )
                       )
                     ],
@@ -175,7 +176,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
               title: Text("Placeholder page #2"),
             ),
             if (widget.flow.myPermissions.update == AllowDeny.allow) ListTile(
-              onTap: () => Get.toNamed("/flow/"+widget.flow.snowflake+"/settings", arguments: widget.flow),
+              onTap: () => context.go("/flow/"+widget.flow.snowflake+"/settings", extra: widget.flow),
               title: Text("flow.feature.settings".tr),
             ),
           ],

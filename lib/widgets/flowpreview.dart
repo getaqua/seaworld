@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -92,8 +93,8 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                       message: "flow.open".trParams({"id": widget.flow.id}),
                       child: InkResponse(
                         onTap: () async {
-                          Get.back();
-                          Get.toNamed("/flow/"+widget.flow.snowflake);
+                          Navigator.pop(context);
+                          context.go("/flow/"+widget.flow.snowflake);
                         },
                         child: ProfilePicture(
                           child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,

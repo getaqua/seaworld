@@ -1,4 +1,6 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -90,9 +92,9 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 Expanded(
                   child: Tooltip(
-                    message: "flow.open".trParams({"id": widget.content.author.id}),
+                    message: "flow.open".tr(namedArgs: {"id": widget.content.author.id}),
                     child: InkWell(
-                      onTap: () => Get.toNamed("/flow/"+widget.content.author.snowflake),
+                      onTap: () => context.go("/flow/"+widget.content.author.snowflake),
                       child: Padding(
                         padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
                         child: Row(
@@ -139,12 +141,12 @@ class _ContentWidgetState extends State<ContentWidget> {
                             content: ContentWidget(widget.content, embedded: true),
                             actions: [
                               TextButton(onPressed: () {
-                                Get.back(result: true);
-                                //Get.back();
+                                Navigator.pop(context)(result: true);
+                                //Navigator.pop(context)();
                               }, child: Text("dialog.yes".tr)),
                               TextButton(onPressed: () {
-                                Get.back(result: false);
-                                //Get.back();
+                                Navigator.pop(context)(result: false);
+                                //Navigator.pop(context)();
                               }, child: Text("dialog.no".tr)),
                             ],
                           ));
@@ -172,7 +174,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                               duration: Duration(seconds: 10)
                             );
                           }
-                          Get.back();
+                          Navigator.pop(context)();
                         })();
                         return;
                       case "edit":

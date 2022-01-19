@@ -103,8 +103,8 @@ class SettingsRoot extends GetView<SettingsTabController> {
                 title: Text("settings.logout".tr),
                 content: Text("settings.logout.warning".tr),
                 actions: [
-                  TextButton(onPressed: () => Get.back(result: true), child: Text("dialog.yes".tr)),
-                  TextButton(onPressed: () => Get.back(result: false), child: Text("dialog.no".tr)),
+                  TextButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.yes".tr)),
+                  TextButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.no".tr)),
                 ],
               ));
               if (_result == false) return;

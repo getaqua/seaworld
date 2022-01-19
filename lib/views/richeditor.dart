@@ -89,12 +89,12 @@ class _RichEditorPageState extends State<RichEditorPage> {
                       content: Text("post.rich.submit.pendingattachments.message".tr),
                       actions: [
                         TextButton(onPressed: () {
-                          Get.back(result: true);
-                          //Get.back();
+                          Navigator.pop(context)(result: true);
+                          //Navigator.pop(context)();
                         }, child: Text("dialog.yes".tr)),
                         TextButton(onPressed: () {
-                          Get.back(result: false);
-                          //Get.back();
+                          Navigator.pop(context)(result: false);
+                          //Navigator.pop(context)();
                         }, child: Text("dialog.no".tr)),
                       ],
                     ));
@@ -109,7 +109,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                     if (resp.isOk && resp.body["postContent"] != null) {
                       _controller.clear();
                       setState(() {_posting = false;});
-                      Get.back();
+                      Navigator.pop(context)();
                     }
                   } : null,
                   child: !_posting ? Text("post.rich.submit".tr) : CircularProgressIndicator(value: null)
@@ -124,7 +124,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                     if (resp.isOk && resp.body["updateContent"] != null) {
                       _controller.clear();
                       setState(() {_posting = false;});
-                      Get.back();
+                      Navigator.pop(context)();
                     } else {
                       setState(() {_posting = false;});
                     }

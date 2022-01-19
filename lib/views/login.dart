@@ -101,18 +101,18 @@ class _LoginViewState extends State<LoginView> {
                                         title: Text("login.authorizing.title".tr),
                                         content: Text("login.authorizing.message".tr),
                                         actions: [
-                                          TextButton(onPressed: () => Get.back(), child: Text("dialog.ok".tr)),
+                                          TextButton(onPressed: () => Navigator.pop(context)(), child: Text("dialog.ok".tr)),
                                         ],
                                       ));
                                       _api.userReady();
                                       break;
                                     case AuthenticationStage.gotToken:
-                                      Get.back();
+                                      Navigator.pop(context);
                                       Config.token = _api.token;
                                       Config.server = _serverUrl;
                                       API.get.reset();
                                       API.get.init(Config.token!);
-                                      Get.offAndToNamed("/home");
+                                      Navigator.pushReplacementNamed(context, "/home");
                                       break;
                                     default:
                                   }
@@ -129,10 +129,10 @@ class _LoginViewState extends State<LoginView> {
                                 value: Config.darkmode,
                                 onChanged: (nv) {
                                   Config.darkmode = nv ?? Config.darkmode;
-                                  Get.changeTheme(SeaworldTheme.fromConfig().data);
-                                  Get.forceAppUpdate(); 
+                                  //Get.changeTheme(SeaworldTheme.fromConfig().data);
+                                  //Get.forceAppUpdate(); 
                                   // ^^^ this is necessary to apply the theme change
-                                  Get.back();
+                                  Navigator.pop(context);
                                 },
                                 title: Text("settings.darkmode".tr)
                               )
@@ -208,11 +208,11 @@ class _LoginViewState extends State<LoginView> {
                                       Flex(direction: Axis.horizontal,  children: [
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: OutlinedButton(onPressed: () => Get.back(result: false), child: Text("dialog.cancel".tr)),
+                                          child: OutlinedButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.cancel".tr)),
                                         )),
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(onPressed: () => Get.back(result: true), child: Text("dialog.apply".tr)),
+                                          child: ElevatedButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.apply".tr)),
                                         )),
                                       ])
                                     ],

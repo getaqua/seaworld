@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -48,7 +50,7 @@ class _WideHomeViewState extends State<WideHomeView> {
         title: Text(Config.cache.serverName),
         actions: [
           IconButton(onPressed: () => refreshContent(), icon: Icon(Mdi.refresh)),
-          IconButton(onPressed: () => Get.toNamed("/settings"), icon: Icon(Mdi.cog))
+          IconButton(onPressed: () => context.go("/settings"), icon: Icon(Mdi.cog))
         ],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(8))
@@ -85,7 +87,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                           ),
                           title: Text(flow.name),
                           subtitle: Text(flow.id),
-                          onTap: () => Get.toNamed("/flow/"+flow.snowflake),
+                          onTap: () => context.go("/flow/"+flow.snowflake),
                         ),
                         if ((snapshot.data?.length??0) <= 1) Padding(
                           padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
@@ -112,11 +114,11 @@ class _WideHomeViewState extends State<WideHomeView> {
                           ),
                           title: Text(flow.name),
                           subtitle: Text(flow.id),
-                          onTap: () => Get.toNamed("/flow/"+flow.snowflake),
+                          onTap: () => context.go("/flow/"+flow.snowflake),
                         ),
                         if ((snapshot.data?.length??0) <= 1) Padding(
                           padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                          child: Text("flows.none".tr, style: Get.textTheme.caption),
+                          child: Text("flows.none".tr(), style: Get.textTheme.caption),
                         ),
                       ]
                     ) : Center(child: CircularProgressIndicator(value: null))
