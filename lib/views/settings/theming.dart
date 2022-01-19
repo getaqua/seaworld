@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import "package:get/get.dart";
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/helpers/theme.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -16,7 +17,7 @@ class ThemingSettings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("settings.theme".tr(), style: Get.textTheme.subtitle1),
+              Text("settings.theme".tr(), style: context.textTheme().subtitle1),
               SizedBox(height: 16),
               SwitchListTile(
                 value: Config.darkmode,

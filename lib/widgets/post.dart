@@ -1,7 +1,7 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
-import "package:get/get.dart";
+import "package:seaworld/helpers/extensions.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -44,8 +44,8 @@ class NewContentCard extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Column(
                     children: [
-                      Text(Config.cache.userFlow.name, style: Get.textTheme.subtitle1),
-                      Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr(), style: Get.textTheme.caption)
+                      Text(Config.cache.userFlow.name, style: context.textTheme().subtitle1),
+                      Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr(), style: context.textTheme().caption)
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +54,7 @@ class NewContentCard extends StatelessWidget {
                 // Expanded(child: Container()),
                 // PopupMenuButton(
                 //   itemBuilder: (context) => [
-                //     PopupMenuItem(child: Text("settings.tos".tr(), style: Get.textTheme.overline))
+                //     PopupMenuItem(child: Text("settings.tos".tr(), style: context.textTheme().overline))
                 //   ],
                 // )
               ]
@@ -169,7 +169,7 @@ class NewContentCard extends StatelessWidget {
                       child: RichEditorPage(flow: flow))
                     ));
                     (refreshContent ?? (() => {}))();
-                  }, icon: Icon(Mdi.cardBulleted), color: Get.theme.colorScheme.primary)
+                  }, icon: Icon(Mdi.cardBulleted), color: context.theme().colorScheme.primary)
                 ) : Tooltip(
                   message: "post.send".tr(),
                   child: IconButton(
@@ -186,7 +186,7 @@ class NewContentCard extends StatelessWidget {
                       }
                     } : null,
                     icon: Icon(Mdi.send),
-                    color: Get.theme.colorScheme.primary,
+                    color: context.theme().colorScheme.primary,
                   )
                 ))
               ],

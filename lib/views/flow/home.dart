@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/content.dart';
@@ -83,7 +84,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             Theme(
               data: Theme.of(context).copyWith(dividerTheme: DividerThemeData(thickness: 0, space: 0, color: Colors.transparent)),
               child: Material(
-                color: Get.theme.colorScheme.secondary,
+                color: context.theme().colorScheme.secondary,
                 borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
                 child: DrawerHeader(
                   child: Stack(
@@ -120,14 +121,14 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                                   children: [
                                     Text(
                                       Config.cache.userFlow.name, 
-                                      style: Get.textTheme.headline6,
+                                      style: context.textTheme().headline6,
                                       maxLines: 1,
                                       overflow: TextOverflow.fade,
                                       textAlign: TextAlign.start,
                                     ),
                                     Text(
                                       Config.cache.userFlow.id,
-                                      style: Get.textTheme.caption,
+                                      style: context.textTheme().caption,
                                       maxLines: 1,
                                       overflow: TextOverflow.fade,
                                       textAlign: TextAlign.start,
@@ -230,12 +231,12 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(widget.flow.name, 
-                                    style: Get.textTheme.headline4?.copyWith(color: Colors.black),
+                                    style: context.textTheme().headline4?.copyWith(color: Colors.black),
                                     maxLines: 1,
                                     overflow: TextOverflow.fade
                                   ),
                                   Text(widget.flow.id,
-                                    style: Get.textTheme.headline6?.copyWith(color: Colors.black),
+                                    style: context.textTheme().headline6?.copyWith(color: Colors.black),
                                     maxLines: 1,
                                     overflow: TextOverflow.fade
                                   ),
@@ -274,7 +275,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                         ], mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.max,),
                         if (widget.flow.description?.isNotEmpty == true) Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(widget.flow.description!, style: Get.textTheme.bodyText2?.copyWith(color: Colors.black)),
+                          child: Text(widget.flow.description!, style: context.textTheme().bodyText2?.copyWith(color: Colors.black)),
                         )
                       ],
                     ),
@@ -293,11 +294,11 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("crash.connectionerror.title".tr(), style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
+                            child: Text("crash.connectionerror.title".tr(), style: context.textTheme().headline6?.copyWith(color: Colors.red)),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("crash.connectionerror.generic".tr(), style: Get.textTheme.bodyText2),
+                            child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
                           ),
                         ]
                       )

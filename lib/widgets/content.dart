@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/content/filepreview.dart';
@@ -40,7 +41,7 @@ class _ContentWidgetState extends State<ContentWidget> {
             padding: EdgeInsets.only(right: 16.0),
             // decoration: BoxDecoration(
             //   borderRadius: BorderRadius.vertical(top: Radius.circular(4), bottom: Radius.zero),
-            //   color: Get.theme.colorScheme.primaryVariant,
+            //   color: context.theme().colorScheme.primaryVariant,
             // ),
             child: Row(
               children: [
@@ -104,11 +105,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                               alignment: Alignment.centerLeft,
                               child: Column(
                                 children: [
-                                  Text(widget.content.author.name, style: Get.textTheme.subtitle1),
+                                  Text(widget.content.author.name, style: context.textTheme().subtitle1),
                                   Text([
                                     widget.content.author.id, 
                                     if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId})
-                                  ].join(" • "), style: Get.textTheme.caption)
+                                  ].join(" • "), style: context.textTheme().caption)
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,

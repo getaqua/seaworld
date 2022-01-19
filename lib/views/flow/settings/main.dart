@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide Flow;
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/flow/settings/profile.dart';
 import 'package:seaworld/views/settings/about.dart';
@@ -31,7 +32,7 @@ class FlowSettingsRoot extends GetView<SettingsTabController> {
             //margin: EdgeInsets.only(right: 32),
             width: 280,
             alignment: Alignment.topLeft,
-            color: Get.theme.colorScheme.primary.withAlpha(16),
+            color: context.theme().colorScheme.primary.withAlpha(16),
             child: Builder(builder: (bc) => _sidebarcontent(bc))
           ),
           Expanded(

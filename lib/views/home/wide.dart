@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/content.dart';
@@ -71,7 +72,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                    child: Text("flows.joined".tr(), style: Get.textTheme.subtitle2),
+                    child: Text("flows.joined".tr(), style: context.textTheme().subtitle2),
                   ),
                   FutureBuilder<List<PartialFlow>>(
                     future: API.joinedFlows<PartialFlow>(),
@@ -91,14 +92,14 @@ class _WideHomeViewState extends State<WideHomeView> {
                         ),
                         if ((snapshot.data?.length??0) <= 1) Padding(
                           padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                          child: Text("flows.none".tr(), style: Get.textTheme.caption),
+                          child: Text("flows.none".tr(), style: context.textTheme().caption),
                         ),
                       ]
                     ) : Center(child: CircularProgressIndicator(value: null))
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                    child: Text("flows.following".tr(), style: Get.textTheme.subtitle2),
+                    child: Text("flows.following".tr(), style: context.textTheme().subtitle2),
                   ),
                   FutureBuilder<List<PartialFlow>>(
                     future: API.followedFlows<PartialFlow>(),
@@ -118,7 +119,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                         ),
                         if ((snapshot.data?.length??0) <= 1) Padding(
                           padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                          child: Text("flows.none".tr(), style: Get.textTheme.caption),
+                          child: Text("flows.none".tr(), style: context.textTheme().caption),
                         ),
                       ]
                     ) : Center(child: CircularProgressIndicator(value: null))
@@ -180,11 +181,11 @@ class _WideHomeViewState extends State<WideHomeView> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text("crash.connectionerror.title".tr(), style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
+                                      child: Text("crash.connectionerror.title".tr(), style: context.textTheme().headline6?.copyWith(color: Colors.red)),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text("crash.connectionerror.generic".tr(), style: Get.textTheme.bodyText2),
+                                      child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
                                     ),
                                   ]
                                 )
@@ -199,7 +200,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                                   child: SizedBox(
                                     height: 32,
                                     width: 32,
-                                    child: CircularProgressIndicator(value: null, color: Get.theme.colorScheme.secondary)
+                                    child: CircularProgressIndicator(value: null, color: context.theme().colorScheme.secondary)
                                   ),
                                 ),
                                 Column(
@@ -208,11 +209,11 @@ class _WideHomeViewState extends State<WideHomeView> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(16.0),
-                                      child: Text("home.content.loading".tr(), style: Get.textTheme.headline6?.copyWith(color: Get.theme.colorScheme.secondary)),
+                                      child: Text("home.content.loading".tr(), style: context.textTheme().headline6?.copyWith(color: context.theme().colorScheme.secondary)),
                                     ),
                                     // Padding(
                                     //   padding: const EdgeInsets.all(8.0),
-                                    //   child: Text("home.".tr(), style: Get.textTheme.bodyText2),
+                                    //   child: Text("home.".tr(), style: context.textTheme().bodyText2),
                                     // ),
                                   ]
                                 )
@@ -254,8 +255,8 @@ class _WideHomeViewState extends State<WideHomeView> {
             pageController.animateTo(index.toDouble()*MediaQuery.of(context).size.width, duration: Duration(milliseconds: 500), curve: Curves.easeOut);
           },
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Get.theme.brightness == Brightness.light ? Get.theme.colorScheme.primary : Get.theme.primaryColor,
-          selectedItemColor: Get.theme.brightness == Brightness.light ? Get.theme.colorScheme.onPrimary : Get.theme.colorScheme.onSurface,
+          backgroundColor: context.theme().brightness == Brightness.light ? context.theme().colorScheme.primary : context.theme().primaryColor,
+          selectedItemColor: context.theme().brightness == Brightness.light ? context.theme().colorScheme.onPrimary : context.theme().colorScheme.onSurface,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.water_rounded),

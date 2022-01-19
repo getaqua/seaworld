@@ -7,6 +7,7 @@ import "package:flutter/material.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 
@@ -63,7 +64,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
   Widget build(BuildContext context) {
     //final _cobs = _controller.obs;
     return Material(
-      color: Get.theme.backgroundColor, // because I don't know how to use colorScheme
+      color: context.theme().backgroundColor, // because I don't know how to use colorScheme
       elevation: 4,
       child: SizedBox(
         width: 720,

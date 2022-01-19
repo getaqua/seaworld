@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/helpers/theme.dart';
 import 'package:seaworld/main.dart';
 import '../api/auth.dart';
@@ -156,8 +157,8 @@ class _LoginViewState extends State<LoginView> {
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("login.selectserver".tr(), style: Get.textTheme.headline5, textAlign: TextAlign.start),
-                                      Text("login.selectserver.message".tr(), style: Get.textTheme.bodyText2),
+                                      Text("login.selectserver".tr(), style: context.textTheme().headline5, textAlign: TextAlign.start),
+                                      Text("login.selectserver.message".tr(), style: context.textTheme().bodyText2),
                                       SizedBox(
                                         width: 480,
                                         child: TextField(

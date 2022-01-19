@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -48,7 +49,7 @@ class FallbackAttachmentPreview extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(attachment.filename, 
-                  style: Get.textTheme.headline5, 
+                  style: context.textTheme().headline5, 
                   maxLines: 2, 
                   overflow: TextOverflow.ellipsis
                 ),

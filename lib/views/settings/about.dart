@@ -5,6 +5,7 @@ import "package:get/get.dart";
 import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/helpers/theme.dart';
 import 'package:seaworld/main.dart';
 import 'package:seaworld/views/crash.dart';
@@ -24,8 +25,8 @@ class AboutPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text("Seaworld", style: Get.textTheme.headline2),
-              Text(kVersion, style: Get.textTheme.headline6),
+              Text("Seaworld", style: context.textTheme().headline2),
+              Text(kVersion, style: context.textTheme().headline6),
               Padding(
                 padding: EdgeInsets.all(8),
                 child: SingleChildScrollView(child: Column(children: [

@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 
 class CrashedView extends StatefulWidget {
   final String? title;
@@ -40,8 +41,8 @@ class _CrashedViewState extends State<CrashedView> {
               mainAxisSize: MainAxisSize.min, 
               children: [
                 //Empty state image
-                if (!widget.isRenderError || widget.title != null) Text(widget.title ?? "crash.generic.title".tr(), style: Get.textTheme.headline4?.copyWith(color: Colors.white)),
-                Text(widget.helptext, style: Get.textTheme.bodyText2?.copyWith(color: Colors.white)),
+                if (!widget.isRenderError || widget.title != null) Text(widget.title ?? "crash.generic.title".tr(), style: context.textTheme().headline4?.copyWith(color: Colors.white)),
+                Text(widget.helptext, style: context.textTheme().bodyText2?.copyWith(color: Colors.white)),
                 if (!widget.isRenderError) Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
