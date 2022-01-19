@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/web-manifest.json",
     "name": "seaworld",
     "short_name": "seaworld",
     "start_url": ".",

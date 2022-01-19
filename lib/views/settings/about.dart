@@ -68,7 +68,7 @@ class AboutPage extends StatelessWidget {
                       leading: Icon(Mdi.fileTree),
                       onTap: () async {
                         final TextEditingController controller = TextEditingController(text: GoRouter.of(context).location);
-                        final res = await Get.dialog<String?>(AlertDialog(
+                        final res = await showDialog<String?>(context: context, builder: (context) => AlertDialog(
                           title: Text("Go where?"),
                           content: TextField(
                             controller: controller,

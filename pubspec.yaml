@@ -32,6 +32,7 @@ dependencies:
   url_launcher: ^6.0.6
   mime_type: ^1.0.0
   # endless: ^1.6.0 # We will use this for chat.
+  duration: ^3.0.8
   file_selector: ^0.8.2+1
   file_selector_windows:
   # probably have to add all the platforms for this bad boy

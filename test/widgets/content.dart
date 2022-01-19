@@ -17,7 +17,7 @@ void main() {
       await Hive.openBox("config");
     });
     testWidgets('Basic text-only render test', (tester) async {
-      await tester.pumpWidget(GetMaterialApp(
+      await tester.pumpWidget(MaterialApp(
         home: Center(
           child: ContentWidget(Content.fromJSON({
             "author": {
@@ -39,7 +39,7 @@ void main() {
       expect(find.text("content.delete"), findsNothing, reason: "Delete button should not exist: it is not your post!");
     });
     testWidgets('Embedded text-only render test', (tester) async {
-      await tester.pumpWidget(GetMaterialApp(
+      await tester.pumpWidget(MaterialApp(
         home: Center(
           child: ContentWidget(Content.fromJSON({
             "author": {
@@ -59,7 +59,7 @@ void main() {
       expect(find.byIcon(Icons.more_vert), findsNothing, reason: "\"More options\" button should not exist in an embedded post.");
     });
     testWidgets('Owned text-only render test', (tester) async {
-      await tester.pumpWidget(GetMaterialApp(
+      await tester.pumpWidget(MaterialApp(
         home: Center(
           child: ContentWidget(Content.fromJSON({
             "author": {
