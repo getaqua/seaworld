@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import "package:get/get.dart";
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/helpers/theme.dart';

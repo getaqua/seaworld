@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
-import "package:get/get.dart";
 import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/helpers/extensions.dart';
@@ -42,8 +41,7 @@ class AboutPage extends StatelessWidget {
                     ListTile(
                       leading: Icon(Mdi.translate),
                       onTap: () async {
-                        Get.clearTranslations();
-                        await reloadTranslations();
+                        EasyLocalization.of(context)?.delegate.load(EasyLocalization.of(context)!.locale);
                       },
                       title: Text("Reload translations")
                     ),
@@ -69,7 +67,7 @@ class AboutPage extends StatelessWidget {
                     ListTile(
                       leading: Icon(Mdi.fileTree),
                       onTap: () async {
-                        final TextEditingController controller = TextEditingController(text: Get.currentRoute);
+                        final TextEditingController controller = TextEditingController(text: GoRouter.of(context).location);
                         final res = await Get.dialog<String?>(AlertDialog(
                           title: Text("Go where?"),
                           content: TextField(
@@ -79,8 +77,8 @@ class AboutPage extends StatelessWidget {
                             )
                           ),
                           actions: [
-                            TextButton(onPressed: () => Navigator.pop(context)(result: null), child: Text("dialog.cancel")),
-                            TextButton(onPressed: () => Navigator.pop(context)(result: controller.value.text), child: Text("dialog.ok")),
+                            TextButton(onPressed: () => Navigator.pop(context), child: Text("dialog.cancel")),
+                            TextButton(onPressed: () => Navigator.pop(context, controller.value.text), child: Text("dialog.ok")),
                           ],
                         ));
                         if (res == null) return;

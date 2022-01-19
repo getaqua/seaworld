@@ -1,19 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Flow;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/flow/settings/profile.dart';
 import 'package:seaworld/views/settings/main.dart';
 
-class FlowSettingsRoot extends GetView<SettingsTabController> {
+class FlowSettingsRoot extends ConsumerWidget {
   final Flow flow;
 
   const FlowSettingsRoot({Key? key, required this.flow}) : super(key: key);
   // ignore: prefer_final_fields
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       drawer: width <= 640 ? Drawer(
@@ -34,19 +35,18 @@ class FlowSettingsRoot extends GetView<SettingsTabController> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-              child: Obx(() => controller.index.value >= 2 ? Center(child: Icon(Mdi.alert)) : 
-                [
-                  EditFlowProfilePage(flow: flow),
-                  Center(child: Icon(Mdi.tuneVariant)),
-                  // // GeneralSettingsPage(),
-                  // // ThemeSettingsPage()
-                  // Center(child: Icon(Mdi.account)),
-                  // ThemingSettings(),
-                  // Center(child: Icon(Mdi.security)),
-                  // Center(child: Icon(Mdi.eye)),
-                  // AboutPage()
-                ][controller.index.value]
-              ),
+              child: ref.watch(_tabController) >= 2 ? Center(child: Icon(Mdi.alert)) : 
+              [
+                EditFlowProfilePage(flow: flow),
+                Center(child: Icon(Mdi.tuneVariant)),
+                // // GeneralSettingsPage(),
+                // // ThemeSettingsPage()
+                // Center(child: Icon(Mdi.account)),
+                // ThemingSettings(),
+                // Center(child: Icon(Mdi.security)),
+                // Center(child: Icon(Mdi.eye)),
+                // AboutPage()
+              ][ref.watch(_tabController)],
             ),
           )
         ],
@@ -75,8 +75,8 @@ class FlowSettingsRoot extends GetView<SettingsTabController> {
             child: Container(),
           ),
           // settings page buttons here...
-          TabButton(label: "flow.settings.profile".tr(), icon: Mdi.account, index: 0),
-          TabButton(label: "flow.settings.features".tr(), icon: Mdi.tuneVariant, index: 1),
+          TabButton(label: "flow.settings.profile".tr(), icon: Mdi.account, index: 0, controller: _tabController),
+          TabButton(label: "flow.settings.features".tr(), icon: Mdi.tuneVariant, index: 1, controller: _tabController),
           //TabButton(label: "settings.security".tr(), icon: Mdi.security, index: 2),
           //TabButton(label: "settings.privacy".tr(), icon: Mdi.eye, index: 3),
           // -----------------------------
@@ -85,3 +85,5 @@ class FlowSettingsRoot extends GetView<SettingsTabController> {
     );
   }
 }
+
+final _tabController = StateNotifierProvider<SettingsTabController, int>((ref) => SettingsTabController());

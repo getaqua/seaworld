@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import "package:flutter/material.dart";
 import 'package:seaworld/views/crash.dart';
 
