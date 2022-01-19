@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
@@ -78,7 +79,7 @@ class _ImageAttachmentPreviewState extends State<ImageAttachmentPreview> {
                       child: DecoratedBox(
                         decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(24)),
                         child: Tooltip(
-                          message: "content.attachment.download".trParams({"filename": widget.attachment.filename}),
+                          message: "content.attachment.download".tr(namedArgs: {"filename": widget.attachment.filename}),
                           child: IconButton(
                             icon: Icon(Mdi.download), 
                             onPressed: () => launch(API.get.urlScheme+Config.server
@@ -92,7 +93,7 @@ class _ImageAttachmentPreviewState extends State<ImageAttachmentPreview> {
                       child: DecoratedBox(
                         decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(24)),
                         child: Tooltip(
-                          message: "content.attachment.remove".tr,
+                          message: "content.attachment.remove".tr(),
                           child: IconButton(
                             icon: Icon(Mdi.deleteOutline), 
                             onPressed: null,

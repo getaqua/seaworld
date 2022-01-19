@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart" hide Flow;
 import 'package:mdi/mdi.dart';
@@ -57,7 +58,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Tooltip(
-                                message: "flow.update.banner".tr,
+                                message: "flow.update.banner".tr(),
                                 child: MouseRegion(
                                   onEnter: (_) => setState(() => _hoveringBanner = true),
                                   onExit: (_) => setState(() => _hoveringBanner = false),
@@ -73,7 +74,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                           // Success
                                           InAppNotification.showOverlayIn(context, InAppNotification(
                                             icon: Icon(Mdi.check, color: Colors.green),
-                                            title: Text("upload.success.banner.title".tr),
+                                            title: Text("upload.success.banner.title".tr()),
                                             corner: Corner.bottomStart,
                                           ));
                                         }
@@ -81,8 +82,8 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                         // Failure!
                                         InAppNotification.showOverlayIn(context, InAppNotification(
                                           icon: Icon(Mdi.uploadOff, color: Colors.red),
-                                          title: Text("upload.failed.title".tr),
-                                          text: Text("upload.failed.generic".tr),
+                                          title: Text("upload.failed.title".tr()),
+                                          text: Text("upload.failed.generic".tr()),
                                           corner: Corner.bottomStart,
                                         ));
                                       }
@@ -120,21 +121,21 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                     // Success
                                     InAppNotification.showOverlayIn(context, InAppNotification(
                                       icon: Icon(Mdi.check, color: Colors.green),
-                                      title: Text("flow.update.success".tr),
+                                      title: Text("flow.update.success".tr()),
                                       corner: Corner.bottomStart,
                                     ));
                                   } else {
                                     // Failure!
                                     InAppNotification.showOverlayIn(context, InAppNotification(
                                       icon: Icon(Mdi.alertCircle, color: Colors.red),
-                                      title: Text("flow.update.failed".tr),
+                                      title: Text("flow.update.failed".tr()),
                                       corner: Corner.bottomStart,
                                     ));
                                   }
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: Text("flow.update.banner.remove".tr),
+                                  child: Text("flow.update.banner.remove".tr()),
                                 )
                               ),
                             )
@@ -150,7 +151,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(72),
                               child: Tooltip(
-                                message: "flow.update.avatar".tr,
+                                message: "flow.update.avatar".tr(),
                                 child: MouseRegion(
                                   onEnter: (_) => setState(() => _hoveringAvatar = true),
                                   onExit: (_) => setState(() => _hoveringAvatar = false),
@@ -166,7 +167,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                           // Success
                                           InAppNotification.showOverlayIn(context, InAppNotification(
                                             icon: Icon(Mdi.check, color: Colors.green),
-                                            title: Text("upload.success.avatar.title".tr),
+                                            title: Text("upload.success.avatar.title".tr()),
                                             corner: Corner.bottomStart,
                                           ));
                                         }
@@ -174,8 +175,8 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                         // Failure!
                                         InAppNotification.showOverlayIn(context, InAppNotification(
                                           icon: Icon(Mdi.uploadOff, color: Colors.red),
-                                          title: Text("upload.failed.title".tr),
-                                          text: Text("upload.failed.generic".tr),
+                                          title: Text("upload.failed.title".tr()),
+                                          text: Text("upload.failed.generic".tr()),
                                           corner: Corner.bottomStart,
                                         ));
                                       }
@@ -210,21 +211,21 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                     // Success
                                     InAppNotification.showOverlayIn(context, InAppNotification(
                                       icon: Icon(Mdi.check, color: Colors.green),
-                                      title: Text("flow.update.success".tr),
+                                      title: Text("flow.update.success".tr()),
                                       corner: Corner.bottomStart,
                                     ));
                                   } else {
                                     // Failure!
                                     InAppNotification.showOverlayIn(context, InAppNotification(
                                       icon: Icon(Mdi.alertCircle, color: Colors.red),
-                                      title: Text("flow.update.failed".tr),
+                                      title: Text("flow.update.failed".tr()),
                                       corner: Corner.bottomStart,
                                     ));
                                   }
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: Text("flow.update.avatar.remove".tr),
+                                  child: Text("flow.update.avatar.remove".tr()),
                                 )
                               ),
                             )
@@ -250,14 +251,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                           // Success
                           InAppNotification.showOverlayIn(context, InAppNotification(
                             icon: Icon(Mdi.check, color: Colors.green),
-                            title: Text("upload.success.avatar.title".tr),
+                            title: Text("upload.success.avatar.title".tr()),
                             corner: Corner.bottomStart,
                           ));
                         } else {
                           // Failure!
                           InAppNotification.showOverlayIn(context, InAppNotification(
                             icon: Icon(Mdi.alertCircle, color: Colors.red),
-                            title: Text("flow.update.failed".tr),
+                            title: Text("flow.update.failed".tr()),
                             corner: Corner.bottomStart,
                           ));
                         }
@@ -274,14 +275,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                               // Success
                               InAppNotification.showOverlayIn(context, InAppNotification(
                                 icon: Icon(Mdi.check, color: Colors.green),
-                                title: Text("upload.success.avatar.title".tr),
+                                title: Text("upload.success.avatar.title".tr()),
                                 corner: Corner.bottomStart,
                               ));
                             } else {
                               // Failure!
                               InAppNotification.showOverlayIn(context, InAppNotification(
                                 icon: Icon(Mdi.alertCircle, color: Colors.red),
-                                title: Text("flow.update.failed".tr),
+                                title: Text("flow.update.failed".tr()),
                                 corner: Corner.bottomStart,
                               ));
                             }
@@ -304,14 +305,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                           // Success
                           InAppNotification.showOverlayIn(context, InAppNotification(
                             icon: Icon(Mdi.check, color: Colors.green),
-                            title: Text("upload.success.avatar.title".tr),
+                            title: Text("upload.success.avatar.title".tr()),
                             corner: Corner.bottomStart,
                           ));
                         } else {
                           // Failure!
                           InAppNotification.showOverlayIn(context, InAppNotification(
                             icon: Icon(Mdi.alertCircle, color: Colors.red),
-                            title: Text("flow.update.failed".tr),
+                            title: Text("flow.update.failed".tr()),
                             corner: Corner.bottomStart,
                           ));
                         }
@@ -329,14 +330,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                               // Success
                               InAppNotification.showOverlayIn(context, InAppNotification(
                                 icon: Icon(Mdi.check, color: Colors.green),
-                                title: Text("upload.success.avatar.title".tr),
+                                title: Text("upload.success.avatar.title".tr()),
                                 corner: Corner.bottomStart,
                               ));
                             } else {
                               // Failure!
                               InAppNotification.showOverlayIn(context, InAppNotification(
                                 icon: Icon(Mdi.alertCircle, color: Colors.red),
-                                title: Text("flow.update.failed".tr),
+                                title: Text("flow.update.failed".tr()),
                                 corner: Corner.bottomStart,
                               ));
                             }

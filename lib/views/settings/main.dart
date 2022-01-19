@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
@@ -16,7 +17,7 @@ class SettingsRoot extends GetView<SettingsTabController> {
         child: Builder(builder: (bc) => _sidebarcontent(bc)),
       ) : null,
       appBar: AppBar(
-        title: Text("settings.title".tr),
+        title: Text("settings.title".tr()),
       ),
       body: Row(
         children: [
@@ -62,17 +63,17 @@ class SettingsRoot extends GetView<SettingsTabController> {
               color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context)..pop()..pop(),
             ),
-            title: Text("settings.title".tr),
+            title: Text("settings.title".tr()),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(),
           ),
           // settings page buttons here...
-          TabButton(label: "settings.account".tr, icon: Mdi.account, index: 0),
-          TabButton(label: "settings.theme".tr, icon: Mdi.palette, index: 1),
-          TabButton(label: "settings.security".tr, icon: Mdi.security, index: 2),
-          TabButton(label: "settings.privacy".tr, icon: Mdi.eye, index: 3),
+          TabButton(label: "settings.account".tr(), icon: Mdi.account, index: 0),
+          TabButton(label: "settings.theme".tr(), icon: Mdi.palette, index: 1),
+          TabButton(label: "settings.security".tr(), icon: Mdi.security, index: 2),
+          TabButton(label: "settings.privacy".tr(), icon: Mdi.eye, index: 3),
           // -----------------------------
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -81,30 +82,30 @@ class SettingsRoot extends GetView<SettingsTabController> {
           // about, log out, licenses, legalese/compliance
           TabButton(
             icon: Mdi.information,
-            label: "settings.about".tr,
+            label: "settings.about".tr(),
             index: 4
           ),
           SettingsViewButton(
             icon: Mdi.lockOutline,
-            label: "settings.privacypolicy".tr,
+            label: "settings.privacypolicy".tr(),
             onPressed: () {}
           ),
           SettingsViewButton(
             icon: Mdi.textBoxOutline,
-            label: "settings.tos".tr,
+            label: "settings.tos".tr(),
             onPressed: () {}
           ),
           SettingsViewButton(
             icon: Mdi.exitToApp, 
-            label: "settings.logout".tr,
+            label: "settings.logout".tr(),
             color: Colors.red,
             onPressed: () async {
               final bool _result = await Get.dialog(AlertDialog(
-                title: Text("settings.logout".tr),
-                content: Text("settings.logout.warning".tr),
+                title: Text("settings.logout".tr()),
+                content: Text("settings.logout.warning".tr()),
                 actions: [
-                  TextButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.yes".tr)),
-                  TextButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.no".tr)),
+                  TextButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.yes".tr())),
+                  TextButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.no".tr())),
                 ],
               ));
               if (_result == false) return;
@@ -115,7 +116,7 @@ class SettingsRoot extends GetView<SettingsTabController> {
           ),
           // TabButton(
           //   icon: Mdi.information,
-          //   label: "settings.about".tr,
+          //   label: "settings.about".tr(),
           //   index: 3
           // )
         ],

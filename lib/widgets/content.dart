@@ -45,7 +45,7 @@ class _ContentWidgetState extends State<ContentWidget> {
             child: Row(
               children: [
                 Tooltip(
-                  message: "flow.showpreview".tr,
+                  message: "flow.showpreview".tr(),
                   child: Container(
                     height: 48,
                     width: 48,
@@ -107,7 +107,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                                   Text(widget.content.author.name, style: Get.textTheme.subtitle1),
                                   Text([
                                     widget.content.author.id, 
-                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".trParams({"flow": widget.content.inFlowId})
+                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId})
                                   ].join(" • "), style: Get.textTheme.caption)
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -124,11 +124,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                 if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
-                      child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
+                      child: Text("content.delete".tr(), style: TextStyle(color: Colors.red)),
                       value: "delete"
                     ),
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
-                      child: Text("content.edit".tr),
+                      child: Text("content.edit".tr()),
                       value: "edit"
                     )
                   ],
@@ -137,17 +137,17 @@ class _ContentWidgetState extends State<ContentWidget> {
                       case "delete": 
                         (() async {
                           final bool? _result = await Get.dialog(AlertDialog(
-                            title: Text("content.confirmdelete.title".tr),
+                            title: Text("content.confirmdelete.title".tr()),
                             content: ContentWidget(widget.content, embedded: true),
                             actions: [
                               TextButton(onPressed: () {
                                 Navigator.pop(context)(result: true);
                                 //Navigator.pop(context)();
-                              }, child: Text("dialog.yes".tr)),
+                              }, child: Text("dialog.yes".tr())),
                               TextButton(onPressed: () {
                                 Navigator.pop(context)(result: false);
                                 //Navigator.pop(context)();
-                              }, child: Text("dialog.no".tr)),
+                              }, child: Text("dialog.no".tr())),
                             ],
                           ));
                           if (_result != true) return;
@@ -155,13 +155,13 @@ class _ContentWidgetState extends State<ContentWidget> {
                             final _response = await API.deleteContent(snowflake: widget.content.snowflake);
                             if (_response.graphQLErrors?.isNotEmpty ?? false || _response.body["deleteContent"] != true) {
                               Get.snackbar(
-                                "content.deletefailed.title".tr,
-                                "content.deletefailed.message".tr,
+                                "content.deletefailed.title".tr(),
+                                "content.deletefailed.message".tr(),
                                 duration: Duration(seconds: 10)
                               );
                             } else {
                               Get.snackbar(
-                                "content.deletesuccess".tr,
+                                "content.deletesuccess".tr(),
                                 "",
                                 duration: Duration(seconds: 5)
                               );
@@ -169,8 +169,8 @@ class _ContentWidgetState extends State<ContentWidget> {
                             }
                           } catch(e) {
                             Get.snackbar(
-                              "content.deletefailed.title: crash.connectionerror.title".tr,
-                              "crash.connectionerror.generic".tr,
+                              "content.deletefailed.title: crash.connectionerror.title".tr(),
+                              "crash.connectionerror.generic".tr(),
                               duration: Duration(seconds: 10)
                             );
                           }
@@ -211,24 +211,24 @@ class _ContentWidgetState extends State<ContentWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Tooltip(
-                message: "content.like".tr,
+                message: "content.like".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.arrowUpBoldOutline))
               ),
               Tooltip(
-                message: "content.dislike".tr,
+                message: "content.dislike".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.arrowDownBoldOutline))
               ),
               Tooltip(
-                message: "content.forward".tr,
+                message: "content.forward".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.syncIcon))
               ),
               Tooltip(
-                message: "content.reply".tr,
+                message: "content.reply".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.replyOutline))
               ),
               Expanded(child: Container()),
               Tooltip(
-                message: "content.readmore".tr,
+                message: "content.readmore".tr(),
                 child: IconButton(onPressed: () => {}, icon: Icon(Mdi.textBox))
               ),
             ],

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
@@ -22,7 +23,7 @@ class FlowSettingsRoot extends GetView<SettingsTabController> {
         child: Builder(builder: (bc) => _sidebarcontent(bc)),
       ) : null,
       appBar: AppBar(
-        title: Text("flow.settings.header".trParams({"id": flow.id})),
+        title: Text("flow.settings.header".tr(namedArgs: {"id": flow.id})),
       ),
       body: Row(
         children: [
@@ -70,17 +71,17 @@ class FlowSettingsRoot extends GetView<SettingsTabController> {
               color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context)..pop()..pop(),
             ),
-            title: Text("flow.settings.header.minimal".tr),
+            title: Text("flow.settings.header.minimal".tr()),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(),
           ),
           // settings page buttons here...
-          TabButton(label: "flow.settings.profile".tr, icon: Mdi.account, index: 0),
-          TabButton(label: "flow.settings.features".tr, icon: Mdi.tuneVariant, index: 1),
-          //TabButton(label: "settings.security".tr, icon: Mdi.security, index: 2),
-          //TabButton(label: "settings.privacy".tr, icon: Mdi.eye, index: 3),
+          TabButton(label: "flow.settings.profile".tr(), icon: Mdi.account, index: 0),
+          TabButton(label: "flow.settings.features".tr(), icon: Mdi.tuneVariant, index: 1),
+          //TabButton(label: "settings.security".tr(), icon: Mdi.security, index: 2),
+          //TabButton(label: "settings.privacy".tr(), icon: Mdi.eye, index: 3),
           // -----------------------------
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
@@ -13,7 +14,7 @@ class FallbackAttachmentPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: "content.attachment.download".trParams({"filename": attachment.filename}),
+      message: "content.attachment.download".tr(namedArgs: {"filename": attachment.filename}),
       child: InkWell(
         onTap: embedded ? null : () => launch(API.get.urlScheme+Config.server
         +(attachment.downloadUrl ?? attachment.url.replaceFirst("/view/", "/download/"))),

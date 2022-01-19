@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:seaworld/views/crash.dart';
 
@@ -143,7 +144,7 @@ class InAppNotification extends StatelessWidget {
         } else if (widget.corner == Corner.bottomEnd) {
           return Positioned.directional(textDirection: dir, bottom: 0, end: 0, child: widget);
         } else {
-          return CrashedView(helptext: "crash.inappnotify.generic".tr);
+          return CrashedView(helptext: "crash.inappnotify.generic".tr());
         }
       }
     });

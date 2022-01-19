@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -39,7 +40,7 @@ class _CrashedViewState extends State<CrashedView> {
               mainAxisSize: MainAxisSize.min, 
               children: [
                 //Empty state image
-                if (!widget.isRenderError || widget.title != null) Text(widget.title ?? "crash.generic.title".tr, style: Get.textTheme.headline4?.copyWith(color: Colors.white)),
+                if (!widget.isRenderError || widget.title != null) Text(widget.title ?? "crash.generic.title".tr(), style: Get.textTheme.headline4?.copyWith(color: Colors.white)),
                 Text(widget.helptext, style: Get.textTheme.bodyText2?.copyWith(color: Colors.white)),
                 if (!widget.isRenderError) Row(
                   mainAxisSize: MainAxisSize.min,
@@ -52,8 +53,8 @@ class _CrashedViewState extends State<CrashedView> {
                           : Navigator.pushReplacementNamed(context, "/"),
                            //Get.offNamed(Get.currentRoute),
                         child: widget.retryBack
-                          ? Text("crash.goback".tr)
-                          : Text("crash.tryagain".tr)
+                          ? Text("crash.goback".tr())
+                          : Text("crash.tryagain".tr())
                       )
                     ),
                     Padding(
@@ -64,7 +65,7 @@ class _CrashedViewState extends State<CrashedView> {
                           API.get.reset();
                           Navigator.popAndPushNamed(context, "/login");
                         },
-                        child: Text("settings.logout".tr),
+                        child: Text("settings.logout".tr()),
                         style: ElevatedButton.styleFrom(primary: Colors.red),
                       )
                     )

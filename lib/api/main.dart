@@ -78,9 +78,9 @@ class API {
     } catch(e) {
       rethrow;
       // Get.off(() => CrashedView(
-      //   title: "crash.connectionerror.title".tr,
+      //   title: "crash.connectionerror.title".tr(),
       //   helptext: e.toString().contains('[]("errors")')
-      //   ? "crash.connectionerror.generic".tr
+      //   ? "crash.connectionerror.generic".tr()
       //   : e.toString()
       // ));
     }

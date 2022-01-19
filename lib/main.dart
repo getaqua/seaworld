@@ -90,8 +90,8 @@ class MyApp extends StatelessWidget {
           future: API.getFlowAndContent(Get.parameters["id"] ?? ""),
           builder: (context, snapshot) => snapshot.hasData ? FlowHomeView(flow: snapshot.data!)
           : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
-            title: "crash.connectionerror.title".tr,
-            helptext: "crash.connectionerror.generic".tr
+            title: "crash.connectionerror.title".tr(),
+            helptext: "crash.connectionerror.generic".tr()
           ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
           ? CrashedView(
             title: (snapshot.error as APIErrorHandler).title, 
@@ -106,8 +106,8 @@ class MyApp extends StatelessWidget {
           : API.getFlow(Get.parameters["id"] ?? ""),
           builder: (context, snapshot) => snapshot.hasData ? FlowSettingsRoot(flow: snapshot.data!)
           : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
-            title: "crash.connectionerror.title".tr,
-            helptext: "crash.connectionerror.generic".tr
+            title: "crash.connectionerror.title".tr(),
+            helptext: "crash.connectionerror.generic".tr()
           ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
           ? CrashedView(
             title: (snapshot.error as APIErrorHandler).title, 

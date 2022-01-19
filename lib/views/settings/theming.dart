@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import "package:get/get.dart";
 import 'package:seaworld/helpers/config.dart';
@@ -15,7 +16,7 @@ class ThemingSettings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("settings.theme".tr, style: Get.textTheme.subtitle1),
+              Text("settings.theme".tr(), style: Get.textTheme.subtitle1),
               SizedBox(height: 16),
               SwitchListTile(
                 value: Config.darkmode,
@@ -25,7 +26,7 @@ class ThemingSettings extends StatelessWidget {
                   Get.forceAppUpdate();
                   // ^^^ this is necessary to apply the theme change
                 },
-                title: Text("settings.darkmode".tr)
+                title: Text("settings.darkmode".tr())
               ),
             ],
           ),

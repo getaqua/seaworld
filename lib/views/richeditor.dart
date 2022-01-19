@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
 import 'package:mdi/mdi.dart';
@@ -71,7 +72,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Text("post.rich.editortitle".tr),
+            title: Text("post.rich.editortitle".tr()),
           ),
           bottomNavigationBar: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -85,17 +86,17 @@ class _RichEditorPageState extends State<RichEditorPage> {
                     late final bool? _result;
                     if (_pendingAttachments.isNotEmpty) {
                       _result = await Get.dialog(AlertDialog(
-                      title: Text("post.rich.submit.pendingattachments.title".tr),
-                      content: Text("post.rich.submit.pendingattachments.message".tr),
+                      title: Text("post.rich.submit.pendingattachments.title".tr()),
+                      content: Text("post.rich.submit.pendingattachments.message".tr()),
                       actions: [
                         TextButton(onPressed: () {
                           Navigator.pop(context)(result: true);
                           //Navigator.pop(context)();
-                        }, child: Text("dialog.yes".tr)),
+                        }, child: Text("dialog.yes".tr())),
                         TextButton(onPressed: () {
                           Navigator.pop(context)(result: false);
                           //Navigator.pop(context)();
-                        }, child: Text("dialog.no".tr)),
+                        }, child: Text("dialog.no".tr())),
                       ],
                     ));
                     } else {_result = true;}
@@ -112,7 +113,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                       Navigator.pop(context)();
                     }
                   } : null,
-                  child: !_posting ? Text("post.rich.submit".tr) : CircularProgressIndicator(value: null)
+                  child: !_posting ? Text("post.rich.submit".tr()) : CircularProgressIndicator(value: null)
                 ),
               ) else Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -129,7 +130,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                       setState(() {_posting = false;});
                     }
                   } : null,
-                  child: !_posting ? Text("post.rich.submit.edit".tr) : CircularProgressIndicator(value: null)
+                  child: !_posting ? Text("post.rich.submit.edit".tr()) : CircularProgressIndicator(value: null)
                 ),
               )
             ],
@@ -140,7 +141,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: "post.rich.title".tr,
+                    labelText: "post.rich.title".tr(),
                     border: InputBorder.none
                   ),
                   controller: _titleController,
@@ -152,7 +153,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: "post.rich.text".tr,
+                    hintText: "post.rich.text".tr(),
                     border: InputBorder.none
                   ),
                   controller: _controller,
@@ -211,7 +212,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                   ),
                   label: Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text("post.rich.media.upload".tr),
+                    child: Text("post.rich.media.upload".tr()),
                   ),
                   onPressed: () async {
                     var _file = await openFile(acceptedTypeGroups: [XTypeGroup(
@@ -234,8 +235,8 @@ class _RichEditorPageState extends State<RichEditorPage> {
                       _pendingAttachments.remove(_bytes);
                       InAppNotification.showOverlayIn(Get.context!, InAppNotification(
                         icon: Icon(Mdi.uploadOff, color: Colors.red),
-                        title: Text("upload.failed.title".tr),
-                        text: Text("upload.failed.generic".tr),
+                        title: Text("upload.failed.title".tr()),
+                        text: Text("upload.failed.generic".tr()),
                         corner: Corner.bottomStart,
                       ));
                     }
@@ -245,9 +246,9 @@ class _RichEditorPageState extends State<RichEditorPage> {
               if (!widget.isEditing) SingleChildScrollView(
                 child: Row(children: [
                   // The row of field chips
-                  _buildFieldChip(icon: Mdi.formatTitle, label: "post.rich.title".tr, value: "title"),
-                  _buildFieldChip(icon: Mdi.text, label: "post.rich.text".tr, value: "text"),
-                  _buildFieldChip(icon: Mdi.imageMultiple, label: "post.rich.media".tr, value: "media"),
+                  _buildFieldChip(icon: Mdi.formatTitle, label: "post.rich.title".tr(), value: "title"),
+                  _buildFieldChip(icon: Mdi.text, label: "post.rich.text".tr(), value: "text"),
+                  _buildFieldChip(icon: Mdi.imageMultiple, label: "post.rich.media".tr(), value: "media"),
                 ]),
               )
             ]),

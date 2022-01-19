@@ -71,7 +71,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                    child: Text("flows.joined".tr, style: Get.textTheme.subtitle2),
+                    child: Text("flows.joined".tr(), style: Get.textTheme.subtitle2),
                   ),
                   FutureBuilder<List<PartialFlow>>(
                     future: API.joinedFlows<PartialFlow>(),
@@ -91,14 +91,14 @@ class _WideHomeViewState extends State<WideHomeView> {
                         ),
                         if ((snapshot.data?.length??0) <= 1) Padding(
                           padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                          child: Text("flows.none".tr, style: Get.textTheme.caption),
+                          child: Text("flows.none".tr(), style: Get.textTheme.caption),
                         ),
                       ]
                     ) : Center(child: CircularProgressIndicator(value: null))
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                    child: Text("flows.following".tr, style: Get.textTheme.subtitle2),
+                    child: Text("flows.following".tr(), style: Get.textTheme.subtitle2),
                   ),
                   FutureBuilder<List<PartialFlow>>(
                     future: API.followedFlows<PartialFlow>(),
@@ -180,11 +180,11 @@ class _WideHomeViewState extends State<WideHomeView> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text("crash.connectionerror.title".tr, style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
+                                      child: Text("crash.connectionerror.title".tr(), style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text("crash.connectionerror.generic".tr, style: Get.textTheme.bodyText2),
+                                      child: Text("crash.connectionerror.generic".tr(), style: Get.textTheme.bodyText2),
                                     ),
                                   ]
                                 )
@@ -208,11 +208,11 @@ class _WideHomeViewState extends State<WideHomeView> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(16.0),
-                                      child: Text("home.content.loading".tr, style: Get.textTheme.headline6?.copyWith(color: Get.theme.colorScheme.secondary)),
+                                      child: Text("home.content.loading".tr(), style: Get.textTheme.headline6?.copyWith(color: Get.theme.colorScheme.secondary)),
                                     ),
                                     // Padding(
                                     //   padding: const EdgeInsets.all(8.0),
-                                    //   child: Text("home.".tr, style: Get.textTheme.bodyText2),
+                                    //   child: Text("home.".tr(), style: Get.textTheme.bodyText2),
                                     // ),
                                   ]
                                 )

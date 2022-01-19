@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
@@ -90,7 +91,7 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                     ),
                     alignment: Alignment.centerLeft,
                     child: Tooltip(
-                      message: "flow.open".trParams({"id": widget.flow.id}),
+                      message: "flow.open".tr(namedArgs: {"id": widget.flow.id}),
                       child: InkResponse(
                         onTap: () async {
                           Navigator.pop(context);

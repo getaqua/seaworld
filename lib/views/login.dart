@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
@@ -59,8 +60,8 @@ class _LoginViewState extends State<LoginView> {
                         } else if (snapshot.hasError || (snapshot.hasData && snapshot.data == false)) {
                           return IconButton(
                             onPressed: () => Get.snackbar(
-                              "login.connectionerror".tr,
-                              "login.cannotreach".trParams({"url": _api.server}),
+                              "login.connectionerror".tr(),
+                              "login.cannotreach".tr(namedArgs: {"url": _api.server}),
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: Colors.grey[900],
                               colorText: Colors.white,
@@ -98,10 +99,10 @@ class _LoginViewState extends State<LoginView> {
                                       launch(_api.authorizationUrl()!);
                                       //await Get.defaultDialog(title: "Waiting for you", middleText: "Login to the app, and press OK when you're done.", textConfirm: "OK");
                                       await Get.dialog(AlertDialog(
-                                        title: Text("login.authorizing.title".tr),
-                                        content: Text("login.authorizing.message".tr),
+                                        title: Text("login.authorizing.title".tr()),
+                                        content: Text("login.authorizing.message".tr()),
                                         actions: [
-                                          TextButton(onPressed: () => Navigator.pop(context)(), child: Text("dialog.ok".tr)),
+                                          TextButton(onPressed: () => Navigator.pop(context)(), child: Text("dialog.ok".tr())),
                                         ],
                                       ));
                                       _api.userReady();
@@ -118,7 +119,7 @@ class _LoginViewState extends State<LoginView> {
                                   }
                                 }
                               }, // Login requires something much more elaborate than registration
-                              child: Text("login.login".tr)
+                              child: Text("login.login".tr())
                             ),
                           )),
                           PopupMenuButton(itemBuilder: (context) => [
@@ -134,11 +135,11 @@ class _LoginViewState extends State<LoginView> {
                                   // ^^^ this is necessary to apply the theme change
                                   Navigator.pop(context);
                                 },
-                                title: Text("settings.darkmode".tr)
+                                title: Text("settings.darkmode".tr())
                               )
                             ),
                             PopupMenuItem(
-                              child: Text("login.selectserver".tr), 
+                              child: Text("login.selectserver".tr()), 
                               value: 10
                             )
                           ], onSelected: (value) async {
@@ -155,8 +156,8 @@ class _LoginViewState extends State<LoginView> {
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("login.selectserver".tr, style: Get.textTheme.headline5, textAlign: TextAlign.start),
-                                      Text("login.selectserver.message".tr, style: Get.textTheme.bodyText2),
+                                      Text("login.selectserver".tr(), style: Get.textTheme.headline5, textAlign: TextAlign.start),
+                                      Text("login.selectserver.message".tr(), style: Get.textTheme.bodyText2),
                                       SizedBox(
                                         width: 480,
                                         child: TextField(
@@ -208,11 +209,11 @@ class _LoginViewState extends State<LoginView> {
                                       Flex(direction: Axis.horizontal,  children: [
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: OutlinedButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.cancel".tr)),
+                                          child: OutlinedButton(onPressed: () => Navigator.pop(context)(result: false), child: Text("dialog.cancel".tr())),
                                         )),
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.apply".tr)),
+                                          child: ElevatedButton(onPressed: () => Navigator.pop(context)(result: true), child: Text("dialog.apply".tr())),
                                         )),
                                       ])
                                     ],
@@ -242,7 +243,7 @@ class _LoginViewState extends State<LoginView> {
                             padding: EdgeInsets.all(8.0),
                             child: OutlinedButton(
                               onPressed: () => launch(_api.urlScheme+_serverUrl+"/_gridless/register", forceWebView: true, enableJavaScript: true),
-                              child: Text("login.register".tr)
+                              child: Text("login.register".tr())
                             ),
                           )),
                         ],

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/src/public_ext.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
@@ -161,7 +162,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             ListTile(
               selected: true,
               onTap: () {},
-              title: Text("flow.feature.home".tr),
+              title: Text("flow.feature.home".tr()),
             ),
             ListTile(
               onTap: () {},
@@ -169,7 +170,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             ),
             ListTile(
               onTap: () {},
-              title: Text("flow.feature.chat".tr),
+              title: Text("flow.feature.chat".tr()),
             ),
             ListTile(
               onTap: () {},
@@ -177,7 +178,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             ),
             if (widget.flow.myPermissions.update == AllowDeny.allow) ListTile(
               onTap: () => context.go("/flow/"+widget.flow.snowflake+"/settings", extra: widget.flow),
-              title: Text("flow.feature.settings".tr),
+              title: Text("flow.feature.settings".tr()),
             ),
           ],
         ),
@@ -252,7 +253,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
                               onPressed: () {}, // check if joined???
-                              child: Text("flow.join".tr),
+                              child: Text("flow.join".tr()),
                               style: ButtonStyle(
                                 foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
                                 overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
@@ -263,7 +264,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                             padding: const EdgeInsets.all(8.0),
                             child: OutlinedButton(
                               onPressed: null,
-                              child: Text("flow.follow".tr), 
+                              child: Text("flow.follow".tr()), 
                               style: ButtonStyle(
                                 foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
                                 overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
@@ -292,11 +293,11 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("crash.connectionerror.title".tr, style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
+                            child: Text("crash.connectionerror.title".tr(), style: Get.textTheme.headline6?.copyWith(color: Colors.red)),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("crash.connectionerror.generic".tr, style: Get.textTheme.bodyText2),
+                            child: Text("crash.connectionerror.generic".tr(), style: Get.textTheme.bodyText2),
                           ),
                         ]
                       )

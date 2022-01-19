@@ -86,13 +86,13 @@ abstract class APIConnect {
   //       InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
   //         icon: Icon(Mdi.lockMinus),
   //         //TODO: check the permission that was missing and on what Flow
-  //         title: Text("error.permissiondenied.generic".tr),
+  //         title: Text("error.permissiondenied.generic".tr()),
   //         corner: Corner.bottomStart,
   //       ));
   //     } else {
   //       InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
   //         icon: Icon(Mdi.alertCircleOutline, color: Colors.red),
-  //         title: Text("crash.developererror.generic".tr),
+  //         title: Text("crash.developererror.generic".tr()),
   //         text: Text(result.graphQLErrors?.first.message ?? "Error message missing"),
   //         corner: Corner.bottomStart,
   //       ));

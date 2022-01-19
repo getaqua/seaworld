@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
 import "package:get/get.dart";
@@ -44,7 +45,7 @@ class NewContentCard extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(Config.cache.userFlow.name, style: Get.textTheme.subtitle1),
-                      Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr, style: Get.textTheme.caption)
+                      Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr(), style: Get.textTheme.caption)
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +54,7 @@ class NewContentCard extends StatelessWidget {
                 // Expanded(child: Container()),
                 // PopupMenuButton(
                 //   itemBuilder: (context) => [
-                //     PopupMenuItem(child: Text("settings.tos".tr, style: Get.textTheme.overline))
+                //     PopupMenuItem(child: Text("settings.tos".tr(), style: Get.textTheme.overline))
                 //   ],
                 // )
               ]
@@ -65,7 +66,7 @@ class NewContentCard extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Obx(() => TextField(
               decoration: InputDecoration(
-                hintText: "post.newtext".tr,
+                hintText: "post.newtext".tr(),
                 border: InputBorder.none
               ),
               controller: _controller,
@@ -82,7 +83,7 @@ class NewContentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Tooltip(
-                  message: "post.newimage".tr,
+                  message: "post.newimage".tr(),
                   child: IconButton(onPressed: () async {
                     if (_posting.value) return;
                     _posting.update((val) => val = true);
@@ -111,19 +112,19 @@ class NewContentCard extends StatelessWidget {
                       _posting.update((val) => val = false);
                       InAppNotification.showOverlayIn(Get.context!, InAppNotification(
                         icon: Icon(Mdi.uploadOff, color: Colors.red),
-                        title: Text("upload.failed.title".tr),
-                        text: Text("upload.failed.generic".tr),
+                        title: Text("upload.failed.title".tr()),
+                        text: Text("upload.failed.generic".tr()),
                         corner: Corner.bottomStart,
                       ));
                     }
                   }, icon: Icon(Mdi.image), color: Colors.amber)
                 ),
                 Tooltip(
-                  message: "post.newpoll".tr,
+                  message: "post.newpoll".tr(),
                   child: IconButton(onPressed: null, icon: Icon(Mdi.pollBox))
                 ),
                 Tooltip(
-                  message: "post.uploadfile".tr,
+                  message: "post.uploadfile".tr(),
                   child: IconButton(onPressed: () async {
                     if (_posting.value) return;
                     _posting.update((val) => val = true);
@@ -147,20 +148,20 @@ class NewContentCard extends StatelessWidget {
                       _posting.update((val) => val = false);
                       InAppNotification.showOverlayIn(Get.context!, InAppNotification(
                         icon: Icon(Mdi.uploadOff, color: Colors.red),
-                        title: Text("upload.failed.title".tr),
-                        text: Text("upload.failed.generic".tr),
+                        title: Text("upload.failed.title".tr()),
+                        text: Text("upload.failed.generic".tr()),
                         corner: Corner.bottomStart,
                       ));
                     }
                   }, icon: Icon(Mdi.file), color: Colors.pink)
                 ),
                 Tooltip(
-                  message: "post.newevent".tr,
+                  message: "post.newevent".tr(),
                   child: IconButton(onPressed: null, icon: Icon(Mdi.calendar))
                 ),
                 Obx(() => _posting.value ? CircularProgressIndicator(value: null)
                 : _cobs.value.value.text == "" ? Tooltip(
-                  message: "post.expand".tr,
+                  message: "post.expand".tr(),
                   child: IconButton(onPressed: () async {
                     await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
                       alignment: Alignment.topCenter,
@@ -170,7 +171,7 @@ class NewContentCard extends StatelessWidget {
                     (refreshContent ?? (() => {}))();
                   }, icon: Icon(Mdi.cardBulleted), color: Get.theme.colorScheme.primary)
                 ) : Tooltip(
-                  message: "post.send".tr,
+                  message: "post.send".tr(),
                   child: IconButton(
                     onPressed: !_posting.value ? () async {
                       _posting.update((val) => val = true);
