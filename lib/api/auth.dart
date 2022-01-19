@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'apiclass.dart';
 
 class AuthenticationAPI extends APIConnect {

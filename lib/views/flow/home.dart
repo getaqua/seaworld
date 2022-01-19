@@ -151,7 +151,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                         top: -8, left: -8,
                         child: IconButton(
                           icon: Icon(Mdi.arrowLeft),
-                          onPressed: () => Navigator.pop(context)()
+                          onPressed: () => Navigator.pop(context)
                         )
                       )
                     ],
