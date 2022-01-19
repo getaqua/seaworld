@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
@@ -12,7 +12,6 @@ import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
 import 'package:seaworld/widgets/pfp.dart';
-import 'package:seaworld/widgets/post.dart';
 import 'package:super_scaffold/super_scaffold.dart';
 
 class FlowHomeView extends StatefulWidget {

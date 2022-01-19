@@ -1,14 +1,10 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:mdi/mdi.dart';
-import 'package:seaworld/api/main.dart';
-import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/flow/settings/profile.dart';
-import 'package:seaworld/views/settings/about.dart';
 import 'package:seaworld/views/settings/main.dart';
-import 'package:seaworld/views/settings/theming.dart';
 
 class FlowSettingsRoot extends GetView<SettingsTabController> {
   final Flow flow;

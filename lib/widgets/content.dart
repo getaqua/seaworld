@@ -1,4 +1,4 @@
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
@@ -12,7 +12,6 @@ import 'package:seaworld/widgets/content/imagepreview.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
 import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ContentWidget extends StatefulWidget {
   final Content content;
