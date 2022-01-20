@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import "package:get/get.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seaworld/helpers/config.dart';
-import 'package:seaworld/helpers/theme.dart';
+import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/main.dart';
 
 // ignore: use_key_in_widget_constructors
 class ThemingSettings extends StatelessWidget {
@@ -15,17 +17,20 @@ class ThemingSettings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("settings.theme".tr, style: Get.textTheme.subtitle1),
+              Text("settings.theme".tr(), style: context.textTheme().subtitle1),
               SizedBox(height: 16),
-              SwitchListTile(
-                value: Config.darkmode,
-                onChanged: (nv) {
-                  Config.darkmode = nv;
-                  Get.changeTheme(SeaworldTheme.fromConfig().data);
-                  Get.forceAppUpdate();
-                  // ^^^ this is necessary to apply the theme change
-                },
-                title: Text("settings.darkmode".tr)
+              Consumer(
+                builder: (context, ref, _) => SwitchListTile(
+                  value: Config.darkmode,
+                  onChanged: (nv) {
+                    Config.darkmode = nv;
+                    // Get.changeTheme(SeaworldTheme.fromConfig().data);
+                    // Get.forceAppUpdate();
+                    // ^^^ this is necessary to apply the theme change
+                    ref.refresh(themeProvider);
+                  },
+                  title: Text("settings.darkmode".tr())
+                ),
               ),
             ],
           ),

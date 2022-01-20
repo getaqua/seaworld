@@ -1,23 +1,28 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/views/settings/about.dart';
 import 'package:seaworld/views/settings/theming.dart';
 
-class SettingsRoot extends GetView<SettingsTabController> {
+class SettingsRoot extends ConsumerWidget {
+  const SettingsRoot({Key? key}) : super(key: key);
+
   // ignore: prefer_final_fields
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       drawer: width <= 640 ? Drawer(
         child: Builder(builder: (bc) => _sidebarcontent(bc)),
       ) : null,
       appBar: AppBar(
-        title: Text("settings.title".tr),
+        title: Text("settings.title".tr()),
       ),
       body: Row(
         children: [
@@ -25,25 +30,24 @@ class SettingsRoot extends GetView<SettingsTabController> {
             //margin: EdgeInsets.only(right: 32),
             width: 280,
             alignment: Alignment.topLeft,
-            color: Get.theme.colorScheme.primary.withAlpha(16),
+            color: context.theme().colorScheme.primary.withAlpha(16),
             child: Builder(builder: (bc) => _sidebarcontent(bc))
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-              child: Obx(() => controller.index.value >= 5 ? Center(child: Icon(Mdi.alert)) : 
-                [
-                  // GeneralSettingsPage(),
-                  // ThemeSettingsPage()
-                  Center(child: Icon(Mdi.account)),
-                  ThemingSettings(),
-                  Center(child: Icon(Mdi.security)),
-                  Center(child: Icon(Mdi.eye)),
-                  AboutPage()
-                ][controller.index.value]
-              ),
+              child: ref.watch(_settingsTabController) >= 5 ? Center(child: Icon(Mdi.alert)) : 
+              [
+                // GeneralSettingsPage(),
+                // ThemeSettingsPage()
+                Center(child: Icon(Mdi.account)),
+                ThemingSettings(),
+                Center(child: Icon(Mdi.security)),
+                Center(child: Icon(Mdi.eye)),
+                AboutPage()
+              ][ref.watch(_settingsTabController)]
             ),
-          )
+          ),
         ],
       )
     );
@@ -63,17 +67,17 @@ class SettingsRoot extends GetView<SettingsTabController> {
               color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context)..pop()..pop(),
             ),
-            title: Text("settings.title".tr),
+            title: Text("settings.title".tr()),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(),
           ),
           // settings page buttons here...
-          TabButton(label: "settings.account".tr, icon: Mdi.account, index: 0),
-          TabButton(label: "settings.theme".tr, icon: Mdi.palette, index: 1),
-          TabButton(label: "settings.security".tr, icon: Mdi.security, index: 2),
-          TabButton(label: "settings.privacy".tr, icon: Mdi.eye, index: 3),
+          TabButton(label: "settings.account".tr(), icon: Mdi.account, index: 0, controller: _settingsTabController),
+          TabButton(label: "settings.theme".tr(), icon: Mdi.palette, index: 1, controller: _settingsTabController),
+          TabButton(label: "settings.security".tr(), icon: Mdi.security, index: 2, controller: _settingsTabController),
+          TabButton(label: "settings.privacy".tr(), icon: Mdi.eye, index: 3, controller: _settingsTabController),
           // -----------------------------
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -82,41 +86,42 @@ class SettingsRoot extends GetView<SettingsTabController> {
           // about, log out, licenses, legalese/compliance
           TabButton(
             icon: Mdi.information,
-            label: "settings.about".tr,
-            index: 4
+            label: "settings.about".tr(),
+            index: 4,
+            controller: _settingsTabController
           ),
           SettingsViewButton(
             icon: Mdi.lockOutline,
-            label: "settings.privacypolicy".tr,
+            label: "settings.privacypolicy".tr(),
             onPressed: () {}
           ),
           SettingsViewButton(
             icon: Mdi.textBoxOutline,
-            label: "settings.tos".tr,
+            label: "settings.tos".tr(),
             onPressed: () {}
           ),
           SettingsViewButton(
             icon: Mdi.exitToApp, 
-            label: "settings.logout".tr,
+            label: "settings.logout".tr(),
             color: Colors.red,
             onPressed: () async {
-              final bool _result = await Get.dialog(AlertDialog(
-                title: Text("settings.logout".tr),
-                content: Text("settings.logout.warning".tr),
+              final bool _result = await showDialog(context: context, builder: (context) => AlertDialog(
+                title: Text("settings.logout".tr()),
+                content: Text("settings.logout.warning".tr()),
                 actions: [
-                  TextButton(onPressed: () => Get.back(result: true), child: Text("dialog.yes".tr)),
-                  TextButton(onPressed: () => Get.back(result: false), child: Text("dialog.no".tr)),
+                  TextButton(onPressed: () => Navigator.pop(context, true), child: Text("dialog.yes".tr())),
+                  TextButton(onPressed: () => Navigator.pop(context, false), child: Text("dialog.no".tr())),
                 ],
               ));
               if (_result == false) return;
               Config.token = null;
               API.get.isReady = false;
-              Get.offAllNamed("/");
+              context.go("/");
             }
           ),
           // TabButton(
           //   icon: Mdi.information,
-          //   label: "settings.about".tr,
+          //   label: "settings.about".tr(),
           //   index: 3
           // )
         ],
@@ -125,21 +130,13 @@ class SettingsRoot extends GetView<SettingsTabController> {
   }
 }
 
-class SettingsTabController extends GetxController {
-  RxInt index = (0).obs;
-  //int index = 0;
-  void switchTo(int newIndex) {
-    //index.update((val) => newIndex);
-    index.value = newIndex;
-    update();
-  }
+class SettingsTabController extends StateNotifier<int> {
+  SettingsTabController([int page = 0]): super(page);
+
+  void switchTo(int page) => state = page;
 }
-class SettingsBindings extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut<SettingsTabController>(() => SettingsTabController());
-  }
-}
+
+final _settingsTabController = StateNotifierProvider<SettingsTabController, int>((ref) => SettingsTabController());
 
 class SettingsViewButton extends StatelessWidget {
   final Function() onPressed;
@@ -177,36 +174,35 @@ class SettingsViewButton extends StatelessWidget {
   }
 }
 
-class TabButton extends StatelessWidget {
+class TabButton extends ConsumerWidget {
   final String label;
   final int index;
   final IconData icon;
-  final SettingsTabController? tabController;
+  final StateNotifierProvider<SettingsTabController, int> controller;
 
   const TabButton({
     Key? key,
     required this.label,
     required this.index,
     required this.icon,
-    this.tabController,
+    required this.controller,
   }): super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final controller = tabController ?? Get.find<SettingsTabController>();
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: EdgeInsets.all(4.0),
-      child: Obx(() => (controller.index.value == index) ? ElevatedButton.icon(
+      child: (ref.watch(controller) == index) ? ElevatedButton.icon(
         onPressed: () => {},
         style: ElevatedButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.all(18.0)),
         label: Text(label, textAlign: TextAlign.left),
         icon: Icon(icon)
       ) : TextButton.icon(
-        onPressed: () {controller.switchTo(index); controller.update();},
+        onPressed: () => ref.read(controller.notifier).switchTo(index),
         style: TextButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.all(18.0)),
         label: Text(label, textAlign: TextAlign.left),
         icon: Icon(icon)
-      )),
+      ),
       width: 240
     );
   }

@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 
 class APIErrorHandler {
   static APIErrorHandler? handleError(Object? error) {
@@ -7,8 +7,8 @@ class APIErrorHandler {
     if (kDebugMode) print(error);
     if (error is NoSuchMethodError || error is TypeError) {
       return APIErrorHandler.error(
-        title: "crash.notfound.title".tr,
-        message: "crash.notfound.generic".tr,
+        title: "crash.notfound.title".tr(),
+        message: "crash.notfound.generic".tr(),
         original: error
       );
     }

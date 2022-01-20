@@ -1,16 +1,22 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
+import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/content/filepreview.dart';
 import 'package:seaworld/widgets/content/imagepreview.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ContentWidget extends StatefulWidget {
   final Content content;
@@ -39,12 +45,12 @@ class _ContentWidgetState extends State<ContentWidget> {
             padding: EdgeInsets.only(right: 16.0),
             // decoration: BoxDecoration(
             //   borderRadius: BorderRadius.vertical(top: Radius.circular(4), bottom: Radius.zero),
-            //   color: Get.theme.colorScheme.primaryVariant,
+            //   color: context.theme().colorScheme.primaryVariant,
             // ),
             child: Row(
               children: [
                 Tooltip(
-                  message: "flow.showpreview".tr,
+                  message: "flow.showpreview".tr(),
                   child: Container(
                     height: 48,
                     width: 48,
@@ -59,7 +65,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                         //   context: context, 
                         //   position: RelativeRect.fromRect(
                         //     details.globalPosition & Size(40, 40), 
-                        //     Offset.zero & Get.mediaQuery.size
+                        //     Offset.zero & MediaQuery.of(context).size
                         //   ),
                         //   items: [
                         //     FlowPreviewPopupMenu()
@@ -91,9 +97,9 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 Expanded(
                   child: Tooltip(
-                    message: "flow.open".trParams({"id": widget.content.author.id}),
+                    message: "flow.open".tr(namedArgs: {"id": widget.content.author.id}),
                     child: InkWell(
-                      onTap: () => Get.toNamed("/flow/"+widget.content.author.snowflake),
+                      onTap: () => context.go("/flow/"+widget.content.author.snowflake),
                       child: Padding(
                         padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
                         child: Row(
@@ -103,11 +109,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                               alignment: Alignment.centerLeft,
                               child: Column(
                                 children: [
-                                  Text(widget.content.author.name, style: Get.textTheme.subtitle1),
+                                  Text(widget.content.author.name, style: context.textTheme().subtitle1),
                                   Text([
                                     widget.content.author.id, 
-                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".trParams({"flow": widget.content.inFlowId})
-                                  ].join(" • "), style: Get.textTheme.caption)
+                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId})
+                                  ].join(" • "), style: context.textTheme().caption)
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,11 +129,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                 if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
-                      child: Text("content.delete".tr, style: TextStyle(color: Colors.red)),
+                      child: Text("content.delete".tr(), style: TextStyle(color: Colors.red)),
                       value: "delete"
                     ),
                     if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
-                      child: Text("content.edit".tr),
+                      child: Text("content.edit".tr()),
                       value: "edit"
                     )
                   ],
@@ -135,45 +141,50 @@ class _ContentWidgetState extends State<ContentWidget> {
                     switch (value) {
                       case "delete": 
                         (() async {
-                          final bool? _result = await Get.dialog(AlertDialog(
-                            title: Text("content.confirmdelete.title".tr),
+                          final bool? _result = await showDialog(context: context, builder: (context) => AlertDialog(
+                            title: Text("content.confirmdelete.title".tr()),
                             content: ContentWidget(widget.content, embedded: true),
                             actions: [
                               TextButton(onPressed: () {
-                                Get.back(result: true);
-                                //Get.back();
-                              }, child: Text("dialog.yes".tr)),
+                                Navigator.pop(context, true);
+                                //Navigator.pop(context);
+                              }, child: Text("dialog.yes".tr())),
                               TextButton(onPressed: () {
-                                Get.back(result: false);
-                                //Get.back();
-                              }, child: Text("dialog.no".tr)),
+                                Navigator.pop(context, false);
+                                //Navigator.pop(context);
+                              }, child: Text("dialog.no".tr())),
                             ],
                           ));
                           if (_result != true) return;
                           try {
-                            final _response = await API.deleteContent(snowflake: widget.content.snowflake);
-                            if (_response.graphQLErrors?.isNotEmpty ?? false || _response.body["deleteContent"] != true) {
-                              Get.snackbar(
-                                "content.deletefailed.title".tr,
-                                "content.deletefailed.message".tr,
-                                duration: Duration(seconds: 10)
-                              );
+                            final _response = await gqlClient.value.mutate(MutationOptions(
+                              document: gql(ContentAPI.deleteContent), 
+                              variables: {"id": widget.content.snowflake}
+                            ));
+                            if (_response.exception?.graphqlErrors.isNotEmpty ?? false || _response.data?["deleteContent"] != true) {
+                              InAppNotification.showOverlayIn(context, InAppNotification(
+                                title: Text("content.deletefailed.title".tr()),
+                                text: Text("content.deletefailed.message".tr()),
+                                icon: Icon(Mdi.alertCircleOutline, color: Colors.red),
+                                corner: Corner.bottomStart
+                              ));
                             } else {
-                              Get.snackbar(
-                                "content.deletesuccess".tr,
-                                "",
-                                duration: Duration(seconds: 5)
-                              );
+                              InAppNotification.showOverlayIn(context, InAppNotification(
+                                title: Text("content.deletesuccess.title".tr()),
+                                icon: Icon(Mdi.check, color: Colors.green),
+                                corner: Corner.bottomStart
+                              ));
                               setState(() => _deleted = widget.content.snowflake);
                             }
                           } catch(e) {
-                            Get.snackbar(
-                              "content.deletefailed.title: crash.connectionerror.title".tr,
-                              "crash.connectionerror.generic".tr,
-                              duration: Duration(seconds: 10)
-                            );
+                            InAppNotification.showOverlayIn(context, InAppNotification(
+                              title: Text("crash.connectionerror.title".tr()),
+                              text: Text("content.deletefailed.title".tr()),
+                              icon: Icon(Mdi.lightningBolt, color: Colors.red),
+                              corner: Corner.bottomStart
+                            ));
                           }
-                          Get.back();
+                          //Navigator.pop(context);x  x
                         })();
                         return;
                       case "edit":
@@ -210,24 +221,24 @@ class _ContentWidgetState extends State<ContentWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Tooltip(
-                message: "content.like".tr,
+                message: "content.like".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.arrowUpBoldOutline))
               ),
               Tooltip(
-                message: "content.dislike".tr,
+                message: "content.dislike".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.arrowDownBoldOutline))
               ),
               Tooltip(
-                message: "content.forward".tr,
+                message: "content.forward".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.syncIcon))
               ),
               Tooltip(
-                message: "content.reply".tr,
+                message: "content.reply".tr(),
                 child: IconButton(onPressed: null, icon: Icon(Mdi.replyOutline))
               ),
               Expanded(child: Container()),
               Tooltip(
-                message: "content.readmore".tr,
+                message: "content.readmore".tr(),
                 child: IconButton(onPressed: () => {}, icon: Icon(Mdi.textBox))
               ),
             ],

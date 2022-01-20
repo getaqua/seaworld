@@ -1,21 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/material.dart' show Icon, Text, Colors;
-import 'package:get/get.dart';
-import 'package:get/get_connect/connect.dart';
-import 'package:mdi/mdi.dart';
+import 'package:flutter/foundation.dart';
+import 'package:gql_dio_link/gql_dio_link.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide Response, gql;
+import 'package:hive/hive.dart';
 import 'package:mime_type/mime_type.dart';
-import 'package:seaworld/api/content.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
-import 'package:seaworld/models/content.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/models/flow.dart';
-import 'package:seaworld/views/crash.dart';
-import 'package:seaworld/widgets/inappnotif.dart';
-
-import 'flow.dart';
+// ignore: implementation_imports
+import 'package:http_parser/src/media_type.dart';
 
 class API {
   static API get get => _instance ??= API();
@@ -55,109 +54,95 @@ class API {
   }
 
   Future<void> init(String token, [bool? isServerInsecure]) async {
+    if (isReady) return;
     this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
-    system = SystemAPI(token, urlScheme+Config.server);
-    flow = FlowAPI(token, urlScheme+Config.server);
-    content = ContentAPI(token, urlScheme+Config.server);
+    var uri = Uri.parse(urlScheme+Config.server);
+    //if (_isLocalhost(Config.server)) uri = uri.replace(host: "127.0.0.1");
+    uri = uri.replace(path: "/_gridless/graphql");
+    final DioLink httpLink = DioLink(
+      uri.toString(),
+      client: Dio(),
+      defaultHeaders: {
+        "Authorization": "Bearer "+token
+      }
+    );
+    // final AuthLink authLink = AuthLink(
+    //   getToken: () => 'Bearer '+token,
+    // );
+    final Link link = httpLink;
+
+    gqlClient.value = GraphQLClient(
+      link: link,
+      cache: GraphQLCache(
+        store: HiveStore(await Hive.openBox("gql")),
+        dataIdFromObject: (data) {
+          final typename = data['__typename'] ?? "";
+          final id = data['snowflake'] ?? data['id'] ?? data['_id'];
+          return id == null ? null : '$typename:$id';
+        },
+      ),
+    );
+
+    // system = SystemAPI(token, urlScheme+Config.server);
+    // flow = FlowAPI(token, urlScheme+Config.server);
+    // content = ContentAPI(token, urlScheme+Config.server);
     this.token = token;
-    try {
-      await system.getSystemInfo().then((value) {
-        Config.cache.serverName = value.body["getSystemInfo"]["name"];
-        Config.cache.serverVersion = value.body["getSystemInfo"]["version"];
-      });
-      await system.getMe().then((value) {
-        Config.cache.userId = value.body["getMe"]["flow"]["id"];
-        Config.cache.scopes = List.castFrom(value.body["getMe"]["tokenPermissions"]);
-        Config.cache.userFlow = Flow.fromJSON(value.body["getMe"]["flow"]);
-      });
-      isReady = true;
-      _ready.complete(true);
-    } catch(e) {
-      Get.off(() => CrashedView(
-        title: "crash.connectionerror.title".tr,
-        helptext: e.toString().contains('[]("errors")')
-        ? "crash.connectionerror.generic".tr
-        : e.toString()
-      ));
-    }
+    await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
+      if (value.hasException) throw value.exception!;
+      Config.cache.serverName = value.data!["getSystemInfo"]["name"];
+      Config.cache.serverVersion = value.data!["getSystemInfo"]["version"];
+      return value;
+    });
+    await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getMe), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
+      if (value.hasException) throw value.exception!;
+      Config.cache.userId = value.data!["getMe"]["flow"]["id"];
+      Config.cache.scopes = List.castFrom(value.data!["getMe"]["tokenPermissions"]);
+      Config.cache.userFlow = Flow.fromJSON(value.data!["getMe"]["flow"]);
+      return value;
+    });
+    isReady = true;
+    _ready.complete(true);
   }
   //final _flowApi;
-  late SystemAPI system;
-  late FlowAPI flow;
-  late ContentAPI content;
+  // late SystemAPI system;
+  // late FlowAPI flow;
+  // late ContentAPI content;
 
-  /// Get system information.
-  /// Get these values from it like a Map:
-  /// * `name`
-  /// * `version`
-  /// 
-  /// Alternatively, retrieve the values from Config.cache, as the API
-  /// initializer sets them there.
-  static Future<GraphQLResponse> getSystemInfo() => get.system.getSystemInfo();
-
-  /// Get the user to whom the token corresponds.
-  /// Get these values from it like a Map:
-  /// * `username`
-  /// * `user`.`id`
-  static Future<GraphQLResponse> getMe() => get.system.getMe();
-
-  /// Get the Flows the user is following.
-  static Future<List<T>> followedFlows<T extends PartialFlow>() => get.flow.followedFlows<T>();
-
-  /// Get the Flows the user has joined.
-  static Future<List<T>> joinedFlows<T extends PartialFlow>() => get.flow.followedFlows();
-  
-  /// Get the latest Content from the Flows the user is following.
-  static Future<List<Content>> followedContent() => get.content.followedContent();
-
-  /// Get a Flow by its ID.
-  static final getFlow = get.flow.getFlow;
-
-  /// Gets a Flow with its Content, good for the Flow home view.
-  static final getFlowAndContent = get.flow.getFlowAndContent;
-  
-  /// Edit or update properties of a Flow.
-  static final updateFlow = get.flow.updateFlow;
-
-  /// Post Content to a Flow.
-  static final postContent = get.content.postContent;
-
-  /// Delete Content.
-  static final deleteContent = get.content.deleteContent;
-
-  /// Edit or update Content.
-  static final editContent = get.content.updateContent;
-
-  static Future<Response?> uploadFile({String? fromPath, XFile? file}) async {
-    return GetHttpClient(baseUrl: get.urlScheme+Config.server).post("/_gridless/media", 
-    body: FormData({
-      "file": (fromPath?.isEmpty ?? false) ? MultipartFile(await File(fromPath!).readAsBytes(),
-        filename: Uri.file(fromPath).pathSegments.last,
-        contentType: mime(Uri.file(fromPath).pathSegments.last) ?? "application/octet-stream")
-        : MultipartFile(await file!.readAsBytes(),
-        filename: file.name,
-        contentType: mime(file.name) ?? "application/octet-stream")
-    }),
-    headers: {
-      "Authorization": "Bearer "+get.token
-    }).catchError((e) {
-      print(e);
-      InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
-        icon: Icon(Mdi.uploadOff, color: Colors.red),
-        title: Text("upload.failed.title".tr),
-        text: Text("upload.failed.generic".tr),
-        corner: Corner.bottomStart,
-      ));
+  static Future<Response?> uploadFile({String? fromPath, XFile? file, void Function(int, int)? sendProgress}) async {
+    return Dio().post(get.urlScheme+Config.server+"/_gridless/media", 
+      data: FormData.fromMap({
+        "file": (fromPath?.isEmpty ?? false) ? MultipartFile(File(fromPath!).openRead(),
+          await File(fromPath).length(),
+          filename: Uri.file(fromPath).pathSegments.last,
+          contentType: MediaType.parse(mime(Uri.file(fromPath).pathSegments.last) ?? "application/octet-stream"))
+          : MultipartFile(file!.openRead(), await file.length(),
+          filename: file.name,
+          contentType: MediaType.parse(mime(file.name) ?? "application/octet-stream"))
+      }),
+      options: Options(headers: {
+        "Authorization": "Bearer "+get.token
+      })
+    ).catchError((e) {
+      if (kDebugMode) print(e);
+      // InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+      //   icon: Icon(Mdi.uploadOff, color: Colors.red),
+      //   title: Text("upload.failed.title".tr()),
+      //   text: Text("upload.failed.generic".tr()),
+      //   corner: Corner.bottomStart,
+      // ));
+      throw e;
     }).then((value) {
-      if (!value.isOk) {
-        print(value.bodyString);
-        print(value.statusCode);
-        InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
-          icon: Icon(Mdi.uploadOff, color: Colors.red),
-          title: Text("upload.failed.title".tr),
-          text: Text("upload.failed.generic".tr),
-          corner: Corner.bottomStart,
-        ));
+      if ((value.statusCode ?? 0) < 200 || (value.statusCode ?? 0) >= 300) {
+        if (kDebugMode) {
+          print(value.data);
+          print(value.statusCode);
+        }
+        // InAppNotification.showOverlayIn(Get.overlayContext!, InAppNotification(
+        //   icon: Icon(Mdi.uploadOff, color: Colors.red),
+        //   title: Text("upload.failed.title".tr()),
+        //   text: Text("upload.failed.generic".tr()),
+        //   corner: Corner.bottomStart,
+        // ));
         return value;
       } else {
         return value;

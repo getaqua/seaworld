@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
-import 'package:mdi/mdi.dart';
+import 'package:go_router/go_router.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/pfp.dart';
 
@@ -56,7 +57,7 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
           if (hasBanner) Container(
             height: 192,
             decoration: BoxDecoration(
-              color: Get.theme.colorScheme.primary,
+              color: context.theme().colorScheme.primary,
               borderRadius: BorderRadius.circular(8)
             ),
             child: Stack(
@@ -85,16 +86,16 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                     width: 80,
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: Get.theme.colorScheme.primary,
+                      color: context.theme().colorScheme.primary,
                       borderRadius: BorderRadius.circular(64)
                     ),
                     alignment: Alignment.centerLeft,
                     child: Tooltip(
-                      message: "flow.open".trParams({"id": widget.flow.id}),
+                      message: "flow.open".tr(namedArgs: {"id": widget.flow.id}),
                       child: InkResponse(
                         onTap: () async {
-                          Get.back();
-                          Get.toNamed("/flow/"+widget.flow.snowflake);
+                          Navigator.pop(context);
+                          context.go("/flow/"+widget.flow.snowflake);
                         },
                         child: ProfilePicture(
                           child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,
@@ -107,11 +108,11 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                 ),
                 Positioned(
                   top: 136,
-                  child: Text(widget.flow.name, style: Get.textTheme.headline6?.copyWith(color: Colors.black))
+                  child: Text(widget.flow.name, style: context.textTheme().headline6?.copyWith(color: Colors.black))
                 ),
                 Positioned(
                   top: 164,
-                  child: Text(widget.flow.id, style: Get.textTheme.bodyText2?.copyWith(color: Colors.black))
+                  child: Text(widget.flow.id, style: context.textTheme().bodyText2?.copyWith(color: Colors.black))
                 )
               ],
             ),
@@ -119,7 +120,7 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
           else Container(
             height: 96,
             decoration: BoxDecoration(
-              color: Get.theme.colorScheme.primary,
+              color: context.theme().colorScheme.primary,
               borderRadius: BorderRadius.circular(8)
             ),
             child: Row(
@@ -140,12 +141,12 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(widget.flow.name, 
-                        style: Get.textTheme.headline6?.copyWith(color: Colors.black),
+                        style: context.textTheme().headline6?.copyWith(color: Colors.black),
                         maxLines: 1,
                         overflow: TextOverflow.fade
                       ),
                       Text(widget.flow.id,
-                        style: Get.textTheme.bodyText2?.copyWith(color: Colors.black),
+                        style: context.textTheme().bodyText2?.copyWith(color: Colors.black),
                         maxLines: 1,
                         overflow: TextOverflow.fade
                       ),

@@ -1,8 +1,5 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
-import 'package:get/get_connect/connect.dart';
-
 import 'apiclass.dart';
 
 class AuthenticationAPI extends APIConnect {
@@ -15,7 +12,7 @@ class AuthenticationAPI extends APIConnect {
   final String? clientSecret;
   final _userReadyCompleter = Completer();
 
-  AuthenticationAPI(this.server, this.clientId, [this.isServerInsecure = true, this.clientSecret]);
+  AuthenticationAPI(this.server, this.clientId, [this.isServerInsecure = true, this.clientSecret]) : super(server);
 
   Stream<AuthenticationStage> login() async* {
     yield AuthenticationStage.starting;
@@ -25,14 +22,14 @@ class AuthenticationAPI extends APIConnect {
   }
 
   Future<bool> _getAuthCode() async {
-    var _response = await post(urlScheme+server+"/_gridless/authorize?client_id=$clientId&scopes=client&response_type=code", null);
+    var _response = await post(urlScheme+server+"/_gridless/authorize?client_id=$clientId&scopes=client&response_type=code");
     if (_response.statusCode != 200) {
-      Get.back();
-      Get.snackbar("Error", _response.statusText ?? _response.statusCode?.toString() ?? "Unknown error");
+      // Navigator.pop(context);
+      // Get.snackbar("Error", _response.statusCode.toString());
       return false;
     }
     try {
-      _code = _response.body["code"];
+      _code = _response.data["code"];
     } catch(e) {
       return false;
     }
@@ -43,14 +40,15 @@ class AuthenticationAPI extends APIConnect {
     _userReadyCompleter.complete();
   }
   Future<bool> _getToken() async {
-    var _response = await post(urlScheme+server+"/_gridless/claimtoken?client_id=$clientId&code=$_code", null);
+    var _response = await post(urlScheme+server+"/_gridless/claimtoken?client_id=$clientId&code=$_code");
     if (_response.statusCode != 200) {
-      Get.back();
-      Get.snackbar("Error", _response.statusText ?? _response.statusCode?.toString() ?? "Unknown error");
+      //Navigator.pop(context); // move this logic to where this is received
+      // TODO: report the error to the error reporter
+      //Get.snackbar("Error", _response.statusCode.toString());
       return false;
     }
     try {
-      token = _response.body["token"];
+      token = _response.data["token"];
     } catch(e) {
       return false;
     }
@@ -62,7 +60,7 @@ class AuthenticationAPI extends APIConnect {
     if (_response.statusCode != 200) {
       return false;
     }
-    return _response.bodyString == "OK";
+    return _response.data == "OK";
   }
 }
 

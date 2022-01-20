@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 
 class CrashedView extends StatefulWidget {
   final String? title;
@@ -40,8 +42,8 @@ class _CrashedViewState extends State<CrashedView> {
               mainAxisSize: MainAxisSize.min, 
               children: [
                 //Empty state image
-                if (!widget.isRenderError || widget.title != null) Text(widget.title ?? "crash.generic.title".tr, style: Get.textTheme.headline4?.copyWith(color: Colors.white)),
-                Text(widget.helptext, style: Get.textTheme.bodyText2?.copyWith(color: Colors.white)),
+                if (!widget.isRenderError || widget.title != null) Text(widget.title ?? "crash.generic.title".tr(), style: context.textTheme().headline4?.copyWith(color: Colors.white)),
+                Text(widget.helptext, style: context.textTheme().bodyText2?.copyWith(color: Colors.white)),
                 if (!widget.isRenderError) Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -49,11 +51,11 @@ class _CrashedViewState extends State<CrashedView> {
                       padding: EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () => widget.retryBack
-                          ? Get.back()
-                          : Get.offNamed("/"), //Get.offNamed(Get.currentRoute),
+                          ? Navigator.canPop(context) ? context.pop() : context.go("/")
+                          : context.go("/"),
                         child: widget.retryBack
-                          ? Text("crash.goback".tr)
-                          : Text("crash.tryagain".tr)
+                          ? Text("crash.goback".tr())
+                          : Text("crash.tryagain".tr())
                       )
                     ),
                     Padding(
@@ -62,9 +64,9 @@ class _CrashedViewState extends State<CrashedView> {
                         onPressed: () {
                           Config.token = null;
                           API.get.reset();
-                          Get.offAllNamed("/login");
+                          Navigator.popAndPushNamed(context, "/login");
                         },
-                        child: Text("settings.logout".tr),
+                        child: Text("settings.logout".tr()),
                         style: ElevatedButton.styleFrom(primary: Colors.red),
                       )
                     )

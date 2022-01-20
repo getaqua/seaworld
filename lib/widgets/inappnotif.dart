@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
 import 'package:seaworld/views/crash.dart';
 
 enum Corner {
@@ -70,10 +70,10 @@ class InAppNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final corner = normalizeCorner(context, this.corner);
-    final _alignRight = corner == Corner.topRight || corner == Corner.bottomRight;
-    final _alignEnd = this.corner == Corner.topRight || this.corner == Corner.bottomRight
-    || this.corner == Corner.topEnd || this.corner == Corner.topStart;
+    //final corner = normalizeCorner(context, this.corner);
+    //final _alignRight = corner == Corner.topRight || corner == Corner.bottomRight;
+    final _alignEnd = corner == Corner.topRight || corner == Corner.bottomRight
+    || corner == Corner.topEnd || corner == Corner.topStart;
     return Dismissible(
       key: UniqueKey(),
       onDismissed: (_) => _overlay.remove(),
@@ -144,7 +144,7 @@ class InAppNotification extends StatelessWidget {
         } else if (widget.corner == Corner.bottomEnd) {
           return Positioned.directional(textDirection: dir, bottom: 0, end: 0, child: widget);
         } else {
-          return CrashedView(helptext: "crash.inappnotify.generic".tr);
+          return CrashedView(helptext: "crash.inappnotify.generic".tr());
         }
       }
     });

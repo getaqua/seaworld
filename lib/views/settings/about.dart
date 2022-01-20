@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
-import "package:get/get.dart";
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
-import 'package:seaworld/helpers/config.dart';
-import 'package:seaworld/helpers/theme.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/main.dart';
 import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
@@ -22,37 +22,36 @@ class AboutPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text("Seaworld", style: Get.textTheme.headline2),
-              Text(kVersion, style: Get.textTheme.headline6),
+              Text("Seaworld", style: context.textTheme().headline2),
+              Text(kVersion, style: context.textTheme().headline6),
               Padding(
                 padding: EdgeInsets.all(8),
                 child: SingleChildScrollView(child: Column(children: [
                   ListTile(
                     leading: Icon(Mdi.github),
                     onTap: () => launch("https://github.com/getaqua/seaworld/"), 
-                    title: Text("about.sourcelink".tr)
+                    title: Text("about.sourcelink".tr())
                   ),
                   ListTile(
                     leading: Icon(Mdi.license),
-                    onTap: () => Get.toNamed("/licenses"), 
-                    title: Text("about.licenses".tr)
+                    onTap: () => context.go("/licenses"), 
+                    title: Text("about.licenses".tr())
                   ),
                   if (!kReleaseMode) ...[
                     ListTile(
                       leading: Icon(Mdi.translate),
                       onTap: () async {
-                        Get.clearTranslations();
-                        await reloadTranslations();
+                        EasyLocalization.of(context)?.delegate.load(EasyLocalization.of(context)!.locale);
                       },
                       title: Text("Reload translations")
                     ),
                     ListTile(
                       leading: Icon(Mdi.alertCircleOutline),
-                      onTap: () => Get.to(() => CrashedView(
-                        title: "crash.generic.title".tr, 
-                        helptext: "crash.developererror.generic".tr,
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CrashedView(
+                        title: "crash.generic.title".tr(), 
+                        helptext: "crash.developererror.generic".tr(),
                         retryBack: true,
-                      )), 
+                      ))), 
                       title: Text("Test crash!")
                     ),
                     ListTile(
@@ -68,8 +67,8 @@ class AboutPage extends StatelessWidget {
                     ListTile(
                       leading: Icon(Mdi.fileTree),
                       onTap: () async {
-                        final TextEditingController controller = TextEditingController(text: Get.currentRoute);
-                        final res = await Get.dialog<String?>(AlertDialog(
+                        final TextEditingController controller = TextEditingController(text: GoRouter.of(context).location);
+                        final res = await showDialog<String?>(context: context, builder: (context) => AlertDialog(
                           title: Text("Go where?"),
                           content: TextField(
                             controller: controller,
@@ -78,12 +77,12 @@ class AboutPage extends StatelessWidget {
                             )
                           ),
                           actions: [
-                            TextButton(onPressed: () => Get.back(result: null), child: Text("dialog.cancel")),
-                            TextButton(onPressed: () => Get.back(result: controller.value.text), child: Text("dialog.ok")),
+                            TextButton(onPressed: () => Navigator.pop(context), child: Text("dialog.cancel")),
+                            TextButton(onPressed: () => Navigator.pop(context, controller.value.text), child: Text("dialog.ok")),
                           ],
                         ));
                         if (res == null) return;
-                        Get.offNamed(res, preventDuplicates: false);
+                        context.go(res);
                       },
                       title: Text("Navigate")
                     ),

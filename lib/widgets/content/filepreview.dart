@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,7 +15,7 @@ class FallbackAttachmentPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: "content.attachment.download".trParams({"filename": attachment.filename}),
+      message: "content.attachment.download".tr(namedArgs: {"filename": attachment.filename}),
       child: InkWell(
         onTap: embedded ? null : () => launch(API.get.urlScheme+Config.server
         +(attachment.downloadUrl ?? attachment.url.replaceFirst("/view/", "/download/"))),
@@ -48,7 +49,7 @@ class FallbackAttachmentPreview extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(attachment.filename, 
-                  style: Get.textTheme.headline5, 
+                  style: context.textTheme().headline5, 
                   maxLines: 2, 
                   overflow: TextOverflow.ellipsis
                 ),

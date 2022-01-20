@@ -1,0 +1,199 @@
+{
+    "login": {
+        "login": "Login",
+        "register": "Register",
+        "connectionerror": "Connection error",
+        "cannotreach": "Cannot reach server (@url)",
+        "selectserver": {
+            "title": "Select server",
+            "message": "Select the server you want to use, or manually input a base URL and API key.\nTo use a custom URL or client ID, input your choices then select Custom."
+        },
+        "authorizing": {
+            "title": "Waiting for you",
+            "message": "Login to the app, and press OK when you're done."
+        }
+    },
+    "settings": {
+        "darkmode": "Dark mode",
+        "logout": "Log out",
+        "logoutwarning": "Are you sure you want to log out?",
+        "general": "General",
+        "account": "Account",
+        "privacy": "Privacy",
+        "labs": "Experiments",
+        "theme": "Personalization",
+        "security": "Security",
+        "title": "Settings",
+        "about": "About Seaworld",
+        "privacypolicy": "Privacy Policy",
+        "tos": "Terms of Service"
+    },
+    "dialog": {
+        "yes": "Yes",
+        "no": "No",
+        "ok": "OK",
+        "cancel": "Cancel",
+        "apply": "Apply",
+        "next": "Next"
+    },
+    "about": {
+        "appname": "Seaworld, the Aqua client",
+        "sourcelink": "App source code",
+        "licenses": "Open-source licenses"
+    },
+    "post": {
+        "newtext": "New text post...",
+        "target": {
+            "profile": "Posting to your profile",
+            "flow": "Posting to @flow"
+        },
+        "newimage": "Upload image",
+        "newpoll": "Create a poll",
+        "uploadfile": "Upload a file",
+        "newevent": "New event",
+        "send": "Send",
+        "expand": "Create richer Content...",
+        "rich": {
+            "editortitle": "Create Content",
+            "title": "Title",
+            "text": "Text",
+            "media": "Media",
+            "upload_media": "Upload file",
+            "submit": "Post",
+            "pendingattachments": {
+                "title": "Files are still uploading.",
+                "message": "Your Content will not include any files that are not fully uploaded. Are you sure you want to continue?"
+            },
+            "submit_edit": "Update"
+        }
+    },
+    "crash": {
+        "connectionerror": {
+            "title": "Connection error",
+            "generic": "Check your connection to the Internet."
+        },
+        "notfound": {
+            "title": "Not found",
+            "generic": "The resource or page you were looking for could not be found."
+        },
+        "generic": {
+            "title": "View crashed"
+        },
+        "developererror": {
+            "generic": "This is a developer error."
+        },
+        "tryagain": "Try Again",
+        "goback": "Go back",
+        "flow": {
+            "title": "Could not find Flow",
+            "generic": "An error occurred when trying to fetch the Flow."
+        },
+        "inappnotify": {
+            "generic": "An in-app notification could not be displayed."
+        }
+    },
+    "error": {
+        "emptycontent": {
+            "title": "No Content",
+            "encouragement": "There's nothing here! Try posting something to fill the void.",
+            "flow": "There's nothing here! @name hasn't posted anything. Try again later; maybe there will be Content here!",
+            "error": "There's nothing here. Try again later."
+        },
+        "permissiondenied": {
+            "title": "Permission denied",
+            "generic": "You don't have permission to do this.",
+            "specific": "You do not have permission in @name to @perm."
+        }
+    },
+    "content": {
+        "inflow": "In {flow}",
+        "like": "Like",
+        "dislike": "Dislike",
+        "forward": "Forward",
+        "reply": "Reply",
+        "readmore": "Read more",
+        "delete": "Delete",
+        "edit": "Edit",
+        "attachment": {
+            "remove": "Remove attachment",
+            "download": "Download {filename}"
+        },
+        "confirmdelete": {
+            "title": "Delete this Content?"
+        },
+        "deletefailed": {
+            "title": "Delete failed",
+            "message": "You do not have permission to delete this content."
+        },
+        "deletesuccess": {
+            "title": "Delete succeeded"
+        },
+        "post": {
+            "failed": "Failed to post Content"
+        }
+    },
+    "flow": {
+        "showpreview": "Show profile",
+        "open": "Open {id}",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "join": "Join",
+        "leave": "Leave",
+        "feature": {
+            "home": "Home",
+            "chat": "Chat",
+            "settings": "Settings"
+        },
+        "settings": {
+            "header": {
+              "full": "Update {id}",
+              "minimal": "Update Flow"
+            },
+            "tabs": {
+                "profile": "Profile",
+                "features": "Flow Features"
+            }
+        },
+        "update": {
+            "banner": "Upload new banner",
+            "avatar": "Upload new avatar",
+            "name": "Name",
+            "description": "Description",
+            "failed": "Failed to update Flow",
+            "success": "Flow updated",
+            "remove_banner": "Reset banner",
+            "remove_avatar": "Reset avatar"
+        }
+    },
+    "upload": {
+        "failed": {
+            "title": "Upload failed",
+            "generic": "The file was not uploaded."
+        },
+        "success": {
+            "banner": "Banner updated successfully",
+            "avatar": "Avatar updated successfully"
+        }
+    },
+    "permission": {
+        "flow": {
+            "post": "Post Content",
+            "read": "Read Content",
+            "view": "View this Flow's profile",
+            "join": "Join this Flow",
+            "delete": "Delete Content",
+            "pin": "Pin Content",
+            "update": "Change settings in this Flow"
+        }
+    },
+    "flows": {
+        "joined": "Flows you are a member of",
+        "following": "Flows you are following",
+        "none": "(none)"
+    },
+    "home": {
+        "content": {
+            "loading": "Checking for new Content..."
+        }
+    }
+}

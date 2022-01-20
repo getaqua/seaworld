@@ -1,3 +1,5 @@
+// ignore_for_file: override_on_non_overriding_member
+
 import 'package:mockito/mockito.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/models/content.dart';
