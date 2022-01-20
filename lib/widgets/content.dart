@@ -1,3 +1,5 @@
+import 'package:duration/duration.dart';
+import 'package:duration/locale.dart';
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
@@ -37,6 +39,12 @@ class _ContentWidgetState extends State<ContentWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var dtF = DateFormat.yMd(context.locale.toStringWithSeparator());
+    if (MediaQuery.of(context).alwaysUse24HourFormat) {
+      dtF = dtF.add_Hm();
+    } else {
+      dtF = dtF.add_jm();
+    }
     return _deleted == widget.content.snowflake ? Container() : Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -112,7 +120,9 @@ class _ContentWidgetState extends State<ContentWidget> {
                                   Text(widget.content.author.name, style: context.textTheme().subtitle1),
                                   Text([
                                     widget.content.author.id, 
-                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId})
+                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId}),
+                                    if (DateTime.now().difference(widget.content.timestamp) < Duration(hours: 24)) prettyDuration(DateTime.now().difference(widget.content.timestamp), first: true)
+                                    else dtF.format(widget.content.timestamp.toLocal())
                                   ].join(" • "), style: context.textTheme().caption)
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
