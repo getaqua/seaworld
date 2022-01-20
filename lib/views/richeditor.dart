@@ -3,8 +3,9 @@ import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
@@ -137,7 +138,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                       if (_result != true) return;
                       setState(() {_posting = true;});
                       runMutation({
-                        "toFlow": Config.cache.userId,
+                        "id": Config.cache.userId,
                         "data": {
                           "text": _controller.value.text,
                           "attachments": _attachments

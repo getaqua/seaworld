@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -165,11 +166,13 @@ class _ContentWidgetState extends State<ContentWidget> {
                                 title: Text("content.deletefailed.title".tr()),
                                 text: Text("content.deletefailed.message".tr()),
                                 icon: Icon(Mdi.alertCircleOutline, color: Colors.red),
+                                corner: Corner.bottomStart
                               ));
                             } else {
                               InAppNotification.showOverlayIn(context, InAppNotification(
-                                title: Text("content.deletesuccess".tr()),
+                                title: Text("content.deletesuccess.title".tr()),
                                 icon: Icon(Mdi.check, color: Colors.green),
+                                corner: Corner.bottomStart
                               ));
                               setState(() => _deleted = widget.content.snowflake);
                             }
@@ -178,9 +181,10 @@ class _ContentWidgetState extends State<ContentWidget> {
                               title: Text("crash.connectionerror.title".tr()),
                               text: Text("content.deletefailed.title".tr()),
                               icon: Icon(Mdi.lightningBolt, color: Colors.red),
+                              corner: Corner.bottomStart
                             ));
                           }
-                          Navigator.pop(context);
+                          //Navigator.pop(context);x  x
                         })();
                         return;
                       case "edit":

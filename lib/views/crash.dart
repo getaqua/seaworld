@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
+import 'package:go_router/go_router.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
@@ -50,9 +51,8 @@ class _CrashedViewState extends State<CrashedView> {
                       padding: EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () => widget.retryBack
-                          ? Navigator.pop(context)
-                          : Navigator.pushReplacementNamed(context, "/"),
-                           //Get.offNamed(Get.currentRoute),
+                          ? Navigator.canPop(context) ? context.pop() : context.go("/")
+                          : context.go("/"),
                         child: widget.retryBack
                           ? Text("crash.goback".tr())
                           : Text("crash.tryagain".tr())

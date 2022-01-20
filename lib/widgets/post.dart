@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/content.dart';
 import "package:seaworld/helpers/extensions.dart";
 import 'package:mdi/mdi.dart';
@@ -177,30 +179,32 @@ class _NewContentCardState extends State<NewContentCard> {
                     child: IconButton(onPressed: null, icon: Icon(Mdi.calendar))
                   ),
                   _posting ? CircularProgressIndicator(value: null)
-                  : _cobs.value.text == "" ? Tooltip(
-                    message: "post.expand".tr(),
-                    child: IconButton(onPressed: () async {
-                      await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
-                        alignment: Alignment.topCenter,
-                        width: 720,
-                        child: RichEditorPage(flow: widget.flow))
-                      ));
-                      (widget.refreshContent ?? (() => {}))();
-                    }, icon: Icon(Mdi.cardBulleted), color: context.theme().colorScheme.primary)
-                  ) : Tooltip(
-                    message: "post.send".tr(),
-                    child: IconButton(
-                      onPressed: !_posting ? () async {
-                        setState(() => _posting = true);
-                        runMutation({
-                          "id": Config.cache.userId,
-                          "data": {
-                            "text": _controller.value.text
-                          }
-                        });
-                      } : null,
-                      icon: Icon(Mdi.send),
-                      color: context.theme().colorScheme.primary,
+                  : AnimatedBuilder(animation: _controller, builder: (context, _) => 
+                    _cobs.value.text == "" ? Tooltip(
+                      message: "post.expand".tr(),
+                      child: IconButton(onPressed: () async {
+                        await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
+                          alignment: Alignment.topCenter,
+                          width: 720,
+                          child: RichEditorPage(flow: widget.flow))
+                        ));
+                        (widget.refreshContent ?? (() => {}))();
+                      }, icon: Icon(Mdi.cardBulleted), color: context.theme().colorScheme.primary)
+                    ) : Tooltip(
+                      message: "post.send".tr(),
+                      child: IconButton(
+                        onPressed: !_posting ? () async {
+                          setState(() => _posting = true);
+                          runMutation({
+                            "id": Config.cache.userId,
+                            "data": {
+                              "text": _controller.value.text
+                            }
+                          });
+                        } : null,
+                        icon: Icon(Mdi.send),
+                        color: context.theme().colorScheme.primary,
+                      )
                     )
                   )
                 ],

@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart" hide Flow;
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -133,7 +134,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                   }),
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),
-                                    child: Text("flow.update.banner.remove".tr()),
+                                    child: Text("flow.update.remove_banner".tr()),
                                   )
                                 ),
                               )
@@ -219,7 +220,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                   }),
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),
-                                    child: Text("flow.update.avatar.remove".tr()),
+                                    child: Text("flow.update.remove_avatar".tr()),
                                   )
                                 ),
                               )

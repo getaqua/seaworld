@@ -1,5 +1,10 @@
 
 import 'package:dio/dio.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' as gqlf;
+// ignore: implementation_imports
+import 'package:gql/src/ast/ast.dart' show DocumentNode;
+
+import 'fragments.dart';
 //import 'package:http/http.dart' as http;
 
 
@@ -32,29 +37,29 @@ abstract class APIConnect {
   //   return result;
   // }
 
-  // Future<List<String>> _prepareFragments(String query) async {
-  //   List<String> output = [];
-  //   while (true) {
-  //     var _ = [...output, query].join("\n");
-  //     if (_.contains("...attachment") && !output.contains(Fragments.attachment)) {
-  //       output.add(Fragments.attachment); continue;
-  //     }
-  //     if (_.contains("...content") && !output.contains(Fragments.content)) {
-  //       output.add(Fragments.content); continue;
-  //     }
-  //     if (_.contains("...flowPermissions") && !output.contains(Fragments.flowPermissions)) {
-  //       output.add(Fragments.flowPermissions); continue;
-  //     }
-  //     if (_.contains("...fullFlow") && !output.contains(Fragments.fullFlow)) {
-  //       output.add(Fragments.fullFlow); continue;
-  //     }
-  //     if (_.contains("...partialFlow") && !output.contains(Fragments.partialFlow)) {
-  //       output.add(Fragments.partialFlow); continue;
-  //     }
-  //     break;
-  //   }
-  //   return [...output, query];
-  // }
+  static List<String> _prepareFragments(String query) {
+    List<String> output = [];
+    while (true) {
+      var _ = [...output, query].join("\n");
+      if (_.contains("...attachment") && !output.contains(Fragments.attachment)) {
+        output.add(Fragments.attachment); continue;
+      }
+      if (_.contains("...content") && !output.contains(Fragments.content)) {
+        output.add(Fragments.content); continue;
+      }
+      if (_.contains("...flowPermissions") && !output.contains(Fragments.flowPermissions)) {
+        output.add(Fragments.flowPermissions); continue;
+      }
+      if (_.contains("...fullFlow") && !output.contains(Fragments.fullFlow)) {
+        output.add(Fragments.fullFlow); continue;
+      }
+      if (_.contains("...partialFlow") && !output.contains(Fragments.partialFlow)) {
+        output.add(Fragments.partialFlow); continue;
+      }
+      break;
+    }
+    return [...output, query];
+  }
 
   // @override 
   // Future<GraphQLResponse<T>> mutation<T>(
@@ -93,4 +98,8 @@ abstract class APIConnect {
   //   }
   // }
 
+}
+/// Automatically applies all necessary fragments to the query. You're welcome.
+DocumentNode gql(String document) {
+  return gqlf.gql(APIConnect._prepareFragments(document).join("\n"));
 }

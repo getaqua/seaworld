@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -115,7 +116,7 @@ class SettingsRoot extends ConsumerWidget {
               if (_result == false) return;
               Config.token = null;
               API.get.isReady = false;
-              Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+              context.go("/");
             }
           ),
           // TabButton(

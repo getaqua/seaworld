@@ -82,7 +82,7 @@ class AboutPage extends StatelessWidget {
                           ],
                         ));
                         if (res == null) return;
-                        Navigator.pushReplacementNamed(context, res);
+                        context.go(res);
                       },
                       title: Text("Navigate")
                     ),

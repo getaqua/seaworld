@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart" hide Flow;
 import 'package:go_router/go_router.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';

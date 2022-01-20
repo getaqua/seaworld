@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:go_router/go_router.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/content.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
@@ -53,7 +54,7 @@ class _WideHomeViewState extends State<WideHomeView> {
         fetchPolicy: FetchPolicy.cacheAndNetwork
       ),
       builder: (result, {fetchMore, refetch}) {
-        final List<Content>? content = result.data?["getFollowedContent"]?.map((v) => Content.fromJSON(v));
+        final List<Content>? content = result.data?["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
         return Scaffold(
           appBar: AppBar(
             title: Text(Config.cache.serverName),

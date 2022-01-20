@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
@@ -118,7 +119,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                       Config.server = _serverUrl;
                                       API.get.reset();
                                       API.get.init(Config.token!);
-                                      Navigator.pushReplacementNamed(context, "/home");
+                                      context.go("/home");
                                       break;
                                     default:
                                   }

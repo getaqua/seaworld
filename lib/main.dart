@@ -1,14 +1,17 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization_loader/easy_localization_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:seaworld/api/apiclass.dart';
+import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
@@ -17,21 +20,25 @@ import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/views/flow/home.dart';
 import 'package:seaworld/views/flow/settings/main.dart';
 import 'package:seaworld/views/home/wide.dart';
+import 'package:seaworld/views/login.dart';
 import 'package:seaworld/views/settings/main.dart';
 
 
 late final String kVersion;
 //late Map<String, Box> accounts;
 
+final _deadHTTPLink = HttpLink("http://127.0.0.8:900/");
+
 ValueNotifier<GraphQLClient> gqlClient = ValueNotifier(
   GraphQLClient(
-    link: HttpLink(Config.server),
+    link: _deadHTTPLink,
     cache: GraphQLCache(store: InMemoryStore())
   )
 );
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   kVersion = await rootBundle.loadString("assets/raw/version.txt");
   if (!kIsWeb) {
     Hive.init(
@@ -42,11 +49,17 @@ void main() async {
       .path+"/.aqua-seaworld-database");
   }
   await Hive.openBox("config");
-  runApp(GraphQLProvider(
-    client: gqlClient,
-    child: ProviderScope(
-      child: MyApp()
-    )
+  runApp(EasyLocalization(
+    supportedLocales: const [Locale("en", "US")],
+    fallbackLocale: const Locale("en", "US"),
+    useFallbackTranslations: true,
+    path: "assets/lang",
+    child: GraphQLProvider(
+      client: gqlClient,
+      child: ProviderScope(
+        child: MyApp()
+      )
+    ),
   ));
 }
 
@@ -59,94 +72,91 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return EasyLocalization(
-      supportedLocales: const [Locale("en", "US")],
-      fallbackLocale: const Locale("en", "US"),
-      useFallbackTranslations: true,
-      path: "assets/lang",
-      child: MaterialApp.router(
-        title: 'Seaworld/Aqua',
-        theme: ref.watch(themeProvider),
-        color: Colors.lightBlue,
-        //initialRoute: "/",
-        routeInformationParser: router.routeInformationParser,
-        routerDelegate: router.routerDelegate,
-        // translationsKeys: {
-        //   "en_US": lang$en_US,
-        // },
-        // locale: Locale("en", "US"),
-        // fallbackLocale: Locale("en", "US"),
-        /* getPages: [
-          GetPage(name: "/", page: () => Material(color: Colors.deepPurple[900]), middlewares: [HomeRedirect()]),
-          GetPage(name: "/login", page: () => Material(child: LoginView()), middlewares: [HomeRedirect()]),
-          GetPage(name: "/home", page: () =>
-            API.get.isReady
-              ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
-              : FutureBuilder(
-                future: API.get.ready,
-                builder: (context, snap) => snap.connectionState == ConnectionState.done
-                  ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
-                  : Material(
-                    color: Colors.black54, 
-                    child: Center(child: CircularProgressIndicator(value: null)),
-                  )
-              ),
-            middlewares: [HomeRedirect()]
-          ),
-          GetPage(name: "/settings", page: () => SettingsRoot(), middlewares: [EnsureLoggedIn()], binding: SettingsBindings()),
-          GetPage(name: "/licenses", page: () => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
-          GetPage(name: "/flow/:id", page: () => FutureBuilder<FlowWithContent>(
-            future: API.getFlowAndContent(Get.parameters["id"] ?? ""),
-            builder: (context, snapshot) => snapshot.hasData ? FlowHomeView(flow: snapshot.data!)
-            : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
-              title: "crash.connectionerror.title".tr(),
-              helptext: "crash.connectionerror.generic".tr()
-            ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
-            ? CrashedView(
-              title: (snapshot.error as APIErrorHandler).title, 
-              helptext: (snapshot.error as APIErrorHandler).message
-              )
-            : CrashedView(helptext: snapshot.error!.toString())
-            : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
-          )),
-          GetPage(name: "/flow/:id/settings", page: () => FutureBuilder<Flow>(
-            future: Get.arguments is PartialFlow && Get.arguments.snowflake == Get.parameters["id"]
-            ? Future.value(Get.arguments)
-            : API.getFlow(Get.parameters["id"] ?? ""),
-            builder: (context, snapshot) => snapshot.hasData ? FlowSettingsRoot(flow: snapshot.data!)
-            : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
-              title: "crash.connectionerror.title".tr(),
-              helptext: "crash.connectionerror.generic".tr()
-            ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
-            ? CrashedView(
-              title: (snapshot.error as APIErrorHandler).title, 
-              helptext: (snapshot.error as APIErrorHandler).message
-              )
-            : CrashedView(helptext: snapshot.error!.toString())
-            : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
-          ), binding: SettingsBindings())
-        ],
-        builder: (BuildContext context, Widget? widget) {
-          Widget Function(FlutterErrorDetails? errorDetails) error = (FlutterErrorDetails? errorDetails) => Text(errorDetails?.summary.toString() ?? "Error");
-          if (widget is Scaffold || widget is Navigator) {
-            error = (details) => CrashedView(
-              title: "View crashed",
-              helptext: details?.summary.toString() ?? "This is a developer error.",
-              isRenderError: true,
-            );
-          }
-          ErrorWidget.builder = (FlutterErrorDetails errorDetails) => error(errorDetails);
-          return widget ?? CrashedView(
-            title: "Widget not found",
-            helptext: "This is a developer error.",
+    return MaterialApp.router(
+      title: 'Seaworld/Aqua',
+      theme: ref.watch(themeProvider),
+      color: Colors.lightBlue,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      //initialRoute: "/",
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+      // translationsKeys: {
+      //   "en_US": lang$en_US,
+      // },
+      // locale: Locale("en", "US"),
+      // fallbackLocale: Locale("en", "US"),
+      /* getPages: [
+        GetPage(name: "/", page: () => Material(color: Colors.deepPurple[900]), middlewares: [HomeRedirect()]),
+        GetPage(name: "/login", page: () => Material(child: LoginView()), middlewares: [HomeRedirect()]),
+        GetPage(name: "/home", page: () =>
+          API.get.isReady
+            ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
+            : FutureBuilder(
+              future: API.get.ready,
+              builder: (context, snap) => snap.connectionState == ConnectionState.done
+                ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
+                : Material(
+                  color: Colors.black54, 
+                  child: Center(child: CircularProgressIndicator(value: null)),
+                )
+            ),
+          middlewares: [HomeRedirect()]
+        ),
+        GetPage(name: "/settings", page: () => SettingsRoot(), middlewares: [EnsureLoggedIn()], binding: SettingsBindings()),
+        GetPage(name: "/licenses", page: () => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
+        GetPage(name: "/flow/:id", page: () => FutureBuilder<FlowWithContent>(
+          future: API.getFlowAndContent(Get.parameters["id"] ?? ""),
+          builder: (context, snapshot) => snapshot.hasData ? FlowHomeView(flow: snapshot.data!)
+          : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
+            title: "crash.connectionerror.title".tr(),
+            helptext: "crash.connectionerror.generic".tr()
+          ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
+          ? CrashedView(
+            title: (snapshot.error as APIErrorHandler).title, 
+            helptext: (snapshot.error as APIErrorHandler).message
+            )
+          : CrashedView(helptext: snapshot.error!.toString())
+          : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
+        )),
+        GetPage(name: "/flow/:id/settings", page: () => FutureBuilder<Flow>(
+          future: Get.arguments is PartialFlow && Get.arguments.snowflake == Get.parameters["id"]
+          ? Future.value(Get.arguments)
+          : API.getFlow(Get.parameters["id"] ?? ""),
+          builder: (context, snapshot) => snapshot.hasData ? FlowSettingsRoot(flow: snapshot.data!)
+          : snapshot.hasError && snapshot.error! is HttpException ? CrashedView(
+            title: "crash.connectionerror.title".tr(),
+            helptext: "crash.connectionerror.generic".tr()
+          ) : snapshot.hasError ? snapshot.error! is APIErrorHandler
+          ? CrashedView(
+            title: (snapshot.error as APIErrorHandler).title, 
+            helptext: (snapshot.error as APIErrorHandler).message
+            )
+          : CrashedView(helptext: snapshot.error!.toString())
+          : Material(color: Colors.black54, child: Center(child: CircularProgressIndicator(value: null)))
+        ), binding: SettingsBindings())
+      ],
+      builder: (BuildContext context, Widget? widget) {
+        Widget Function(FlutterErrorDetails? errorDetails) error = (FlutterErrorDetails? errorDetails) => Text(errorDetails?.summary.toString() ?? "Error");
+        if (widget is Scaffold || widget is Navigator) {
+          error = (details) => CrashedView(
+            title: "View crashed",
+            helptext: details?.summary.toString() ?? "This is a developer error.",
             isRenderError: true,
           );
-        }, */
-      ),
+        }
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) => error(errorDetails);
+        return widget ?? CrashedView(
+          title: "Widget not found",
+          helptext: "This is a developer error.",
+          isRenderError: true,
+        );
+      }, */
     );
   }
 
-  static ensureLoggedIn(GoRouterState state) {
+  static String? ensureLoggedIn(GoRouterState state) {
     if (Config.token == null) {
       return "/login";
     }
@@ -154,30 +164,62 @@ class MyApp extends ConsumerWidget {
 
   final router = GoRouter(
     routes: [
-      GoRoute(path: "/", redirect: (state) => Config.token == null ? "/login" : "/home"),
-      GoRoute(path: "/home", builder: (context, state) => WideHomeView()),
-      GoRoute(path: "/settings", builder: (context, state) => SettingsRoot()),
-      GoRoute(path: "/licenses", builder: (context, state) => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
+      //GoRoute(path: "/", redirect: (state) => Config.token == null ? "/login" : "/home"),
       GoRoute(
-        path: "/flow/:flow",
-        builder: (context, state) => FlowHomeView(flow: Flow.fromJSON({"snowflake": state.params["flow"]})),
+        path: "/",
+        builder: (context, state) => API.get.isReady
+          ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
+          : FutureBuilder(
+            future: API.get.ready,
+            builder: (context, snap) => snap.connectionState == ConnectionState.done
+              ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
+              : Material(
+                color: Colors.black54, 
+                child: Center(child: CircularProgressIndicator(value: null)),
+              )
+        ),
         routes: [
-          GoRoute(path: "settings", builder: (context, state) => FlowSettingsRoot(flow: state.extra as Flow? ?? Flow.fromJSON({"snowflake": state.params["flow"]})))
-        ]
+          GoRoute(path: "settings", builder: (context, state) => SettingsRoot()),
+          GoRoute(path: "licenses", builder: (context, state) => LicensePage(applicationName: "Seaworld", applicationVersion: kVersion)),
+          GoRoute(
+            path: "flow/:flow",
+            builder: (context, state) => Query(
+              options: QueryOptions(
+                document: gql(FlowAPI.getFlow),
+                variables: {"id": state.params["flow"]},
+                fetchPolicy: FetchPolicy.cacheFirst
+              ),
+              builder: (result, {fetchMore, refetch}) => result.isLoading && result.data == null
+              ? Material(
+                color: Colors.black54, 
+                child: Center(child: CircularProgressIndicator(value: null)),
+              ) : result.data == null
+              ? CrashedView(
+                title: "crash.flow.title".tr(),
+                helptext: "crash.flow.generic".tr(),
+              ) : FlowHomeView(flow: Flow.fromJSON(result.data!["getFlow"]))),
+            routes: [
+              GoRoute(path: "settings", builder: (context, state) => FlowSettingsRoot(flow: state.extra as Flow? ?? Flow.fromJSON({"snowflake": state.params["flow"]})))
+            ],
+          ),
+        ],
+        redirect: ensureLoggedIn
       ),
+      GoRoute(path: "/login", builder: (context, state) => Material(child: LoginView())),
     ],
     redirect: (state) {
-      if (Config.token == null && state.fullpath != "/login" && state.fullpath?.startsWith("/settings") != true) {
+      if (Config.token == null && state.location != "/login" && state.location.startsWith("/settings") != true) {
         return "/login";
-      } else if (Config.token != null && state.fullpath == "/login") {
-        if (!API.get.isReady) API.get.init(Config.token!);
-        return "/home";
+      } else if (Config.token != null && (state.location == "/login" || state.location == "/")) {
+        if (!API.get.isReady && gqlClient.value.link == _deadHTTPLink) API.get.init(Config.token!);
+        return state.location == "/" ? null : "/";
       }
     },
     errorPageBuilder: (context, state) => MaterialPage(child: CrashedView(
-      title: "error.notfound.title".tr(),
-      helptext: "error.notfound.router".tr(),
-    ))
+      title: "crash.notfound.title".tr(),
+      helptext: "crash.notfound.generic".tr(),
+      retryBack: true,
+    )),
   );
 }
 

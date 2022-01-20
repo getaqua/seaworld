@@ -4,18 +4,17 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:graphql_flutter/graphql_flutter.dart' hide Response;
+import 'package:gql_dio_link/gql_dio_link.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide Response, gql;
 import 'package:hive/hive.dart';
 import 'package:mime_type/mime_type.dart';
-import 'package:seaworld/api/content.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/system.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/main.dart';
 import 'package:seaworld/models/flow.dart';
 // ignore: implementation_imports
 import 'package:http_parser/src/media_type.dart';
-
-import 'flow.dart';
 
 class API {
   static API get get => _instance ??= API();
@@ -55,19 +54,27 @@ class API {
   }
 
   Future<void> init(String token, [bool? isServerInsecure]) async {
-    final HttpLink httpLink = HttpLink(
-      urlScheme+Config.server+"/_gridless/graphql",
+    if (isReady) return;
+    this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
+    var uri = Uri.parse(urlScheme+Config.server);
+    //if (_isLocalhost(Config.server)) uri = uri.replace(host: "127.0.0.1");
+    uri = uri.replace(path: "/_gridless/graphql");
+    final DioLink httpLink = DioLink(
+      uri.toString(),
+      client: Dio(),
+      defaultHeaders: {
+        "Authorization": "Bearer "+token
+      }
     );
-    final AuthLink authLink = AuthLink(
-      getToken: () => 'Bearer '+token,
-    );
-    final Link link = authLink.concat(httpLink);
+    // final AuthLink authLink = AuthLink(
+    //   getToken: () => 'Bearer '+token,
+    // );
+    final Link link = httpLink;
 
     gqlClient.value = GraphQLClient(
       link: link,
-      // The default store is the InMemoryStore, which does NOT persist to disk
       cache: GraphQLCache(
-        store: HiveStore(Hive.box("gql")),
+        store: HiveStore(await Hive.openBox("gql")),
         dataIdFromObject: (data) {
           final typename = data['__typename'] ?? "";
           final id = data['snowflake'] ?? data['id'] ?? data['_id'];
@@ -76,39 +83,30 @@ class API {
       ),
     );
 
-    this.isServerInsecure = isServerInsecure ?? _isLocalhost(Config.server);
-    system = SystemAPI(token, urlScheme+Config.server);
-    flow = FlowAPI(token, urlScheme+Config.server);
-    content = ContentAPI(token, urlScheme+Config.server);
+    // system = SystemAPI(token, urlScheme+Config.server);
+    // flow = FlowAPI(token, urlScheme+Config.server);
+    // content = ContentAPI(token, urlScheme+Config.server);
     this.token = token;
-    try {
-      await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo))).then((value) {
-        if (value.hasException) throw value.exception!;
-        Config.cache.serverName = value.data!["getSystemInfo"]["name"];
-        Config.cache.serverVersion = value.data!["getSystemInfo"]["version"];
-      });
-      await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getMe))).then((value) {
-        if (value.hasException) throw value.exception!;
-        Config.cache.userId = value.data!["getMe"]["flow"]["id"];
-        Config.cache.scopes = List.castFrom(value.data!["getMe"]["tokenPermissions"]);
-        Config.cache.userFlow = Flow.fromJSON(value.data!["getMe"]["flow"]);
-      });
-      isReady = true;
-      _ready.complete(true);
-    } catch(e) {
-      rethrow;
-      // Get.off(() => CrashedView(
-      //   title: "crash.connectionerror.title".tr(),
-      //   helptext: e.toString().contains('[]("errors")')
-      //   ? "crash.connectionerror.generic".tr()
-      //   : e.toString()
-      // ));
-    }
+    await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
+      if (value.hasException) throw value.exception!;
+      Config.cache.serverName = value.data!["getSystemInfo"]["name"];
+      Config.cache.serverVersion = value.data!["getSystemInfo"]["version"];
+      return value;
+    });
+    await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getMe), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
+      if (value.hasException) throw value.exception!;
+      Config.cache.userId = value.data!["getMe"]["flow"]["id"];
+      Config.cache.scopes = List.castFrom(value.data!["getMe"]["tokenPermissions"]);
+      Config.cache.userFlow = Flow.fromJSON(value.data!["getMe"]["flow"]);
+      return value;
+    });
+    isReady = true;
+    _ready.complete(true);
   }
   //final _flowApi;
-  late SystemAPI system;
-  late FlowAPI flow;
-  late ContentAPI content;
+  // late SystemAPI system;
+  // late FlowAPI flow;
+  // late ContentAPI content;
 
   static Future<Response?> uploadFile({String? fromPath, XFile? file, void Function(int, int)? sendProgress}) async {
     return Dio().post(get.urlScheme+Config.server+"/_gridless/media", 

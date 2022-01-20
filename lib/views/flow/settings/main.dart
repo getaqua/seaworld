@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
+import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
@@ -21,6 +22,7 @@ class FlowSettingsRoot extends ConsumerWidget {
     return Query(
       options: QueryOptions(
         document: gql(FlowAPI.getFlow),
+        variables: {"id": flow.snowflake},
         fetchPolicy: FetchPolicy.cacheFirst,
         optimisticResult: flow
       ),
@@ -29,7 +31,7 @@ class FlowSettingsRoot extends ConsumerWidget {
           child: Builder(builder: (bc) => _sidebarcontent(bc)),
         ) : null,
         appBar: AppBar(
-          title: Text("flow.settings.header".tr(namedArgs: {"id": flow.id})),
+          title: Text("flow.settings.header.full".tr(namedArgs: {"id": flow.id})),
         ),
         body: Row(
           children: [
