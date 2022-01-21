@@ -6,6 +6,7 @@ import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/views/settings/about.dart';
 import 'package:seaworld/views/settings/theming.dart';
 
@@ -115,6 +116,7 @@ class SettingsRoot extends ConsumerWidget {
               ));
               if (_result == false) return;
               Config.token = null;
+              gqlClient.value.cache.store.reset();
               API.get.isReady = false;
               context.go("/");
             }

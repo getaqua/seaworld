@@ -28,6 +28,7 @@ late final String kVersion;
 //late Map<String, Box> accounts;
 
 final _deadHTTPLink = HttpLink("http://127.0.0.8:900/");
+bool _started = false;
 
 ValueNotifier<GraphQLClient> gqlClient = ValueNotifier(
   GraphQLClient(
@@ -211,7 +212,10 @@ class MyApp extends ConsumerWidget {
       if (Config.token == null && state.location != "/login" && state.location.startsWith("/settings") != true) {
         return "/login";
       } else if (Config.token != null && (state.location == "/login" || state.location == "/")) {
-        if (!API.get.isReady && gqlClient.value.link == _deadHTTPLink) API.get.init(Config.token!);
+        if (!API.get.isReady && !_started) {
+          _started = true;
+          API.get.init(Config.token!).then((_) => _started = false);
+        }
         return state.location == "/" ? null : "/";
       }
     },

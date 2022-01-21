@@ -3,7 +3,7 @@
         "login": "Login",
         "register": "Register",
         "connectionerror": "Connection error",
-        "cannotreach": "Cannot reach server (@url)",
+        "cannotreach": "Cannot reach server ({url})",
         "selectserver": {
             "title": "Select server",
             "message": "Select the server you want to use, or manually input a base URL and API key.\nTo use a custom URL or client ID, input your choices then select Custom."
@@ -45,7 +45,7 @@
         "newtext": "New text post...",
         "target": {
             "profile": "Posting to your profile",
-            "flow": "Posting to @flow"
+            "flow": "Posting to {flow}"
         },
         "newimage": "Upload image",
         "newpoll": "Create a poll",

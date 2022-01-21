@@ -11,16 +11,18 @@ class FlowPreviewPopupMenu {
   static const Offset center = Offset(36, 36);
   OverlayEntry? _overlayEntry;
 
-  show({required BuildContext context, required PartialFlow flow, Rect? position}) {
-    final _position = (context.findRenderObject() as RenderBox?)?.localToGlobal(center);
-    final pos = position?.topLeft ?? _position;
+  show({required BuildContext context, required PartialFlow flow, Offset? position, Offset? offset}) {
+    final _position = (context.findRenderObject() as RenderBox?)?.localToGlobal(const Offset(0,0));
+    final pos = position ?? (_position! + center);
+    //final widthAccommodation = (context.findRenderObject() as RenderBox?)?.
     _overlayEntry ??= OverlayEntry(builder: (context) => Stack(
       children: [
         Positioned.fill(child: GestureDetector(onTapDown: (_) => _overlayEntry?.remove())),
-        Positioned(top: pos!.dy, left: pos.dx, child: Material(
+        Positioned(top: pos.dy+(offset?.dy??0), left: pos.dx+(offset?.dx??0), child: Material(
           child: _FlowPreviewPopupMenu(flow: flow),
           elevation: 2,
-          borderRadius: BorderRadius.all(Radius.circular(8.0))
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          clipBehavior: Clip.antiAlias,
         ))
       ]
     ));
@@ -45,7 +47,7 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
   Widget build(BuildContext context) {
     final hasBanner = widget.flow.bannerUrl != null;
     return Container(
-      width: 320,
+      width: MediaQuery.of(context).size.width > 328 ? 320 : MediaQuery.of(context).size.width,
       //height: 480,
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
@@ -194,7 +196,7 @@ class __FlowPreviewAnimationState extends State<_FlowPreviewAnimation>
     );
     _opacity = Tween<double>(
       begin: 0,
-      end: 1,
+      end: 50,
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.linear,
@@ -219,6 +221,7 @@ class __FlowPreviewAnimationState extends State<_FlowPreviewAnimation>
     return FadeTransition(
       opacity: _opacity,
       child: SlideTransition(
+        transformHitTests: false,
         position: _position,
         child: widget.child,
       )

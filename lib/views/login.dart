@@ -119,7 +119,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                       Config.server = _serverUrl;
                                       API.get.reset();
                                       API.get.init(Config.token!);
-                                      context.go("/home");
+                                      context.go("/");
                                       break;
                                     default:
                                   }

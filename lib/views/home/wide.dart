@@ -85,59 +85,6 @@ class _WideHomeViewState extends State<WideHomeView> {
                       ),
                       Query(
                         options: QueryOptions(
-                          document: gql(FlowAPI.followedFlows)
-                        ),
-                        builder: (result, {fetchMore, refetch}) => result.isNotLoading ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            for (final flow in result.data?["getFollowedFlows"]?.map((v) => PartialFlow.fromJSON(v))) if (flow.snowflake != Config.cache.userFlow.snowflake) 
-                            ListTile(
-                              leading: ProfilePicture(
-                                child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
-                                size: 48, notchSize: 12,
-                                fallbackChild: FallbackProfilePicture(flow: flow)
-                              ),
-                              title: Text(flow.name),
-                              subtitle: Text(flow.id),
-                              onTap: () => context.go("/flow/"+flow.snowflake),
-                            ),
-                            if (result.data?["getFollowedFlows"]?.isNotEmpty != true && result.hasException) Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(Mdi.weatherLightning, color: Colors.red),
-                                ),
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("crash.connectionerror.title".tr(), style: context.textTheme().headline6?.copyWith(color: Colors.red)),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
-                                    ),
-                                  ]
-                                )
-                              ]
-                            )
-                            else if ((result.data?["getFollowedFlows"].length??0) <= 1) Padding(
-                              padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                              child: Text("flows.none".tr(), style: context.textTheme().caption),
-                            ),
-                          ]
-                        ) : Center(child: CircularProgressIndicator(value: null))
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
-                        child: Text("flows.following".tr(), style: context.textTheme().subtitle2),
-                      ),
-                      Query(
-                        options: QueryOptions(
                           document: gql(FlowAPI.joinedFlows)
                         ),
                         builder: (result, {fetchMore, refetch}) => result.isNotLoading ? Column(
@@ -179,6 +126,59 @@ class _WideHomeViewState extends State<WideHomeView> {
                               ]
                             )
                             else if ((result.data?["getJoinedFlows"].length??0) <= 1) Padding(
+                              padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
+                              child: Text("flows.none".tr(), style: context.textTheme().caption),
+                            ),
+                          ]
+                        ) : Center(child: CircularProgressIndicator(value: null))
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
+                        child: Text("flows.following".tr(), style: context.textTheme().subtitle2),
+                      ),
+                      Query(
+                        options: QueryOptions(
+                          document: gql(FlowAPI.followedFlows)
+                        ),
+                        builder: (result, {fetchMore, refetch}) => result.isNotLoading ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            for (final flow in result.data?["getFollowedFlows"]?.map((v) => PartialFlow.fromJSON(v))) if (flow.snowflake != Config.cache.userFlow.snowflake) 
+                            ListTile(
+                              leading: ProfilePicture(
+                                child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
+                                size: 48, notchSize: 12,
+                                fallbackChild: FallbackProfilePicture(flow: flow)
+                              ),
+                              title: Text(flow.name),
+                              subtitle: Text(flow.id),
+                              onTap: () => context.go("/flow/"+flow.snowflake),
+                            ),
+                            if (result.data?["getFollowedFlows"]?.isNotEmpty != true && result.hasException) Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(Mdi.weatherLightning, color: Colors.red),
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("crash.connectionerror.title".tr(), style: context.textTheme().headline6?.copyWith(color: Colors.red)),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
+                                    ),
+                                  ]
+                                )
+                              ]
+                            )
+                            else if ((result.data?["getFollowedFlows"].length??0) <= 1) Padding(
                               padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
                               child: Text("flows.none".tr(), style: context.textTheme().caption),
                             ),
