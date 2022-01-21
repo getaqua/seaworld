@@ -5,6 +5,8 @@ import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
+import 'package:seaworld/widgets/content/imageblackbox.dart';
+import 'package:seaworld/widgets/semitransparent.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ImageAttachmentPreview extends StatefulWidget {
@@ -29,7 +31,10 @@ class _ImageAttachmentPreviewState extends State<ImageAttachmentPreview> {
           Material(
             color: _hovering && !_errored ? Colors.black12 : Colors.transparent,
             child: InkWell(
-              onTapDown: (_) {},
+              //onTapDown: (_) => {},
+              onTap: () => Navigator.push(context, SemiTransparentPageRoute(
+                builder: (context) => Center(child: ImageLargeView(attachment: widget.attachment))
+              )),
               child: Image.network(
                 API.get.urlScheme+Config.server+widget.attachment.url,
                 fit: BoxFit.scaleDown, //experiment with this, maybe
@@ -82,7 +87,7 @@ class _ImageAttachmentPreviewState extends State<ImageAttachmentPreview> {
                         child: Tooltip(
                           message: "content.attachment.download".tr(namedArgs: {"filename": widget.attachment.filename}),
                           child: IconButton(
-                            icon: Icon(Mdi.download), 
+                            icon: Icon(Mdi.download, color: Colors.white), 
                             onPressed: () => launch(API.get.urlScheme+Config.server
                               +(widget.attachment.downloadUrl ?? widget.attachment.url.replaceFirst("/view/", "/download/"))),
                           ),
@@ -96,7 +101,7 @@ class _ImageAttachmentPreviewState extends State<ImageAttachmentPreview> {
                         child: Tooltip(
                           message: "content.attachment.remove".tr(),
                           child: IconButton(
-                            icon: Icon(Mdi.deleteOutline), 
+                            icon: Icon(Mdi.deleteOutline, /* color: Colors.white */), 
                             onPressed: null,
                           ),
                         ),

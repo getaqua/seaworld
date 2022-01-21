@@ -64,7 +64,10 @@ class _NewContentCardState extends State<NewContentCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                 ),
                 Expanded(child: Container()),
-                if (widget.flow == null) IconButton(onPressed: () => context.push("/flow/${Config.cache.userFlow.snowflake}/settings", extra: Config.cache.userFlow), icon: Icon(Mdi.accountEdit))
+                if (widget.flow == null) Tooltip(
+                  message: "flow.update.yours".tr(),
+                  child: IconButton(onPressed: () => context.push("/flow/${Config.cache.userFlow.snowflake}/settings", extra: Config.cache.userFlow), icon: Icon(Mdi.accountEdit)),
+                )
               ]
             ),
           ),

@@ -116,7 +116,9 @@
         "edit": "Edit",
         "attachment": {
             "remove": "Remove attachment",
-            "download": "Download {filename}"
+            "download": "Download {filename}",
+            "download_generic": "Download file",
+            "open": "Open in browser"
         },
         "confirmdelete": {
             "title": "Delete this Content?"
@@ -156,6 +158,7 @@
             }
         },
         "update": {
+            "yours": "Update your Flow profile",
             "banner": "Upload new banner",
             "avatar": "Upload new avatar",
             "name": "Name",
