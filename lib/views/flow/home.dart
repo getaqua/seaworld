@@ -7,6 +7,7 @@ import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
+import 'package:seaworld/helpers/breakpoints.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
@@ -14,6 +15,7 @@ import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
 import 'package:seaworld/widgets/pfp.dart';
+import 'package:seaworld/widgets/post.dart';
 import 'package:super_scaffold/super_scaffold.dart';
 
 class FlowHomeView extends StatefulWidget {
@@ -32,6 +34,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
   //final StreamController<List<Content>> _content = StreamController.broadcast();
   ScrollController drawerScrollController = ScrollController();
   ScrollController scrollController = ScrollController();
+  ScrollController memberController = ScrollController();
   // bool _lastSeenAboveTheThreshold = true;
   // static const _scrollThreshold = 64;
   // String? _bannerUrl;
@@ -89,14 +92,11 @@ class _FlowHomeViewState extends State<FlowHomeView> {
             actions: [
               IconButton(onPressed: () => refetch?.call(), icon: Icon(Mdi.refresh)),
               //IconButton(onPressed: () => context.go("/settings"), icon: Icon(Mdi.cog))
-              Builder(
+              if (MediaQuery.of(context).size.width < 1088) Builder(
                 builder: (context) {
                   final scaffold = Scaffold.of(context);
-                  ;
                   return IconButton(
-                    onPressed: () => scaffold.isEndDrawerOpen
-                    ? Navigator.pop(context)
-                    : scaffold.openEndDrawer(),
+                    onPressed: () => scaffold.openEndDrawer(),
                     icon: Icon(Mdi.accountMultiple)
                   );
                 }
@@ -130,13 +130,21 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                               Align(
                                 heightFactor: 1,
                                 alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: ProfilePicture(
-                                    child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
-                                    size: 48, notchSize: 16,
-                                    fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
-                                  ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: ProfilePicture(
+                                        child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
+                                        size: 48, notchSize: 16,
+                                        fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
+                                      ),
+                                    ),
+                                    Text("flow.actor".tr(), style: context.textTheme().overline)
+                                  ],
                                 ),
                               ),
                               Row(
@@ -225,194 +233,209 @@ class _FlowHomeViewState extends State<FlowHomeView> {
               // }
               //await Future.doWhile(() => (_refreshing));
             },
-            child: Center(
-              child: Container(
-                width: 480,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                padding: EdgeInsets.symmetric(vertical: 0),
-                child: Builder(
-                  builder: (context) {
-                    //if (result.data) _lastContent = snapshot.data!;
-                    final _prefixes = Column(children:[
-                      Container(height: 8), // top padding the hard way
-                      Card(
-                        color: Colors.lightBlue,
-                        clipBehavior: Clip.antiAlias,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  width: 480,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: EdgeInsets.symmetric(vertical: 0),
+                  child: Builder(
+                    builder: (context) {
+                      //if (result.data) _lastContent = snapshot.data!;
+                      final _prefixes = Column(children:[
+                        Container(height: 8), // top padding the hard way
+                        Card(
+                          color: Colors.lightBlue,
+                          clipBehavior: Clip.antiAlias,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (flow.bannerUrl != null && flow.bannerUrl != "") Image.network(API.get.urlScheme+Config.server+flow.bannerUrl!, height: 240, width: double.infinity, fit: BoxFit.fitWidth),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: ProfilePicture(
+                                      child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
+                                      size: 72, notchSize: 24,
+                                      fallbackChild: FallbackProfilePicture(flow: flow)
+                                    ),
+                                  ),
+                                  Expanded(child: Padding(
+                                    padding: const EdgeInsets.all(24.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(flow.name, 
+                                          style: context.textTheme().headline4?.copyWith(color: Colors.black),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.fade
+                                        ),
+                                        Text(flow.id,
+                                          style: context.textTheme().headline6?.copyWith(color: Colors.black),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.fade
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                                ],
+                              ),
+                              // use this RichText for extra stuff,
+                              // like (pride) flags, location, etc
+                              //RichText(text: TextSpan())
+                              // TODO: tagline here, eventually
+                              Row(children: [
+                                if (flow.myPermissions.join == AllowDeny.ALLOW) Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextButton(
+                                    onPressed: () {}, // check if joined???
+                                    child: Text("flow.join".tr()),
+                                    style: ButtonStyle(
+                                      foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                      overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                    ),
+                                  ),
+                                ), // make this button visible by turning it black
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: OutlinedButton(
+                                    onPressed: null,
+                                    child: Text("flow.follow".tr()), 
+                                    style: ButtonStyle(
+                                      foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                      overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                    ),
+                                  ),
+                                ),
+                              ], mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.max,),
+                              if (flow.description?.isNotEmpty == true) Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(flow.description!, style: context.textTheme().bodyText2?.copyWith(color: Colors.black)),
+                              )
+                            ],
+                          ),
+                        ),
+                        if (result.hasException) Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            if (flow.bannerUrl != null && flow.bannerUrl != "") Image.network(API.get.urlScheme+Config.server+flow.bannerUrl!, height: 240, width: double.infinity, fit: BoxFit.fitWidth),
-                            Row(
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(Mdi.weatherLightning, color: Colors.red),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("crash.connectionerror.title".tr(), style: context.textTheme().headline6?.copyWith(color: Colors.red)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
+                                ),
+                              ]
+                            )
+                          ]
+                        ),
+                        if (result.isLoading) Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: SizedBox(
+                                height: 32,
+                                width: 32,
+                                child: CircularProgressIndicator(value: null, color: context.theme().colorScheme.secondary)
+                              ),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
-                                  child: ProfilePicture(
-                                    child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
-                                    size: 72, notchSize: 24,
-                                    fallbackChild: FallbackProfilePicture(flow: flow)
-                                  ),
+                                  child: Text("home.content.loading".tr(), style: context.textTheme().headline6?.copyWith(color: context.theme().colorScheme.secondary)),
                                 ),
-                                Expanded(child: Padding(
-                                  padding: const EdgeInsets.all(24.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(flow.name, 
-                                        style: context.textTheme().headline4?.copyWith(color: Colors.black),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.fade
-                                      ),
-                                      Text(flow.id,
-                                        style: context.textTheme().headline6?.copyWith(color: Colors.black),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.fade
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                              ],
-                            ),
-                            // use this RichText for extra stuff,
-                            // like (pride) flags, location, etc
-                            //RichText(text: TextSpan())
-                            // TODO: tagline here, eventually
-                            Row(children: [
-                              if (flow.myPermissions.join == AllowDeny.ALLOW) Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextButton(
-                                  onPressed: () {}, // check if joined???
-                                  child: Text("flow.join".tr()),
-                                  style: ButtonStyle(
-                                    foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
-                                    overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
-                                  ),
-                                ),
-                              ), // make this button visible by turning it black
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: OutlinedButton(
-                                  onPressed: null,
-                                  child: Text("flow.follow".tr()), 
-                                  style: ButtonStyle(
-                                    foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
-                                    overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
-                                  ),
-                                ),
-                              ),
-                            ], mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.max,),
-                            if (flow.description?.isNotEmpty == true) Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(flow.description!, style: context.textTheme().bodyText2?.copyWith(color: Colors.black)),
+                                // Padding(
+                                //   padding: const EdgeInsets.all(8.0),
+                                //   child: Text("home.".tr(), style: context.textTheme().bodyText2),
+                                // ),
+                              ]
                             )
-                          ],
+                          ]
                         ),
-                      ),
-                      if (result.hasException) Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(Mdi.weatherLightning, color: Colors.red),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("crash.connectionerror.title".tr(), style: context.textTheme().headline6?.copyWith(color: Colors.red)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("crash.connectionerror.generic".tr(), style: context.textTheme().bodyText2),
-                              ),
-                            ]
-                          )
-                        ]
-                      ),
-                      if (result.isLoading) Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: SizedBox(
-                              height: 32,
-                              width: 32,
-                              child: CircularProgressIndicator(value: null, color: context.theme().colorScheme.secondary)
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text("home.content.loading".tr(), style: context.textTheme().headline6?.copyWith(color: context.theme().colorScheme.secondary)),
-                              ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(8.0),
-                              //   child: Text("home.".tr(), style: context.textTheme().bodyText2),
-                              // ),
-                            ]
-                          )
-                        ]
-                      )
-                    ]);
-                    return (flow is! FlowWithContent) ? Center(child: CircularProgressIndicator(value: null))
-                      : (flow.content.isEmpty && !result.hasException) ? ListView.builder(
-                        controller: scrollController,
-                        itemBuilder: (context, index) => 
-                          index == 0 ? _prefixes : NormalEmptyState(flow: flow),
-                        itemCount: flow.content.length + 2
-                    ) : (flow.content.isNotEmpty) ? ListView.builder(
-                        controller: scrollController,
-                        itemBuilder: (context, index) => 
-                          index == 0 ? _prefixes : ContentWidget((flow as FlowWithContent).content[index-1]),
-                        itemCount: flow.content.length + 1
-                    ) : Center(child: Icon(Mdi.alert, color: Colors.red));
-                  }
+                        if (flow.myPermissions.post == AllowDeny.ALLOW) NewContentCard(
+                          flow: flow,
+                          refreshContent: refetch,
+                        )
+                      ]);
+                      return (flow is! FlowWithContent) ? Center(child: CircularProgressIndicator(value: null))
+                        : (flow.content.isEmpty && !result.hasException) ? ListView.builder(
+                          controller: scrollController,
+                          itemBuilder: (context, index) => 
+                            index == 0 ? _prefixes : NormalEmptyState(flow: flow),
+                          itemCount: flow.content.length + 2
+                      ) : (flow.content.isNotEmpty) ? ListView.builder(
+                          controller: scrollController,
+                          itemBuilder: (context, index) => 
+                            index == 0 ? _prefixes : ContentWidget((flow as FlowWithContent).content[index-1]),
+                          itemCount: flow.content.length + 1
+                      ) : Center(child: Icon(Mdi.alert, color: Colors.red));
+                    }
+                  ),
                 ),
-              ),
-            ),
-          ),
-          endDrawer: Drawer(
-            child: ListView(
-              children: [
-                if (flow is Flow) for (final member in flow.members) Builder(
-                  builder: (context) {
-                    return InkWell(
-                      onTap: () {},
-                      onTapDown: (details) => FlowPreviewPopupMenu().show(
-                        context: context, 
-                        flow: member, 
-                        position: MediaQuery.of(context).size.width > 328+328 
-                        ? (context.findRenderObject() as RenderBox?)?.localToGlobal(const Offset(0,0))
-                        : const Offset(16, 16),  
-                        offset: MediaQuery.of(context).size.width > 328+328 ? Offset(-328, 8) : Offset(0, 0)
-                      ),
-                      child: Tooltip(
-                        message: "flow.showpreview".tr(),
-                        child: ListTile(
-                          leading: ProfilePicture(
-                            child: member.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+member.avatarUrl!) : null,
-                            size: 48, notchSize: 16,
-                            fallbackChild: FallbackProfilePicture(flow: member)
-                          ),
-                          title: Text(flow.name),
-                          subtitle: Text(flow.id),
-                        ),
-                      ),
-                    );
-                  }
-                ),
+                if (MediaQuery.of(context).size.width >= 1088 && (flow as Flow).members.length > 1) Container(
+                  width: 320,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: EdgeInsets.symmetric(vertical: 0),
+                  child: Builder(builder: (c) => _buildMemberList(c, flow))
+                )
               ],
             ),
           ),
+          endDrawer: Drawer(
+            child: Builder(builder: (c) => _buildMemberList(c, flow))
+          ),
         );
       }
+    );
+  }
+
+  Widget _buildMemberList(BuildContext context, PartialFlow flow) {
+    return ListView(
+      controller: memberController,
+      children: [
+        if (flow is Flow) for (final member in flow.members) InkWell(
+          onTap: () {},
+          onTapDown: (details) => FlowPreviewPopupMenu().show(
+            context: context, 
+            flow: member, 
+            position: MediaQuery.of(context).size.width > 328+328 
+            ? (context.findRenderObject() as RenderBox?)?.localToGlobal(const Offset(0,0))
+            : const Offset(16, 16),  
+            offset: MediaQuery.of(context).size.width > 328+328 ? Offset(-328, 8) : Offset(0, 0)
+          ),
+          child: Tooltip(
+            message: "flow.showpreview".tr(),
+            child: ListTile(
+              leading: ProfilePicture(
+                child: member.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+member.avatarUrl!) : null,
+                size: 48, notchSize: 16,
+                fallbackChild: FallbackProfilePicture(flow: member)
+              ),
+              title: Text(flow.name),
+              subtitle: Text(flow.id),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

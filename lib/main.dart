@@ -200,7 +200,21 @@ class MyApp extends ConsumerWidget {
                 helptext: "crash.flow.generic".tr(),
               ) : FlowHomeView(flow: Flow.fromJSON(result.data!["getFlow"]))),
             routes: [
-              GoRoute(path: "settings", builder: (context, state) => FlowSettingsRoot(flow: state.extra as Flow? ?? Flow.fromJSON({"snowflake": state.params["flow"]})))
+              GoRoute(path: "settings", builder: (context, state) => state.extra != null ? FlowSettingsRoot(
+                flow: state.extra as Flow
+              ) : Query(
+                options: QueryOptions(
+                  document: gql(FlowAPI.getFlow),
+                  variables: {"id": state.params["flow"]},
+                  fetchPolicy: FetchPolicy.cacheFirst,
+                ),
+                builder: (result, {fetchMore, refetch}) => (result.data != null) ? FlowSettingsRoot(
+                  flow: Flow.fromJSON(result.data!["getFlow"])
+                ) : Material(
+                  color: Colors.black54, 
+                  child: Center(child: CircularProgressIndicator(value: null)),
+                )
+              ))
             ],
           ),
         ],

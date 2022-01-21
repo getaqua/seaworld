@@ -241,7 +241,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                         document: gql(FlowAPI.updateFlow),
                         onCompleted: (_) => InAppNotification.showOverlayIn(context, InAppNotification(
                           icon: Icon(Mdi.check, color: Colors.green),
-                          title: Text("upload.success.name.title".tr()),
+                          title: Text("flow.update.success".tr()),
                           corner: Corner.bottomStart,
                         )),
                         onError: (error) {
@@ -282,7 +282,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                         document: gql(FlowAPI.updateFlow),
                         onCompleted: (_) => InAppNotification.showOverlayIn(context, InAppNotification(
                           icon: Icon(Mdi.check, color: Colors.green),
-                          title: Text("upload.success.description.title".tr()),
+                          title: Text("flow.update.success".tr()),
                           corner: Corner.bottomStart,
                         )),
                         onError: (error) {

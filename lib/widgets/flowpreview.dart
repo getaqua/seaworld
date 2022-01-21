@@ -17,7 +17,16 @@ class FlowPreviewPopupMenu {
     //final widthAccommodation = (context.findRenderObject() as RenderBox?)?.
     _overlayEntry ??= OverlayEntry(builder: (context) => Stack(
       children: [
-        Positioned.fill(child: GestureDetector(onTapDown: (_) => _overlayEntry?.remove())),
+        Positioned.fill(child: GestureDetector(
+          onTapDown: (_) => _overlayEntry?.remove(),
+          behavior: HitTestBehavior.opaque,
+          child: AnimatedContainer(
+            //child: Container(color: Colors.black12),
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeOut,
+            color: Colors.black12// : Colors.transparent,
+          )
+        )),
         Positioned(top: pos.dy+(offset?.dy??0), left: pos.dx+(offset?.dx??0), child: Material(
           child: _FlowPreviewPopupMenu(flow: flow),
           elevation: 2,
@@ -160,7 +169,7 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
           ),
           //Text("TEST")
           if (widget.flow.description?.isNotEmpty == true) Padding(
-            child: Text(widget.flow.description!),
+            child: Text(widget.flow.description!, style: context.textTheme().bodyText2?.copyWith(color: Colors.white),),
             padding: EdgeInsets.all(8),
           )
         ],

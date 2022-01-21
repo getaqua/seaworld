@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_selector/file_selector.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/content.dart';
@@ -9,13 +10,14 @@ import "package:seaworld/helpers/extensions.dart";
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
+import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/richeditor.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
 
 class NewContentCard extends StatefulWidget {
-  final String? flow;
+  final PartialFlow? flow;
   final void Function()? refreshContent;
 
   const NewContentCard({
@@ -51,23 +53,18 @@ class _NewContentCardState extends State<NewContentCard> {
                     fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
                   ),
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    children: [
-                      Text(Config.cache.userFlow.name, style: context.textTheme().subtitle1),
+                Column(
+                  children: [
+                    Text(Config.cache.userFlow.name, style: context.textTheme().subtitle1),
+                    if (widget.flow == null || widget.flow!.snowflake == Config.cache.userFlow.snowflake) 
                       Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr(), style: context.textTheme().caption)
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                  ),
+                    else Text(Config.cache.userFlow.id + " • " + "post.target.flow".tr(namedArgs: {"flow": widget.flow!.name}), style: context.textTheme().caption)
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
-                // Expanded(child: Container()),
-                // PopupMenuButton(
-                //   itemBuilder: (context) => [
-                //     PopupMenuItem(child: Text("settings.tos".tr(), style: context.textTheme().overline))
-                //   ],
-                // )
+                Expanded(child: Container()),
+                if (widget.flow == null) IconButton(onPressed: () => context.push("/flow/${Config.cache.userFlow.snowflake}/settings", extra: Config.cache.userFlow), icon: Icon(Mdi.accountEdit))
               ]
             ),
           ),
@@ -186,7 +183,7 @@ class _NewContentCardState extends State<NewContentCard> {
                         await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
                           alignment: Alignment.topCenter,
                           width: 720,
-                          child: RichEditorPage(flow: widget.flow))
+                          child: RichEditorPage(flow: widget.flow?.snowflake))
                         ));
                         (widget.refreshContent ?? (() => {}))();
                       }, icon: Icon(Mdi.cardBulleted), color: context.theme().colorScheme.primary)

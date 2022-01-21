@@ -46,6 +46,7 @@ class _ContentWidgetState extends State<ContentWidget> {
       dtF = dtF.add_jm();
     }
     return _deleted == widget.content.snowflake ? Container() : Card(
+      clipBehavior: Clip.antiAlias,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

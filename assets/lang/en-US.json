@@ -133,6 +133,7 @@
         }
     },
     "flow": {
+        "actor": "Active Flow",
         "showpreview": "Show profile",
         "open": "Open {id}",
         "follow": "Follow",
