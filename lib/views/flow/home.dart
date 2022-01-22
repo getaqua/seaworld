@@ -14,6 +14,7 @@ import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
 import 'package:seaworld/widgets/flowpreview.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/post.dart';
 import 'package:super_scaffold/super_scaffold.dart';
@@ -289,28 +290,96 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                               //RichText(text: TextSpan())
                               // TODO: tagline here, eventually
                               Row(children: [
-                                if (flow.myPermissions.join == AllowDeny.ALLOW) Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextButton(
-                                    onPressed: () {}, // check if joined???
-                                    child: Text("flow.join".tr()),
-                                    style: ButtonStyle(
-                                      foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
-                                      overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                if (flow.myPermissions.join == AllowDeny.ALLOW && !flow.isJoined) Mutation(
+                                  options: MutationOptions(
+                                    document: gql(FlowAPI.joinFlow),
+                                    onCompleted: (_) => refetch?.call(),
+                                    onError: (error) => InAppNotification.showOverlayIn(context, InAppNotification(
+                                      corner: Corner.bottomStart,
+                                      icon: Icon(Mdi.accountAlert),
+                                      title: Text("error.flow.join.title".tr()),
+                                      text: Text("error.flow.join.description".tr()),
+                                    ))
+                                  ),
+                                  builder: (runMutation, result) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextButton(
+                                      onPressed: result?.isLoading ?? false ? null : () => runMutation({"id": flow.snowflake}),
+                                      child: Text("flow.join".tr()),
+                                      style: ButtonStyle(
+                                        foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                        overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                      ),
                                     ),
                                   ),
-                                ), // make this button visible by turning it black
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: OutlinedButton(
-                                    onPressed: null,
-                                    child: Text("flow.follow".tr()), 
-                                    style: ButtonStyle(
-                                      foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
-                                      overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                )
+                                else if (flow.isJoined) Mutation(
+                                  options: MutationOptions(
+                                    document: gql(FlowAPI.leaveFlow),
+                                    onCompleted: (_) => refetch?.call(),
+                                    onError: (error) => InAppNotification.showOverlayIn(context, InAppNotification(
+                                      corner: Corner.bottomStart,
+                                      icon: Icon(Mdi.accountAlert),
+                                      title: Text("error.flow.leave.title".tr()),
+                                      text: Text("error.flow.leave.description".tr()),
+                                    ))
+                                  ),
+                                  builder: (runMutation, result) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextButton(
+                                      onPressed: result?.isLoading ?? false ? null : () => runMutation({"id": flow.snowflake}),
+                                      child: Text("flow.leave".tr()),
+                                      style: ButtonStyle(
+                                        foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                        overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                      ),
                                     ),
                                   ),
                                 ),
+                                if (flow.myPermissions.read == AllowDeny.ALLOW && !flow.isFollowing) Mutation(
+                                  options: MutationOptions(
+                                    document: gql(FlowAPI.followFlow),
+                                    onCompleted: (_) => refetch?.call(),
+                                    onError: (error) => InAppNotification.showOverlayIn(context, InAppNotification(
+                                      corner: Corner.bottomStart,
+                                      icon: Icon(Mdi.accountAlert),
+                                      title: Text("error.flow.follow.title".tr()),
+                                    ))
+                                  ),
+                                  builder: (runMutation, result) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: OutlinedButton(
+                                      onPressed: result?.isLoading ?? false ? null : () => runMutation({"id": flow.snowflake}),
+                                      child: Text("flow.follow".tr()), 
+                                      style: ButtonStyle(
+                                        foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                        overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                else if (flow.isFollowing) Mutation(
+                                  options: MutationOptions(
+                                    document: gql(FlowAPI.unfollowFlow),
+                                    onCompleted: (_) => refetch?.call(),
+                                    onError: (error) => InAppNotification.showOverlayIn(context, InAppNotification(
+                                      corner: Corner.bottomStart,
+                                      icon: Icon(Mdi.accountAlert),
+                                      title: Text("error.flow.unfollow.title".tr()),
+                                    ))
+                                  ),
+                                  builder: (runMutation, result) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: OutlinedButton(
+                                      onPressed: result?.isLoading ?? false ? null : () => runMutation({"id": flow.snowflake}),
+                                      child: Text("flow.unfollow".tr()), 
+                                      style: ButtonStyle(
+                                        foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                        overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
+                                      ),
+                                    ),
+                                  ),
+                                )
                               ], mainAxisAlignment: MainAxisAlignment.end, mainAxisSize: MainAxisSize.max,),
                               if (flow.description?.isNotEmpty == true) Padding(
                                 padding: const EdgeInsets.all(8.0),

@@ -126,7 +126,7 @@ class _NewContentCardState extends State<NewContentCard> {
                       )]));
                       if (file?.isOk ?? false) {
                         runMutation({
-                          "id": Config.cache.userId,
+                          "id": widget.flow?.snowflake ?? Config.cache.userId,
                           "data": {
                             "attachments": [file?.data["url"]],
                             if (_controller.value.text.isNotEmpty) "text": _controller.value.text
@@ -156,7 +156,7 @@ class _NewContentCardState extends State<NewContentCard> {
                       var file = await API.uploadFile(file: await openFile());
                       if (file?.isOk ?? false) {
                         runMutation({
-                          "id": Config.cache.userId,
+                          "id": widget.flow?.snowflake ?? Config.cache.userId,
                           "data": {
                             "attachments": [file?.data["url"]],
                             if (_controller.value.text.isNotEmpty) "text": _controller.value.text
@@ -196,7 +196,7 @@ class _NewContentCardState extends State<NewContentCard> {
                         onPressed: !_posting ? () async {
                           setState(() => _posting = true);
                           runMutation({
-                            "id": Config.cache.userId,
+                            "id": widget.flow?.snowflake ?? Config.cache.userId,
                             "data": {
                               "text": _controller.value.text
                             }

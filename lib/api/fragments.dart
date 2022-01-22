@@ -9,6 +9,8 @@ abstract class Fragments {
     effective_permissions {
       ...flowPermissions
     }
+    is_joined
+    is_following
   }""";
   /// Depends on [partialFlow] and [flowPermissions]
   static const fullFlow = r"""fragment fullFlow on Flow {

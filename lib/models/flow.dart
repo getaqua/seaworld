@@ -10,6 +10,8 @@ class PartialFlow {
   final String snowflake;
   /// The `effective_permissions` of the acting user.
   final FlowPermissions myPermissions;
+  final bool isJoined;
+  final bool isFollowing;
 
   PartialFlow.fromJSON(Map data):
     _map = data,
@@ -19,6 +21,8 @@ class PartialFlow {
     bannerUrl = data["banner_url"],
     id = data["id"],
     snowflake = data["snowflake"],
+    isJoined = data["is_joined"],
+    isFollowing = data["is_following"],
     myPermissions = FlowPermissions.fromJSON(data["effective_permissions"]);
   Map toJSON() => _map;
 }

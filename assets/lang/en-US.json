@@ -93,6 +93,15 @@
         }
     },
     "error": {
+        "flow": {
+            "leave": {
+                "title": "Could not leave Flow.",
+                "description": "Were you already removed?"
+            },
+            "join": {"title": "Could not join Flow."},
+            "follow": {"title": "Could not follow Flow."},
+            "unfollow": {"title": "Could not unfollow Flow."}
+        },
         "emptycontent": {
             "title": "No Content",
             "encouragement": "There's nothing here! Try posting something to fill the void.",

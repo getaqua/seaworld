@@ -40,13 +40,26 @@ class FlowAPI extends APIConnect {
     }
   }""";
 
+  static const followFlow = r"""mutation followFlow($id: String!) {
+    followFlow(id: $id)
+  }""";
+  static const unfollowFlow = r"""mutation unfollowFlow($id: String!) {
+    unfollowFlow(id: $id)
+  }""";
+
+  static const joinFlow = r"""mutation joinFlow($id: String!) {
+    joinFlow(id: $id) {
+      snowflake
+    }
+  }""";
+  static const leaveFlow = r"""mutation leaveFlow($id: String!) {
+    leaveFlow(id: $id)
+  }""";
+
   /* Mutations to implement:
   createFlow(flow: NewFlow, parentId: String) : Flow
   updateFlow(id: String!, data: PatchedFlow!): Flow
-  joinFlow(id: String!, inviteCode: String): Flow
   deleteFlow(id: String!): Boolean!
-  leaveFlow(id: String!): Boolean!
-  followFlow(id: String!): Boolean!
-  unfollowFlow(id: String!): Boolean!
+  joinFlow(id: String!, inviteCode: String): Flow
   */
 }
