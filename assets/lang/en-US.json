@@ -105,16 +105,17 @@
         "emptycontent": {
             "title": "No Content",
             "encouragement": "There's nothing here! Try posting something to fill the void.",
-            "flow": "There's nothing here! @name hasn't posted anything. Try again later; maybe there will be Content here!",
+            "flow": "There's nothing here! {name} hasn't posted anything. Try again later; maybe there will be Content here!",
             "error": "There's nothing here. Try again later."
         },
         "permissiondenied": {
             "title": "Permission denied",
             "generic": "You don't have permission to do this.",
-            "specific": "You do not have permission in @name to @perm."
+            "specific": "You do not have permission in {name} to {perm}."
         }
     },
     "content": {
+        "relative": "{} ago",
         "inflow": "In {flow}",
         "like": "Like",
         "dislike": "Dislike",
@@ -176,6 +177,54 @@
             "success": "Flow updated",
             "remove_banner": "Reset banner",
             "remove_avatar": "Reset avatar"
+        },
+        "new": {
+            "title": "Create a Flow",
+            "create": "Create",
+            "name": "Name",
+            "id": "Flow ID",
+            "validate_id": {
+                "hint": "Use at least 3 letters, numbers, and/or these symbols: *!#@._-+=,/",
+                "invalid": "Invalid ID. @:flow.new.validate_id.hint",
+                "double_slash": "Flow IDs cannot contain two consecutive slashes (//).",
+                "private_sequence": "You cannot create a Flow with this ID.",
+                "taken": "This ID is already taken."
+            },
+            "community": {
+                "title": "Community",
+                "description": "A public forum with chat and open posting.",
+                "explanation": "Anyone can post to Community Flows by default. Chat is always restricted to Flow members; however, anyone can join."
+            },
+            "private_group": {
+                "title": "Private Group",
+                "description": "An invite-only safe space.",
+                "explanation": "This type of Flow is only available to members who were invited to join it, who can then post in it. It includes Chat by default."
+            },
+            "story": {
+                "title": "Story",
+                "description": "Media-centric and phone-optimized.",
+                "explanation": "You've seen this layout on Instagram and Facebook, and a vertical variation on TikTok. It puts your media on full display on supported apps."
+            },
+            "channel": {
+                "title": "Channel",
+                "description": "One-to-many communication.",
+                "explanation": "A powerful yet simple Flow preset. Viewing and reading posts is public, and joining the Flow is turned off. Members post under the Flow's name."
+            },
+            "anonymous_group": {
+                "title": "Anonymous Group",
+                "description": "Share with confidence. Invite-only.",
+                "explanation": "Members are always anonymous-- they post under the name of the Flow. Public viewing, reading, and joining is turned off. This is useful for Alcoholics Anonymous situations."
+            },
+            "blog": {
+                "title": "Blog",
+                "description": "Broadcast long-form thoughts.",
+                "explanation": "Supported apps, like this one, will show blogs in a slightly different format. They are best for posts of long-form text, such as for news articles or blogging."
+            },
+            "collection": {
+                "title": "Collection",
+                "description": "Follow groups of people.",
+                "explanation": "Posting in this Flow is turned off. It follows other Flows so that you can browse posts more easily."
+            }
         }
     },
     "upload": {

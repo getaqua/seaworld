@@ -120,10 +120,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                                 children: [
                                   Text(widget.content.author.name, style: context.textTheme().subtitle1),
                                   Text([
-                                    widget.content.author.id, 
+                                    //widget.content.author.id, 
                                     if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId}),
-                                    if (DateTime.now().difference(widget.content.timestamp) < Duration(hours: 24)) prettyDuration(DateTime.now().difference(widget.content.timestamp), first: true)
-                                    else dtF.format(widget.content.timestamp.toLocal()),
+                                    "content.relative".tr(args: [prettyDuration(DateTime.now().difference(widget.content.timestamp), first: true)]),
+                                    // if (DateTime.now().difference(widget.content.timestamp) < Duration(hours: 24)) prettyDuration...
+                                    // else dtF.format(widget.content.timestamp.toLocal()),
                                     if (widget.content.isEdited) "edited"
                                   ].join(" • "), style: context.textTheme().caption)
                                 ],

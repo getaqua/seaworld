@@ -11,6 +11,7 @@ import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
+import 'package:seaworld/views/flow/newmodal.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
 import 'package:seaworld/widgets/pfp.dart';
@@ -51,7 +52,8 @@ class _WideHomeViewState extends State<WideHomeView> {
     return Query(
       options: QueryOptions(
         document: gql(ContentAPI.followedContent),
-        fetchPolicy: FetchPolicy.cacheAndNetwork
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
+        pollInterval: Duration(minutes: 1)
       ),
       builder: (result, {fetchMore, refetch}) {
         final List<Content>? content = result.data?["getFollowedContent"]?.map<Content>((v) => Content.fromJSON(v)).toList();
@@ -66,10 +68,16 @@ class _WideHomeViewState extends State<WideHomeView> {
               borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(8))
             ),
           ),
+          floatingActionButton: pageController.hasClients && pageController.page?.floor() == 0 ? FloatingActionButton(
+            child: Icon(Mdi.plus),
+            onPressed: () => showDialog<String?>(context: context, builder: (context) => NewFlowModal())
+            .then((value) => value == null ? null : context.go("/flow/$value"))
+          ) : null,
           body: PageView(
             scrollDirection: Axis.horizontal,
             controller: pageController,
             onPageChanged: (index) {
+              setState(() {});
               if (index == 1) {refetch?.call();}
             },
             children: [
@@ -219,6 +227,7 @@ class _WideHomeViewState extends State<WideHomeView> {
                               //if (snapshot.hasData) _lastContent = snapshot.data!;
                               final _prefixes = Column(children:[
                                 Container(height: 8), // top padding the hard way
+                                if (MediaQuery.of(context).size.width < _widthBreakpoint) NewContentCard(refreshContent: refetch),
                                 if (result.hasException) Row(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.start,

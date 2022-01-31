@@ -56,8 +56,14 @@ class FlowAPI extends APIConnect {
     leaveFlow(id: $id)
   }""";
 
+  static const createFlow = r"""mutation createFlow($flow: NewFlow!, $parentId: String) {
+    createFlow(flow: $flow, parentId: $parentId) {
+      snowflake
+    }
+  }""";
+
   /* Mutations to implement:
-  createFlow(flow: NewFlow, parentId: String) : Flow
+  --createFlow(flow: NewFlow, parentId: String) : Flow
   updateFlow(id: String!, data: PatchedFlow!): Flow
   deleteFlow(id: String!): Boolean!
   joinFlow(id: String!, inviteCode: String): Flow
