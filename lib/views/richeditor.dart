@@ -13,17 +13,20 @@ import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/main.dart';
 import 'package:seaworld/models/content.dart';
+import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 
 class RichEditorPage extends StatefulWidget {
   final String? flow;
   final Content? content;
+  final FlowPermissions? permissions;
   final bool isEditing;
 
   // ignore: prefer_const_constructors_in_immutables
   RichEditorPage({ 
     Key? key,
     this.flow,
+    this.permissions,
     this.content,
     this.isEditing = false
   }) : assert(isEditing ? content != null : true), super(key: key);
@@ -141,7 +144,8 @@ class _RichEditorPageState extends State<RichEditorPage> {
                         "id": Config.cache.userId,
                         "data": {
                           "text": _controller.value.text,
-                          "attachments": _attachments
+                          "attachments": _attachments,
+                          if (enabledFields.contains("anonymous")) "anonymous": true
                         }
                       });
                     } : null,
@@ -306,6 +310,7 @@ class _RichEditorPageState extends State<RichEditorPage> {
                   _buildFieldChip(icon: Mdi.formatTitle, label: "post.rich.title".tr(), value: "title"),
                   _buildFieldChip(icon: Mdi.text, label: "post.rich.text".tr(), value: "text"),
                   _buildFieldChip(icon: Mdi.imageMultiple, label: "post.rich.media".tr(), value: "media"),
+                  if (widget.permissions?.anonymous == AllowDeny.allow) _buildFieldChip(icon: Mdi.incognito, label: "post.rich.anonymous".tr(), value: "anonymous"),
                 ]),
               )
             ]),

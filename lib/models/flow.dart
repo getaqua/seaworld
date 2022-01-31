@@ -55,28 +55,26 @@ class FlowPermissions {
   final AllowDeny? delete;
   final AllowDeny? pin;
   final AllowDeny? update;
+  final AllowDeny? anonymous;
   
   FlowPermissions.fromJSON(Map data):
-    join = data["join"] == "allow" ? AllowDeny.ALLOW : data["join"] == "request" ? AllowDeny.REQUEST : AllowDeny.DENY,
-    view = data["view"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
-    read = data["read"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
-    post = data["post"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
-    delete = data["delete"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
-    pin = data["pin"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY,
-    update = data["update"] == "allow" ? AllowDeny.ALLOW : AllowDeny.DENY;
+    join = data["join"] == null ? null : AllowDeny.values.byName(data["join"]),
+    view = data["view"] == null ? null : AllowDeny.values.byName(data["view"]),
+    read = data["read"] == null ? null : AllowDeny.values.byName(data["read"]),
+    post = data["post"] == null ? null : AllowDeny.values.byName(data["post"]),
+    delete = data["delete"] == null ? null : AllowDeny.values.byName(data["delete"]),
+    pin = data["pin"] == null ? null : AllowDeny.values.byName(data["pin"]),
+    update = data["update"] == null ? null : AllowDeny.values.byName(data["update"]),
+    anonymous = data["anonymous"] == null ? null : AllowDeny.values.byName(data["anonymous"]);
 }
 /// Possible values for permissions. [ALLOW] and [DENY] are used by most permissions.
 enum AllowDeny {
   /// Used by most permissions.
-  // ignore: constant_identifier_names
-  ALLOW,
+  allow,
   /// Used by most permissions.
-  // ignore: constant_identifier_names
-  DENY,
+  deny,
   /// Used by [FlowPermissions.join]
-  // ignore: constant_identifier_names
-  REQUEST,
-  /// Used by [FlowPermissions.impersonate]
-  // ignore: constant_identifier_names
-  FORCE
+  request,
+  /// Used by [FlowPermissions.anonymous]
+  force
 }

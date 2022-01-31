@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:mdi/mdi.dart';
 import 'package:seaworld/api/apiclass.dart';
@@ -86,11 +89,49 @@ class FlowSettingsRoot extends ConsumerWidget {
             child: Container(),
           ),
           // settings page buttons here...
-          TabButton(label: "flow.settings.profile".tr(), icon: Mdi.account, index: 0, controller: _tabController),
-          TabButton(label: "flow.settings.features".tr(), icon: Mdi.tuneVariant, index: 1, controller: _tabController),
+          TabButton(label: "flow.settings.tabs.profile".tr(), icon: Mdi.account, index: 0, controller: _tabController),
+          TabButton(label: "flow.settings.tabs.features".tr(), icon: Mdi.tuneVariant, index: 1, controller: _tabController),
           //TabButton(label: "settings.security".tr(), icon: Mdi.security, index: 2),
           //TabButton(label: "settings.privacy".tr(), icon: Mdi.eye, index: 3),
           // -----------------------------
+          Mutation(
+            options: MutationOptions(
+              document: gql(FlowAPI.deleteFlow),
+              onCompleted: (_) => context.go("/")
+            ),
+            builder: (runMutation, result) => SettingsViewButton(
+              icon: Mdi.deleteForever, 
+              label: "flow.delete".tr(),
+              color: Colors.red,
+              onPressed: () async {
+                final bool _result = await showDialog(context: context, builder: (context) => Theme(
+                  data: context.theme().copyWith(
+                    dialogTheme: DialogTheme(
+                      backgroundColor: Colors.red,
+                      titleTextStyle: context.textTheme().headline6?.copyWith(color: Colors.white),
+                      contentTextStyle: context.textTheme().subtitle1?.copyWith(color: Colors.white),
+                    ),
+                    textButtonTheme: TextButtonThemeData(style: ButtonStyle(
+                      foregroundColor: MaterialStateColor.resolveWith((states) => (
+                        states.contains(MaterialState.disabled) ? Colors.grey
+                        : Colors.white
+                      ))
+                    ))
+                  ),
+                  child: AlertDialog(
+                    title: Text("flow.confirm_delete.title".tr()),
+                    content: Text("flow.confirm_delete.description".tr()),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(context, true), child: Text("dialog.yes".tr())),
+                      TextButton(onPressed: () => Navigator.pop(context, false), child: Text("dialog.no".tr())),
+                    ],
+                  ),
+                ));
+                if (_result != true) return;
+                runMutation({"id": flow.snowflake});
+              }
+            ),
+          ),
         ],
       ),
     );

@@ -45,7 +45,14 @@ class _NewContentCardState extends State<NewContentCard> {
             padding: EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Padding(
+                if (widget.flow?.myPermissions.anonymous == AllowDeny.force) Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: ProfilePicture(
+                    child: widget.flow!.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow!.avatarUrl!) : null,
+                    size: 48, notchSize: 12,
+                    fallbackChild: FallbackProfilePicture(flow: widget.flow)
+                  ),
+                ) else Padding(
                   padding: const EdgeInsets.only(right: 16.0),
                   child: ProfilePicture(
                     child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
@@ -55,9 +62,11 @@ class _NewContentCardState extends State<NewContentCard> {
                 ),
                 Column(
                   children: [
-                    Text(Config.cache.userFlow.name, style: context.textTheme().subtitle1),
+                    if (widget.flow?.myPermissions.anonymous == AllowDeny.force) Text(widget.flow!.name, style: context.textTheme().subtitle1)
+                    else Text(Config.cache.userFlow.name, style: context.textTheme().subtitle1),
                     if (widget.flow == null || widget.flow!.snowflake == Config.cache.userFlow.snowflake) 
                       Text(Config.cache.userFlow.id + " • " + "post.target.profile".tr(), style: context.textTheme().caption)
+                    else if (widget.flow?.myPermissions.anonymous == AllowDeny.force) Text(widget.flow!.id + " • " + "post.target.flow_anonymous".tr(), style: context.textTheme().caption)
                     else Text(Config.cache.userFlow.id + " • " + "post.target.flow".tr(namedArgs: {"flow": widget.flow!.name}), style: context.textTheme().caption)
                   ],
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -186,7 +195,7 @@ class _NewContentCardState extends State<NewContentCard> {
                         await Navigator.push(context, SemiTransparentPageRoute(builder: (context) => Container(
                           alignment: Alignment.topCenter,
                           width: 720,
-                          child: RichEditorPage(flow: widget.flow?.snowflake))
+                          child: RichEditorPage(flow: widget.flow?.snowflake, permissions: widget.flow?.myPermissions))
                         ));
                         (widget.refreshContent ?? (() => {}))();
                       }, icon: Icon(Mdi.cardBulleted), color: context.theme().colorScheme.primary)

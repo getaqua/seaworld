@@ -34,6 +34,7 @@ abstract class Fragments {
     delete
     pin
     update
+    anonymous
   }""";
   static const attachment = r"""fragment attachment on Attachment {
     url

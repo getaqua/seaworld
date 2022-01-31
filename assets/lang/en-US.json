@@ -45,7 +45,8 @@
         "newtext": "New text post...",
         "target": {
             "profile": "Posting to your profile",
-            "flow": "Posting to {flow}"
+            "flow": "Posting to {flow}",
+            "flow_anonymous": "Posting as this Flow"
         },
         "newimage": "Upload image",
         "newpoll": "Create a poll",
@@ -58,6 +59,7 @@
             "title": "Title",
             "text": "Text",
             "media": "Media",
+            "anonymous": "Be anonymous",
             "upload_media": "Upload file",
             "submit": "Post",
             "pendingattachments": {
@@ -152,6 +154,7 @@
         "unfollow": "Unfollow",
         "join": "Join",
         "leave": "Leave",
+        "delete": "Delete",
         "feature": {
             "home": "Home",
             "chat": "Chat",
@@ -177,6 +180,10 @@
             "success": "Flow updated",
             "remove_banner": "Reset banner",
             "remove_avatar": "Reset avatar"
+        },
+        "confirm_delete": {
+            "title": "Are you sure?",
+            "description": "If you delete this flow, all Content and chat messages posted in it will be deleted, too. There is no way to recover anything.\nWith that in mind, will you proceed?"
         },
         "new": {
             "title": "Create a Flow",

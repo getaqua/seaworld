@@ -215,7 +215,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                   onTap: () {},
                   title: Text("Placeholder page #2"),
                 ),
-                if (flow.myPermissions.update == AllowDeny.ALLOW) ListTile(
+                if (flow.myPermissions.update == AllowDeny.allow) ListTile(
                   onTap: () => context.go("/flow/"+flow.snowflake+"/settings", extra: flow),
                   title: Text("flow.feature.settings".tr()),
                 ),
@@ -290,7 +290,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                               //RichText(text: TextSpan())
                               // TODO: tagline here, eventually
                               Row(children: [
-                                if (flow.myPermissions.join == AllowDeny.ALLOW && !flow.isJoined) Mutation(
+                                if (flow.myPermissions.join == AllowDeny.allow && !flow.isJoined) Mutation(
                                   options: MutationOptions(
                                     document: gql(FlowAPI.joinFlow),
                                     onCompleted: (_) => refetch?.call(),
@@ -336,7 +336,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                                     ),
                                   ),
                                 ),
-                                if (flow.myPermissions.read == AllowDeny.ALLOW && !flow.isFollowing) Mutation(
+                                if (flow.myPermissions.read == AllowDeny.allow && !flow.isFollowing) Mutation(
                                   options: MutationOptions(
                                     document: gql(FlowAPI.followFlow),
                                     onCompleted: (_) => refetch?.call(),
@@ -440,7 +440,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                             )
                           ]
                         ),
-                        if (flow.myPermissions.post == AllowDeny.ALLOW) NewContentCard(
+                        if (flow.myPermissions.post == AllowDeny.allow) NewContentCard(
                           flow: flow,
                           refreshContent: refetch,
                         )

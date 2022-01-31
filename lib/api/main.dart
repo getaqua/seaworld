@@ -109,6 +109,7 @@ class API {
   // late ContentAPI content;
 
   static Future<Response?> uploadFile({String? fromPath, XFile? file, void Function(int, int)? sendProgress}) async {
+    if (file == null && fromPath?.isNotEmpty != true) return null;
     return Dio().post(get.urlScheme+Config.server+"/_gridless/media", 
       data: FormData.fromMap({
         "file": (fromPath?.isEmpty ?? false) ? MultipartFile(File(fromPath!).openRead(),

@@ -61,11 +61,11 @@ class FlowAPI extends APIConnect {
       snowflake
     }
   }""";
+  static const deleteFlow = r"""mutation deleteFlow($id: String!) {
+    deleteFlow(id: $id)
+  }""";
 
   /* Mutations to implement:
-  --createFlow(flow: NewFlow, parentId: String) : Flow
-  updateFlow(id: String!, data: PatchedFlow!): Flow
   deleteFlow(id: String!): Boolean!
-  joinFlow(id: String!, inviteCode: String): Flow
   */
 }
