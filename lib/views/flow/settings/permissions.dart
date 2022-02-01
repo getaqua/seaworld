@@ -199,6 +199,40 @@ class _FlowPermissionsPageState extends State<FlowPermissionsPage> {
             );
           },
         ),
+        Mutation( // Post
+          options: MutationOptions(
+            document: gql(FlowAPI.updateFlowPermissions),
+            optimisticResult: optimistic()
+          ),
+          builder: (runMutation, result) {
+            final _result = getResult(result, widget.flow, currentTab == 0);
+            return ListTile(
+              title: Text("flow.update.permission.post.title".tr()),
+              subtitle: Text("flow.update.permission.post.description".tr()),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildSpinner(context, result),
+                  PermissionSwitch(
+                    selected: _result.post,
+                    enabled: result?.isLoading != true,
+                    useNeutralState: false,
+                    defaultValue: (currentTab == 0 ? FlowPermissions.publicFallbacks : FlowPermissions.joinedFallbacks).post ?? AllowDeny.deny,
+                    onChange: (newValue) {
+                      if (currentTab == 0) {
+                        publicPermissions = publicPermissions.copyWith(post: newValue);
+                        runMutation({"id": widget.flow.snowflake, "data": {"public_permissions": {"post": newValue?.name}}});
+                      } else if (currentTab == 1) {
+                        joinedPermissions = joinedPermissions.copyWith(post: newValue);
+                        runMutation({"id": widget.flow.snowflake, "data": {"joined_permissions": {"post": newValue?.name}}});
+                      }
+                    }
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
         Mutation( // Delete
           options: MutationOptions(
             document: gql(FlowAPI.updateFlowPermissions),
@@ -300,13 +334,7 @@ class _FlowPermissionsPageState extends State<FlowPermissionsPage> {
                         joinedPermissions = joinedPermissions.copyWith(pin: newValue);
                         runMutation({"id": widget.flow.snowflake, "data": {"joined_permissions": {"pin": newValue?.name}}});
                       }
-                    },
-                    // extraStates: const [PermissionSwitchState(
-                    //   icon: Icon(Mdi.gavel), 
-                    //   label: "flow.update.permission.anonymous.force",
-                    //   activeColor: Colors.orange,
-                    //   value: AllowDeny.force
-                    // )],
+                    }
                   ),
                 ],
               ),
@@ -327,7 +355,9 @@ class _FlowPermissionsPageState extends State<FlowPermissionsPage> {
 
   Widget _buildSpinner(BuildContext context, QueryResult? result) {
     return result?.hasException == true ? Tooltip(
-      message: result!.exception.toString(),
+      message: result?.exception?.linkException?.toString()
+        ?? result?.exception?.graphqlErrors.first.message
+        ?? "No exception",  
       child: Icon(Mdi.alert, color: Colors.red),
     ) : AnimatedOpacity(
       duration: Duration(milliseconds: 200),
