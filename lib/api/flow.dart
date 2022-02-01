@@ -65,7 +65,15 @@ class FlowAPI extends APIConnect {
     deleteFlow(id: $id)
   }""";
 
-  /* Mutations to implement:
-  deleteFlow(id: String!): Boolean!
-  */
+  static const updateFlowPermissions = r"""mutation updateFlowPermissions($id: String!, $data: PatchedFlow!) {
+    updateFlow(id: $id, data: $data) {
+      public_permissions {
+        ...flowPermissions
+      }
+      joined_permissions {
+        ...flowPermissions
+      }
+    }
+  }""";
+
 }

@@ -36,6 +36,8 @@ dependencies:
   # endless: ^1.6.0 # We will use this for chat.
   duration: ^3.0.8
   adaptive_breakpoints: ^0.1.1
+  freezed_annotation:
+  json_annotation:
   file_selector: ^0.8.2+1
   file_selector_windows:
   # probably have to add all the platforms for this bad boy
@@ -51,6 +53,8 @@ dev_dependencies:
   build_runner: ^2.1.1
   mockito: ^5.0.14
   hive_test: ^1.0.1
+  json_serializable:
+  freezed:
 
 flutter:
 

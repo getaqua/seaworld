@@ -10,6 +10,7 @@ import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
+import 'package:seaworld/views/flow/settings/permissions.dart';
 import 'package:seaworld/views/flow/settings/profile.dart';
 import 'package:seaworld/views/settings/main.dart';
 
@@ -48,10 +49,11 @@ class FlowSettingsRoot extends ConsumerWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-                child: ref.watch(_tabController) >= 2 ? Center(child: Icon(Mdi.alert)) : 
+                child: ref.watch(_tabController) >= 3 ? Center(child: Icon(Mdi.alert)) : 
                 [
                   EditFlowProfilePage(flow: flow),
                   Center(child: Icon(Mdi.tuneVariant)),
+                  FlowPermissionsPage(flow: flow)
                   // // GeneralSettingsPage(),
                   // // ThemeSettingsPage()
                   // Center(child: Icon(Mdi.account)),
@@ -91,6 +93,7 @@ class FlowSettingsRoot extends ConsumerWidget {
           // settings page buttons here...
           TabButton(label: "flow.settings.tabs.profile".tr(), icon: Mdi.account, index: 0, controller: _tabController),
           TabButton(label: "flow.settings.tabs.features".tr(), icon: Mdi.tuneVariant, index: 1, controller: _tabController),
+          TabButton(label: "flow.settings.tabs.permissions".tr(), icon: Mdi.shieldKey, index: 2, controller: _tabController),
           //TabButton(label: "settings.security".tr(), icon: Mdi.security, index: 2),
           //TabButton(label: "settings.privacy".tr(), icon: Mdi.eye, index: 3),
           // -----------------------------

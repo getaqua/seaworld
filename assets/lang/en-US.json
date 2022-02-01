@@ -167,7 +167,8 @@
             },
             "tabs": {
                 "profile": "Profile",
-                "features": "Flow Features"
+                "features": "Flow Features",
+                "permissions": "Permissions"
             }
         },
         "update": {
@@ -179,11 +180,63 @@
             "failed": "Failed to update Flow",
             "success": "Flow updated",
             "remove_banner": "Reset banner",
-            "remove_avatar": "Reset avatar"
+            "remove_avatar": "Reset avatar",
+            "permission": {
+                "tabs": {
+                    "public": "Public",
+                    "joined": "Default",
+                    "overrides": "Members"
+                },
+                "sections": {
+                    "flow": "Flow",
+                    "content": "Content"
+                },
+                "states": {
+                    "deny": "Deny",
+                    "default": "Default",
+                    "allow": "Allow"
+                },
+                "join": {
+                    "title": "Join",
+                    "description": "Controls the admission of new members: whether or not new members can join.",
+                    "request_description": "If this permission is set to @:flow.update.permission.join.request, new members have to be approved by Flow staff to join.",
+                    "request": "Request to join"
+                },
+                "post": {
+                    "title": "Post",
+                    "description": "Required for a user to post Content in this Flow."
+                },
+                "update": {
+                    "title": "Update",
+                    "description": "Required for a user to change the avatar, name, description, or other details of this Flow."
+                },
+                "read": {
+                    "title": "Read",
+                    "description": "Required for a user to see Content posted in this Flow."
+                },
+                "view": {
+                    "title": "View",
+                    "description": "Required for a user to see the profile of this Flow. However, it is not required to see parts of the Flow's profile if it is referenced by something else (i.e. it is the author of forwarded Content or it is a member of another Flow)."
+                },
+                "delete": {
+                    "title": "Delete",
+                    "description": "Required for a user to delete other users' Content posted in this Flow."
+                },
+                "pin": {
+                    "title": "Pin",
+                    "description": "Required for a user to pin Content or chat messages in this Flow."
+                },
+                "anonymous": {
+                    "title": "Post Anonymously",
+                    "description": "Required for a user to post anonymously on this Flow. Removing this permission will not reveal the author.",
+                    "force_description": "If Force is selected, all new Content in this Flow will be anonymous, and users cannot turn it off. This does not affect bots' ability to post.",
+                    "force": "Force"
+                }
+            }
         },
         "confirm_delete": {
             "title": "Are you sure?",
-            "description": "If you delete this flow, all Content and chat messages posted in it will be deleted, too. There is no way to recover anything.\nWith that in mind, will you proceed?"
+            "description": "If you delete this Flow, all Content and chat messages posted in it will be deleted, too. There is no way to recover anything.\nWith that in mind, will you proceed?"
         },
         "new": {
             "title": "Create a Flow",

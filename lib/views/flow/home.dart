@@ -445,7 +445,8 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                           refreshContent: refetch,
                         )
                       ]);
-                      return (flow is! FlowWithContent) ? Center(child: CircularProgressIndicator(value: null))
+                      return (flow is! FlowWithContent && result.isLoading) ? Center(child: CircularProgressIndicator(value: null))
+                        : (flow is! FlowWithContent) ? SingleChildScrollView(child: _prefixes)
                         : (flow.content.isEmpty && !result.hasException) ? ListView.builder(
                           controller: scrollController,
                           itemBuilder: (context, index) => 
