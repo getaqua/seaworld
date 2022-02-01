@@ -9,6 +9,7 @@ import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
+import 'package:seaworld/main.dart';
 import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
 import 'package:seaworld/views/flow/newmodal.dart';
@@ -68,11 +69,6 @@ class _WideHomeViewState extends State<WideHomeView> {
               borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(8))
             ),
           ),
-          floatingActionButton: pageController.hasClients && pageController.page?.floor() == 0 ? FloatingActionButton(
-            child: Icon(Mdi.plus),
-            onPressed: () => showDialog<String?>(context: context, builder: (context) => NewFlowModal())
-            .then((value) => value == null ? null : context.go("/flow/$value"))
-          ) : null,
           body: PageView(
             scrollDirection: Axis.horizontal,
             controller: pageController,
@@ -87,6 +83,42 @@ class _WideHomeViewState extends State<WideHomeView> {
                   child: ListView(
                     controller: flowsController,
                     children: [
+                      ListTile(
+                        leading: Icon(Mdi.plus),
+                        title: Text("flow.new.title").tr(),
+                        onTap: () => showDialog<String?>(context: context, builder: (context) => NewFlowModal()),
+                      ),
+                      // This is a temporary workaround. A proper search system will replace this.
+                      ListTile(
+                        leading: Icon(Mdi.cardAccountDetails),
+                        title: Text("Find Flow by ID"),
+                        onTap: () async {
+                          final _controller = TextEditingController();
+                          final _id = await showDialog<String?>(context: context, builder: (context) => AlertDialog(
+                            title: Text("Find Flow by ID"),
+                            content: TextField(
+                              controller: _controller,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                prefixText: "//"
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, null),
+                                child: Text("dialog.cancel".tr())
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, "//"+_controller.value.text),
+                                child: Text("dialog.ok".tr())
+                              )
+                            ],
+                          ));
+                          if (_id?.isEmpty != false) return;
+                          final _result = await gqlClient.value.query(QueryOptions(document: gql(FlowAPI.findFlowById), variables: {"id": _id}));
+                          context.go("/flow/"+(_result.data?["getFlow"]?["snowflake"] ?? "null"));
+                        },
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0) - EdgeInsets.only(bottom: 8.0),
                         child: Text("flows.joined".tr(), style: context.textTheme().subtitle2),

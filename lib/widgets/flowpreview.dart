@@ -105,7 +105,7 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
                       message: "flow.open".tr(namedArgs: {"id": widget.flow.id}),
                       child: InkResponse(
                         onTap: () async {
-                          Navigator.pop(context);
+                          //Navigator.pop(context);
                           context.go("/flow/"+widget.flow.snowflake);
                         },
                         child: ProfilePicture(
@@ -139,10 +139,19 @@ class _FlowPreviewPopupMenuState extends State<_FlowPreviewPopupMenu> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ProfilePicture(
-                    child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,
-                    size: 72, notchSize: 24,
-                    fallbackChild: FallbackProfilePicture(flow: widget.flow)
+                  child: Tooltip(
+                    message: "flow.open".tr(namedArgs: {"id": widget.flow.id}),
+                    child: InkResponse(
+                      onTap: () async {
+                        //Navigator.pop(context);
+                        context.go("/flow/"+widget.flow.snowflake);
+                      },
+                      child: ProfilePicture(
+                        child: widget.flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.flow.avatarUrl!) : null,
+                        size: 72, notchSize: 24,
+                        fallbackChild: FallbackProfilePicture(flow: widget.flow)
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(child: Padding(

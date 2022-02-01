@@ -24,13 +24,17 @@ class FlowAPI extends APIConnect {
       ...fullFlow
     }
   }""";
-
   static const getFlowWithContent = r"""query getFlowWithContent($id: String!) {
     getFlow(id: $id) {
       ...fullFlow
       content {
         ...content
       }
+    }
+  }""";
+  static const findFlowById = r"""query findFlowById($id: String!) {
+    getFlow(id: $id) {
+      snowflake
     }
   }""";
 
