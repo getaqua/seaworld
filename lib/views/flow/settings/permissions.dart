@@ -11,11 +11,13 @@ class FlowPermissionsPage extends StatefulWidget {
   final Flow flow;
   const FlowPermissionsPage({ Key? key, required this.flow }) : super(key: key);
 
+
   @override
   State<FlowPermissionsPage> createState() => _FlowPermissionsPageState();
 }
 
 class _FlowPermissionsPageState extends State<FlowPermissionsPage> {
+  final ScrollController scrollController = ScrollController();
   int currentTab = 0;
   late FlowPermissions publicPermissions;
   late FlowPermissions joinedPermissions;
@@ -31,8 +33,9 @@ class _FlowPermissionsPageState extends State<FlowPermissionsPage> {
   Widget build(BuildContext context) {
     // ignore: prefer_function_declarations_over_variables
     final optimistic = () => {"updateFlow": {"public_permissions": publicPermissions, "joined_permissions": joinedPermissions}};
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      controller: scrollController,
+      //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
