@@ -350,7 +350,7 @@ class _FlowPermissionsPageState extends State<FlowPermissionsPage> {
 
   static FlowPermissions getResult(QueryResult? result, Flow fallback, bool public) {
     if (result?.data != null) {
-      return FlowPermissions.fromJson(result!.data!["updateFlow"][public ? "public_permissions" : "joined_permissions"]);
+      return FlowPermissions.fromJson(result!.data!["updateFlow"][public ? "publicPermissions" : "joinedPermissions"]);
     } else {
       return public ? fallback.publicPermissions : fallback.joinedPermissions;
     }

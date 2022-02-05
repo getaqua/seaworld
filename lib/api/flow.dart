@@ -71,10 +71,10 @@ class FlowAPI extends APIConnect {
 
   static const updateFlowPermissions = r"""mutation updateFlowPermissions($id: String!, $data: PatchedFlow!) {
     updateFlow(id: $id, data: $data) {
-      public_permissions {
+      publicPermissions {
         ...flowPermissions
       }
-      joined_permissions {
+      joinedPermissions {
         ...flowPermissions
       }
     }

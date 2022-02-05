@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' hide gql;
 import 'package:hive/hive.dart';
+import 'package:mdi/mdi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:seaworld/api/apiclass.dart';
 import 'package:seaworld/api/flow.dart';
@@ -22,6 +23,7 @@ import 'package:seaworld/views/flow/settings/main.dart';
 import 'package:seaworld/views/home/wide.dart';
 import 'package:seaworld/views/login.dart';
 import 'package:seaworld/views/settings/main.dart';
+import 'package:seaworld/widgets/inappnotif.dart';
 
 
 late final String kVersion;
@@ -174,10 +176,20 @@ class MyApp extends ConsumerWidget {
             future: API.get.ready,
             builder: (context, snap) => snap.connectionState == ConnectionState.done
               ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
-              : Material(
-                color: Colors.black54, 
-                child: Center(child: CircularProgressIndicator(value: null)),
-              )
+              : snap.hasError ? (() {
+                InAppNotification.showOverlayIn(context, InAppNotification(
+                  icon: Icon(Mdi.alert, color: Colors.red),
+                  title: Text("crash.connectionerror.title"),
+                  text: Text(snap.error.toString()),
+                ));
+                return CrashedView(
+                  title: "crash.connectionerror.title".tr(),
+                  helptext: "crash.connectionerror.generic".tr(),
+                );
+              })() : Material(
+                  color: Colors.black54, 
+                  child: Center(child: CircularProgressIndicator(value: null)),
+                )
         ),
         routes: [
           GoRoute(path: "settings", builder: (context, state) => SettingsRoot()),

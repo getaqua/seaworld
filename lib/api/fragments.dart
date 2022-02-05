@@ -2,27 +2,26 @@ abstract class Fragments {
   static const partialFlow = r"""fragment partialFlow on Flow {
     name
     description
-    avatar_url
-    banner_url
+    avatarUrl
+    bannerUrl
     id
     snowflake
-    effective_permissions {
+    effectivePermissions {
       ...flowPermissions
     }
-    is_joined
-    is_following
+    isJoined
+    isFollowing
   }""";
   /// Depends on [partialFlow] and [flowPermissions]
   static const fullFlow = r"""fragment fullFlow on Flow {
     ...partialFlow
     members {
-      ...partialFlow
+      ...partialFlowMember
     }
-    alternative_ids
-    public_permissions {
+    publicPermissions {
       ...flowPermissions
     }
-    joined_permissions {
+    joinedPermissions {
       ...flowPermissions
     }
   }""";
@@ -52,15 +51,11 @@ abstract class Fragments {
       ...attachment
     }
     origin { #TODO: PartialContent for this
-      text
-      author {
-        name
-        id
-      }
+      snowflake
     }
     pinned
     author {
-      ...partialFlow
+      ...partialFlowMember
     }
     inFlowId
     timestamp
@@ -69,4 +64,11 @@ abstract class Fragments {
     snowflake
   }""";
   //static const name = r"""""";
+  static const partialFlowMember = r"""fragment partialFlowMember on FlowMember {
+    name
+    avatarUrl
+    member {
+      ...partialFlow
+    }
+  }""";
 }

@@ -56,6 +56,9 @@ abstract class APIConnect {
       if (_.contains("...partialFlow") && !output.contains(Fragments.partialFlow)) {
         output.add(Fragments.partialFlow); continue;
       }
+      if (_.contains("...partialFlowMember") && !output.contains(Fragments.partialFlowMember)) {
+        output.add(Fragments.partialFlowMember); continue;
+      }
       break;
     }
     return [...output, query];

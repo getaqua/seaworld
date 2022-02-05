@@ -486,7 +486,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
           onTap: () {},
           onTapDown: (details) => FlowPreviewPopupMenu().show(
             context: context, 
-            flow: member, 
+            flow: member.member, 
             position: MediaQuery.of(context).size.width > 328+328 
             ? (context.findRenderObject() as RenderBox?)?.localToGlobal(const Offset(0,0))
             : const Offset(16, 16),  
@@ -498,7 +498,7 @@ class _FlowHomeViewState extends State<FlowHomeView> {
               leading: ProfilePicture(
                 child: member.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+member.avatarUrl!) : null,
                 size: 48, notchSize: 16,
-                fallbackChild: FallbackProfilePicture(flow: member)
+                fallbackChild: FallbackProfilePicture(flow: member.member)
               ),
               title: Text(flow.name),
               subtitle: Text(flow.id),

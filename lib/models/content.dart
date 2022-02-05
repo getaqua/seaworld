@@ -1,3 +1,5 @@
+import 'package:seaworld/models/member.dart';
+
 import 'flow.dart';
 
 class Content {
@@ -6,7 +8,7 @@ class Content {
   final Content? original;
   final List<ContentAttachment> attachments;
 
-  PartialFlow author;
+  PartialFlowMember author;
   final DateTime timestamp;
   final DateTime? editedTimestamp;
   final bool isEdited;
@@ -20,7 +22,7 @@ class Content {
     original = data["origin"] != null ? Content.fromJSON(data["origin"]) : null,
     attachments = data["attachments"]?.map<ContentAttachment>((att) => ContentAttachment.fromJSON(att)).toList() ?? [],
 
-    author = PartialFlow.fromJSON(data["author"]),
+    author = PartialFlowMember.fromJSON(data["author"]),
     timestamp = DateTime.parse(data["timestamp"]),
     editedTimestamp = data["editedTimestamp"] != null ? DateTime.parse(data["editedTimestamp"]) : null,
     isEdited = data["editedTimestamp"] != null,

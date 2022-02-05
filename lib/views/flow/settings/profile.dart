@@ -89,7 +89,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                           runMutation({
                                             "id": widget.flow.snowflake,
                                             "data": {
-                                              "banner_url": file!.data["url"]
+                                              "bannerUrl": file!.data["url"]
                                             }
                                           });
                                         } else {
@@ -129,7 +129,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                   onPressed: () => runMutation({
                                     "id": widget.flow.snowflake,
                                     "data": {
-                                      "banner_url": null
+                                      "bannerUrl": null
                                     }
                                   }),
                                   child: Padding(
@@ -178,7 +178,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                           runMutation({
                                             "id": widget.flow.snowflake,
                                             "data": {
-                                              "avatar_url": file!.data["url"]
+                                              "avatarUrl": file!.data["url"]
                                             }
                                           });
                                         } else {
@@ -215,7 +215,7 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                                   onPressed: () => runMutation({
                                     "id": widget.flow.snowflake,
                                     "data": {
-                                      "avatar_url": null
+                                      "avatarUrl": null
                                     }
                                   }),
                                   child: Padding(

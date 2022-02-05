@@ -82,7 +82,8 @@ class _ContentWidgetState extends State<ContentWidget> {
                         // ),
                         onTapDown: (details) => FlowPreviewPopupMenu().show(
                           context: context, 
-                          flow: widget.content.author, 
+                          //TODO: FlowPreviewPopupMenu
+                          flow: widget.content.author.member, 
                           //position: details.globalPosition & Size(40, 40)
                         ),
                         borderRadius: BorderRadius.circular(64),
@@ -92,7 +93,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                             child: ProfilePicture(
                               child: widget.content.author.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+widget.content.author.avatarUrl!) : null,
                               size: 48, notchSize: 16,
-                              fallbackChild: FallbackProfilePicture(flow: widget.content.author)
+                              fallbackChild: FallbackProfilePicture(flow: widget.content.author.member)
                             ),
                           ),
                           if (_viewProfilePrompt) ...[
@@ -106,9 +107,9 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 Expanded(
                   child: Tooltip(
-                    message: "flow.open".tr(namedArgs: {"id": widget.content.author.id}),
+                    message: "flow.open".tr(namedArgs: {"id": widget.content.author.member.id}),
                     child: InkWell(
-                      onTap: () => context.go("/flow/"+widget.content.author.snowflake),
+                      onTap: () => context.go("/flow/"+widget.content.author.member.snowflake),
                       child: Padding(
                         padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
                         child: Row(
@@ -121,7 +122,7 @@ class _ContentWidgetState extends State<ContentWidget> {
                                   Text(widget.content.author.name, style: context.textTheme().subtitle1),
                                   Text([
                                     //widget.content.author.id, 
-                                    if (widget.content.inFlowId != widget.content.author.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId}),
+                                    if (widget.content.inFlowId != widget.content.author.member.id) "content.inflow".tr(namedArgs: {"flow": widget.content.inFlowId}),
                                     "content.relative".tr(args: [prettyDuration(DateTime.now().difference(widget.content.timestamp), first: true)]),
                                     // if (DateTime.now().difference(widget.content.timestamp) < Duration(hours: 24)) prettyDuration...
                                     // else dtF.format(widget.content.timestamp.toLocal()),
@@ -141,11 +142,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
-                    if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
+                    if (widget.content.author.member.id == Config.cache.userId) PopupMenuItem(
                       child: Text("content.delete".tr(), style: TextStyle(color: Colors.red)),
                       value: "delete"
                     ),
-                    if (widget.content.author.id == Config.cache.userId) PopupMenuItem(
+                    if (widget.content.author.member.id == Config.cache.userId) PopupMenuItem(
                       child: Text("content.edit".tr()),
                       value: "edit"
                     )

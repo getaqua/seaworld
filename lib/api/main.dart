@@ -87,19 +87,28 @@ class API {
     // flow = FlowAPI(token, urlScheme+Config.server);
     // content = ContentAPI(token, urlScheme+Config.server);
     this.token = token;
-    await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
-      if (value.hasException) throw value.exception!;
-      Config.cache.serverName = value.data!["getSystemInfo"]["name"];
-      Config.cache.serverVersion = value.data!["getSystemInfo"]["version"];
-      return value;
-    });
-    await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getMe), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
-      if (value.hasException) throw value.exception!;
-      Config.cache.userId = value.data!["getMe"]["flow"]["id"];
-      Config.cache.scopes = List.castFrom(value.data!["getMe"]["tokenPermissions"]);
-      Config.cache.userFlow = Flow.fromJSON(value.data!["getMe"]["flow"]);
-      return value;
-    });
+    try {
+      await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
+        if (value.hasException) throw value.exception!;
+        Config.cache.serverName = value.data!["getSystemInfo"]["name"];
+        Config.cache.serverVersion = value.data!["getSystemInfo"]["version"];
+        return value;
+      });
+      await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getMe), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
+        if (value.hasException) throw value.exception!;
+        Config.cache.userId = value.data!["getMe"]["flow"]["id"];
+        Config.cache.scopes = List.castFrom(value.data!["getMe"]["tokenPermissions"]);
+        Config.cache.userFlow = Flow.fromJSON(value.data!["getMe"]["flow"]);
+        return value;
+      });
+    } catch(e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      _ready.completeError(e);
+      isReady = false;
+      return;
+    }
     isReady = true;
     _ready.complete(true);
   }

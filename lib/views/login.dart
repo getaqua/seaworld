@@ -29,7 +29,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   // ignore: prefer_final_fields
   String _serverUrl = "localhost:3000";
   // ignore: prefer_final_fields
-  String _clientId = "AQUA-397bd2a38f2727988667d1fda6bbd363c7a74441dac0567d8b726b7ce0fab78955179d7e";
+  String _clientId = "AQUA-e39fe202e388abd7ba531fffc297ebb5965355077c091bff2908495985282871be0b94f3";
   //late final Future<bool> _healthCheckFuture;
 
   @override
@@ -145,7 +145,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               )
                             ),
                             PopupMenuItem(
-                              child: Text("login.selectserver".tr()), 
+                              child: Text("login.selectserver.title".tr()), 
                               value: 10
                             )
                           ], onSelected: (value) async {
@@ -162,7 +162,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("login.selectserver".tr(), style: context.textTheme().headline5, textAlign: TextAlign.start),
+                                      Text("login.selectserver.title".tr(), style: context.textTheme().headline5, textAlign: TextAlign.start),
                                       Text("login.selectserver.message".tr(), style: context.textTheme().bodyText2),
                                       SizedBox(
                                         width: 480,
