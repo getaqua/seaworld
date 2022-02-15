@@ -11,6 +11,7 @@ import 'package:seaworld/helpers/breakpoints.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/extensions.dart';
 import 'package:seaworld/models/flow.dart';
+import 'package:seaworld/styles/border.dart';
 import 'package:seaworld/views/flow/frame.dart';
 import 'package:seaworld/widgets/content.dart';
 import 'package:seaworld/widgets/empty.dart';
@@ -225,7 +226,8 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                                     onPressed: result?.isLoading ?? false ? null : () => runMutation({"id": flow.snowflake}),
                                     child: Text("flow.follow".tr()), 
                                     style: ButtonStyle(
-                                      foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                      foregroundColor: StatedColor(Colors.black),
+                                      side: ButtonBorder(Colors.black),
                                       overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
                                     ),
                                   ),
@@ -247,7 +249,8 @@ class _FlowHomeViewState extends State<FlowHomeView> {
                                     onPressed: result?.isLoading ?? false ? null : () => runMutation({"id": flow.snowflake}),
                                     child: Text("flow.unfollow".tr()), 
                                     style: ButtonStyle(
-                                      foregroundColor: MaterialStateColor.resolveWith((states) => states.contains(MaterialState.disabled) ? Colors.black38 : Colors.black),
+                                      foregroundColor: StatedColor(Colors.black),
+                                      side: ButtonBorder(Colors.black),
                                       overlayColor: MaterialStateColor.resolveWith((states) => Colors.black26)
                                     ),
                                   ),

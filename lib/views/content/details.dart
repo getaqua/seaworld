@@ -89,6 +89,7 @@ class _ContentDetailViewState extends State<ContentDetailView> {
         return SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (MediaQuery.of(context).orientation == Orientation.portrait) Row(
                   children: [

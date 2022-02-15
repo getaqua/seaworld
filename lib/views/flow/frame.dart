@@ -192,29 +192,58 @@ class _FlowViewState extends State<FlowView> {
                     ),
                   ),
                 ),
-                SliverList(delegate: SliverChildListDelegate([
-                  ListTile(
-                    selected: GoRouter.of(context).location == "/flow/"+flow.snowflake,
-                    onTap: () => context.go("/flow/"+flow.snowflake),
-                    title: Text("flow.feature.home".tr()),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    title: Text("Placeholder page"),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    title: Text("flow.feature.chat".tr()),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    title: Text("Placeholder page #2"),
-                  ),
-                  if (flow.myPermissions.update == AllowDeny.allow) ListTile(
-                    onTap: () => context.go("/flow/"+flow.snowflake+"/settings", extra: flow),
-                    title: Text("flow.feature.settings".tr()),
-                  ),
-                ])),
+                ListTileTheme(
+                  iconColor: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.6),
+                  textColor: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.6),
+                  selectedColor: Theme.of(context).colorScheme.primary,
+                  selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  style: ListTileStyle.drawer,
+                  child: SliverList(delegate: SliverChildListDelegate([
+                    ListTile(
+                      selected: GoRouter.of(context).location == "/flow/"+flow.snowflake,
+                      onTap: () => context.go("/flow/"+flow.snowflake),
+                      title: Text("flow.feature.home".tr()),
+                      leading: Icon(Mdi.home),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    ListTile(
+                      onTap: () {},
+                      // Use this and subtitle style for events
+                      iconColor: Theme.of(context).colorScheme.secondary,
+                      title: Text("Placeholder page",),
+                      subtitle: Text("There's an event in here!",
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
+                      leading: Icon(Mdi.oneUp),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    ListTile(
+                      onTap: () {},
+                      // Use these two styles to help indicate new messages
+                      textColor: Theme.of(context).textTheme.bodyText2?.color,
+                      iconColor: Theme.of(context).textTheme.bodyText2?.color,
+                      title: Text("flow.feature.chat".tr()),
+                      leading: Icon(Mdi.poundBoxOutline),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    ListTile(
+                      onTap: () {},
+                      leading: Icon(null),
+                      title: Text("Placeholder page #2"),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    if (flow.myPermissions.update == AllowDeny.allow) ListTile(
+                      onTap: () => context.go("/flow/"+flow.snowflake+"/settings", extra: flow),
+                      title: Text("flow.feature.settings".tr()),
+                      leading: Icon(Mdi.cog),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ])),
+                ),
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Column(
@@ -230,7 +259,7 @@ class _FlowViewState extends State<FlowView> {
                             padding: const EdgeInsets.all(8.0),
                             child: PopupMenuButton(
                               child: ProfilePicture(
-                                child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
+                                child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
                                 size: 36, notchSize: 12,
                                 fallbackChild: FallbackProfilePicture(flow: flow)
                               ),
