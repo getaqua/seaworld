@@ -16,7 +16,9 @@ import 'package:seaworld/api/flow.dart';
 import 'package:seaworld/api/main.dart';
 import 'package:seaworld/helpers/config.dart';
 import 'package:seaworld/helpers/theme.dart';
+import 'package:seaworld/models/content.dart';
 import 'package:seaworld/models/flow.dart';
+import 'package:seaworld/views/content/details.dart';
 import 'package:seaworld/views/crash.dart';
 import 'package:seaworld/views/flow/home.dart';
 import 'package:seaworld/views/flow/settings/main.dart';
@@ -24,6 +26,8 @@ import 'package:seaworld/views/home/wide.dart';
 import 'package:seaworld/views/login.dart';
 import 'package:seaworld/views/settings/main.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
+
+import 'api/content.dart';
 
 
 late final String kVersion;
@@ -162,6 +166,8 @@ class MyApp extends ConsumerWidget {
   static String? ensureLoggedIn(GoRouterState state) {
     if (Config.token == null) {
       return "/login";
+    } else if (API.get.error != null) {
+      return "/_error";
     }
   }
 
@@ -170,26 +176,36 @@ class MyApp extends ConsumerWidget {
       //GoRoute(path: "/", redirect: (state) => Config.token == null ? "/login" : "/home"),
       GoRoute(
         path: "/",
-        builder: (context, state) => API.get.isReady
+        builder: (context, state) => API.get.error != null ? (() {
+          InAppNotification.showOverlayIn(context, InAppNotification(
+            icon: Icon(Mdi.alert, color: Colors.red),
+            title: Text("crash.connectionerror.title"),
+            text: Text(API.get.error.toString()),
+          ));
+          return CrashedView(
+            title: "crash.connectionerror.title".tr(),
+            helptext: "crash.connectionerror.generic".tr(),
+          );
+        })() : API.get.isReady
           ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
           : FutureBuilder(
             future: API.get.ready,
-            builder: (context, snap) => snap.connectionState == ConnectionState.done
-              ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container()
-              : snap.hasError ? (() {
-                InAppNotification.showOverlayIn(context, InAppNotification(
-                  icon: Icon(Mdi.alert, color: Colors.red),
-                  title: Text("crash.connectionerror.title"),
-                  text: Text(snap.error.toString()),
-                ));
-                return CrashedView(
-                  title: "crash.connectionerror.title".tr(),
-                  helptext: "crash.connectionerror.generic".tr(),
-                );
-              })() : Material(
-                  color: Colors.black54, 
-                  child: Center(child: CircularProgressIndicator(value: null)),
-                )
+            builder: (context, snap) => snap.hasError ? (() {
+              // InAppNotification.showOverlayIn(context, InAppNotification(
+              //   icon: Icon(Mdi.alert, color: Colors.red),
+              //   title: Text("crash.connectionerror.title"),
+              //   text: Text(snap.error.toString()),
+              // ));
+              return CrashedView(
+                title: "crash.connectionerror.title".tr(),
+                helptext: "crash.connectionerror.generic".tr(),
+              );
+            })() : snap.connectionState == ConnectionState.done
+            ? Config.homeLayout == HomeLayouts.wide ? WideHomeView() : Container() 
+            : Material(
+              color: Colors.black54, 
+              child: Center(child: CircularProgressIndicator(value: null)),
+            )
         ),
         routes: [
           GoRoute(path: "settings", builder: (context, state) => SettingsRoot()),
@@ -229,6 +245,24 @@ class MyApp extends ConsumerWidget {
               ))
             ],
           ),
+          GoRoute(
+            path: "content/:snowflake",
+            builder: (context, state) => Query(
+              options: QueryOptions(
+                document: gql(ContentAPI.getContent),
+                variables: {"id": state.params["snowflake"]},
+                fetchPolicy: FetchPolicy.cacheFirst
+              ),
+              builder: (result, {fetchMore, refetch}) => result.isLoading && result.data == null
+              ? Material(
+                color: Colors.black54, 
+                child: Center(child: CircularProgressIndicator(value: null)),
+              ) : result.data == null
+              ? CrashedView(
+                title: "crash.notfound.title".tr(),
+                helptext: "crash.notfound.generic".tr(),
+              ) : ContentDetailView(content: Content.fromJSON(result.data!["getContent"]))),
+          )
         ],
         redirect: ensureLoggedIn
       ),
@@ -245,11 +279,29 @@ class MyApp extends ConsumerWidget {
         return state.location == "/" ? null : "/";
       }
     },
-    errorPageBuilder: (context, state) => MaterialPage(child: CrashedView(
-      title: "crash.notfound.title".tr(),
-      helptext: "crash.notfound.generic".tr(),
-      retryBack: true,
-    )),
+    errorPageBuilder: (context, state) {
+      //InAppNotification.showOverlayIn(context, InAppNotification(text: Text(state.error.toString())));
+      if (kDebugMode) {
+        print(state.error);
+      }
+      if (API.get.error != null) {
+        // InAppNotification.showOverlayIn(context, InAppNotification(
+        //   icon: Icon(Mdi.alert, color: Colors.red),
+        //   title: Text("crash.connectionerror.title"),
+        //   text: Text(API.get.error.toString()),
+        // ));
+        return MaterialPage(child: CrashedView(
+          title: "crash.connectionerror.title".tr(),
+          helptext: "crash.connectionerror.generic".tr(),
+        ));
+      } else {
+        return MaterialPage(child: CrashedView(
+          title: "crash.notfound.title".tr(),
+          helptext: "crash.notfound.generic".tr(),
+          retryBack: true,
+        ));
+      }
+    }
   );
 }
 

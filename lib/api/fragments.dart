@@ -62,6 +62,7 @@ abstract class Fragments {
     # edited
     editedTimestamp
     snowflake
+    yours
   }""";
   //static const name = r"""""";
   static const partialFlowMember = r"""fragment partialFlowMember on FlowMember {

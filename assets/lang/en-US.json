@@ -126,6 +126,10 @@
         "readmore": "Read more",
         "delete": "Delete",
         "edit": "Edit",
+        "titles": {
+            "timestamp": "Posted on",
+            "edited": "Edited on"
+        },
         "attachment": {
             "remove": "Remove attachment",
             "download": "Download {filename}",

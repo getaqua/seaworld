@@ -12,6 +12,12 @@ class ContentAPI extends APIConnect {
       ...content
     }
   }""";
+  static const getContent = r"""query getContent($id: String!) {
+    getContent(id: $id) {
+      ...content
+      # replies...
+    }
+  }""";
 
   // Future<GraphQLResponse> postContent({
   //   required String toFlow,

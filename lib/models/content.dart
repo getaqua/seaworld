@@ -14,6 +14,7 @@ class Content {
   final bool isEdited;
   final bool isPinned;
   final String inFlowId;
+  final bool yours;
   final String snowflake;
 
   Content.fromJSON(Map data):
@@ -28,6 +29,7 @@ class Content {
     isEdited = data["editedTimestamp"] != null,
     isPinned = data["pinned"] ?? false,
     inFlowId = data["inFlowId"],
+    yours = data["yours"] ?? false,
     snowflake = data["snowflake"];
   Map toJSON() => _map;
 }

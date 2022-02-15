@@ -142,11 +142,11 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ),
                 if (!widget.embedded) PopupMenuButton(
                   itemBuilder: (context) => [
-                    if (widget.content.author.member.id == Config.cache.userId) PopupMenuItem(
+                    if (widget.content.yours) PopupMenuItem(
                       child: Text("content.delete".tr(), style: TextStyle(color: Colors.red)),
                       value: "delete"
                     ),
-                    if (widget.content.author.member.id == Config.cache.userId) PopupMenuItem(
+                    if (widget.content.yours) PopupMenuItem(
                       child: Text("content.edit".tr()),
                       value: "edit"
                     )
@@ -253,7 +253,7 @@ class _ContentWidgetState extends State<ContentWidget> {
               Expanded(child: Container()),
               Tooltip(
                 message: "content.readmore".tr(),
-                child: IconButton(onPressed: () => {}, icon: Icon(Mdi.textBox))
+                child: IconButton(onPressed: () => context.push("/content/"+widget.content.snowflake), icon: Icon(Mdi.textBox))
               ),
             ],
           )

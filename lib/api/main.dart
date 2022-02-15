@@ -17,8 +17,8 @@ import 'package:seaworld/models/flow.dart';
 import 'package:http_parser/src/media_type.dart';
 
 class API {
-  static API get get => _instance ??= API();
-  static API? _instance;
+  static API get get => _instance;
+  static late API _instance = API();
   
   bool isServerInsecure = false;
   String get urlScheme => isServerInsecure ? "http://" : "https://";
@@ -29,6 +29,8 @@ class API {
 
   /// Whether the API initialization process has completed.
   bool isReady = false;
+  /// This error is one that prevents the API from being used.
+  Exception? error;
 
   static bool _isLocalhost(String url) => 
     url.startsWith("localhost") 
@@ -88,6 +90,15 @@ class API {
     // content = ContentAPI(token, urlScheme+Config.server);
     this.token = token;
     try {
+      final hc = await Dio().getUri(
+        uri.replace(path: "/_gridless/healthcheck"), 
+        options: Options(
+          validateStatus: (c) => c == 200,
+          receiveDataWhenStatusError: false,
+          followRedirects: false
+        )
+      ).timeout(Duration(seconds: 5));
+      if (hc.data != "OK") throw ConnectionError("Could not connect to the server!");
       await gqlClient.value.query(QueryOptions(document: gql(SystemAPI.getSystemInfo), fetchPolicy: FetchPolicy.networkOnly)).then((value) {
         if (value.hasException) throw value.exception!;
         Config.cache.serverName = value.data!["getSystemInfo"]["name"];
@@ -105,6 +116,7 @@ class API {
       if (kDebugMode) {
         print(e);
       }
+      error = e as Exception?;
       _ready.completeError(e);
       isReady = false;
       return;
