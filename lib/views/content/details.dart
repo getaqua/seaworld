@@ -273,7 +273,7 @@ class _ContentDetailViewState extends State<ContentDetailView> {
                     );
                   }
                 ),
-                if (content.editedTimestamp != null) Builder(
+                if (content.isEdited) Builder(
                   builder: (context) {
                     var dtF = DateFormat.yMd(context.locale.toStringWithSeparator());
                     if (MediaQuery.of(context).alwaysUse24HourFormat) {

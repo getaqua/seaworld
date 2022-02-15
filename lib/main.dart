@@ -222,7 +222,7 @@ class MyApp extends ConsumerWidget {
               ? Material(
                 color: Colors.black54, 
                 child: Center(child: CircularProgressIndicator(value: null)),
-              ) : result.data == null
+              ) : result.data == null || result.data!["getFlow"] == null
               ? CrashedView(
                 title: "crash.flow.title".tr(),
                 helptext: "crash.flow.generic".tr(),
