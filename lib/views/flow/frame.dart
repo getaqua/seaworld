@@ -76,35 +76,6 @@ class _FlowViewState extends State<FlowView> {
           flow = FlowWithContent.fromJSON(result.data!["getFlow"]);
         }
         return SuperScaffold(
-          appBar: SuperAppBar(
-            title: Row(
-              children: [
-                ProfilePicture(
-                  child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
-                  size: 36, notchSize: 8,
-                  fallbackChild: FallbackProfilePicture(flow: flow)
-                ),
-                SizedBox(width: 12),
-                Text(flow.name),
-              ],
-            ),
-            actions: [
-              IconButton(onPressed: () => refetch?.call(), icon: Icon(Mdi.refresh)),
-              //IconButton(onPressed: () => context.go("/settings"), icon: Icon(Mdi.cog))
-              if (MediaQuery.of(context).size.width < 1088) Builder(
-                builder: (context) {
-                  final scaffold = Scaffold.of(context);
-                  return IconButton(
-                    onPressed: () => scaffold.openEndDrawer(),
-                    icon: Icon(Mdi.accountMultiple)
-                  );
-                }
-              )
-            ],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(8))
-            ),
-          ),
           drawer: Drawer(
             child: ListView(
               controller: drawerScrollController,
@@ -115,6 +86,15 @@ class _FlowViewState extends State<FlowView> {
                     color: context.theme().colorScheme.secondary,
                     borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
                     child: DrawerHeader(
+                      margin: EdgeInsets.zero,
+                      decoration: flow.bannerUrl?.isNotEmpty == true ? BoxDecoration(
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
+                        image: DecorationImage(
+                          image: NetworkImage(API.get.urlScheme+Config.server+flow.bannerUrl!),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken)
+                        ),
+                      ) : null,
                       child: Stack(
                         fit: StackFit.passthrough,
                         children: [
@@ -137,12 +117,12 @@ class _FlowViewState extends State<FlowView> {
                                     Padding(
                                       padding: const EdgeInsets.all(4.0),
                                       child: ProfilePicture(
-                                        child: Config.cache.userFlow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+Config.cache.userFlow.avatarUrl!) : null,
+                                        child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
                                         size: 48, notchSize: 16,
-                                        fallbackChild: FallbackProfilePicture(flow: Config.cache.userFlow)
+                                        fallbackChild: FallbackProfilePicture(flow: flow)
                                       ),
                                     ),
-                                    Text("flow.actor".tr(), style: context.textTheme().overline)
+                                    Text("flow.youarein".tr(), style: context.textTheme().overline)
                                   ],
                                 ),
                               ),
@@ -156,14 +136,14 @@ class _FlowViewState extends State<FlowView> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          Config.cache.userFlow.name, 
+                                          flow.name, 
                                           style: context.textTheme().headline6,
                                           maxLines: 1,
                                           overflow: TextOverflow.fade,
                                           textAlign: TextAlign.start,
                                         ),
                                         Text(
-                                          Config.cache.userFlow.id,
+                                          flow.id,
                                           style: context.textTheme().caption,
                                           maxLines: 1,
                                           overflow: TextOverflow.fade,
@@ -172,11 +152,11 @@ class _FlowViewState extends State<FlowView> {
                                       ],
                                     ),
                                   ),
-                                  Expanded(child: Container()),
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Icon(Mdi.chevronDown),
-                                  )
+                                  // Expanded(child: Container()),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(4.0),
+                                  //   child: Icon(Mdi.chevronDown),
+                                  // )
                                 ],
                               )
                               // The user's name and ID
@@ -184,13 +164,27 @@ class _FlowViewState extends State<FlowView> {
                             //mainAxisAlignment: MainAxisAlignment.end,
                             mainAxisSize: MainAxisSize.max,
                           ),
-                          Positioned(
-                            top: -8, left: -8,
-                            child: IconButton(
-                              icon: Icon(Mdi.arrowLeft),
-                              onPressed: () => Navigator.pop(context)
-                            )
-                          )
+                          Builder(
+                            builder: (context) {
+                              return Positioned(
+                                top: -8, left: -8,
+                                child: IconButton(
+                                  icon: Icon(Mdi.arrowLeft),
+                                  onPressed: () {
+                                    if (Scaffold.maybeOf(context)?.isDrawerOpen == true) Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  }
+                                )
+                              );
+                            }
+                          ),
+                          // Positioned(
+                          //   top: -8, right: -8,
+                          //   child: IconButton(
+                          //     icon: Icon(Mdi.weatherLightning),
+                          //     onPressed: null
+                          //   )
+                          // )
                         ],
                       ),
                     ),
@@ -263,10 +257,10 @@ class _FlowViewState extends State<FlowView> {
           onTapDown: (details) => FlowPreviewPopupMenu().show(
             context: context, 
             flow: member.member, 
-            position: MediaQuery.of(context).size.width > 328+328 
+            position: MediaQuery.of(context).size.width > 328*2
             ? (context.findRenderObject() as RenderBox?)?.localToGlobal(const Offset(0,0))
             : const Offset(16, 16),  
-            offset: MediaQuery.of(context).size.width > 328+328 ? Offset(-328, 8) : Offset(0, 0)
+            offset: MediaQuery.of(context).size.width > 328*2 ? Offset(-328, 8) : Offset(0, 0)
           ),
           child: Tooltip(
             message: "flow.showpreview".tr(),

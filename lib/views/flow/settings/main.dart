@@ -28,45 +28,55 @@ class FlowSettingsRoot extends ConsumerWidget {
         document: gql(FlowAPI.getFlow),
         variables: {"id": flow.snowflake},
         fetchPolicy: FetchPolicy.cacheFirst,
-        optimisticResult: flow
+        optimisticResult: {"getFlow": flow.toJSON()}
       ),
-      builder: (result, {fetchMore, refetch}) => Scaffold(
-        drawer: width <= 640 ? Drawer(
-          child: Builder(builder: (bc) => _sidebarcontent(bc)),
-        ) : null,
-        appBar: AppBar(
-          title: Text("flow.settings.header.full".tr(namedArgs: {"id": flow.id})),
-        ),
-        body: Row(
-          children: [
-            if (width > 640) Container(
-              //margin: EdgeInsets.only(right: 32),
-              width: 280,
-              alignment: Alignment.topLeft,
-              color: context.theme().colorScheme.primary.withAlpha(16),
-              child: Builder(builder: (bc) => _sidebarcontent(bc))
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-                child: ref.watch(_tabController) >= 3 ? Center(child: Icon(Mdi.alert)) : 
-                [
-                  EditFlowProfilePage(flow: flow),
-                  Center(child: Icon(Mdi.tuneVariant)),
-                  FlowPermissionsPage(flow: flow)
-                  // // GeneralSettingsPage(),
-                  // // ThemeSettingsPage()
-                  // Center(child: Icon(Mdi.account)),
-                  // ThemingSettings(),
-                  // Center(child: Icon(Mdi.security)),
-                  // Center(child: Icon(Mdi.eye)),
-                  // AboutPage()
-                ][ref.watch(_tabController)],
+      builder: (result, {fetchMore, refetch}) {
+        late final Flow flow;
+        if (result.data?["getFlow"] == null) {
+          flow = this.flow;
+        } else if (result.data?["getFlow"]["content"] == null) {
+          flow = Flow.fromJSON(result.data!["getFlow"]);
+        } else {
+          flow = FlowWithContent.fromJSON(result.data!["getFlow"]);
+        }
+        return Scaffold(
+          drawer: width <= 640 ? Drawer(
+            child: Builder(builder: (bc) => _sidebarcontent(bc)),
+          ) : null,
+          appBar: AppBar(
+            title: Text("flow.settings.header.full".tr(namedArgs: {"id": flow.id})),
+          ),
+          body: Row(
+            children: [
+              if (width > 640) Container(
+                //margin: EdgeInsets.only(right: 32),
+                width: 280,
+                alignment: Alignment.topLeft,
+                color: context.theme().colorScheme.primary.withAlpha(16),
+                child: Builder(builder: (bc) => _sidebarcontent(bc))
               ),
-            )
-          ],
-        )
-      ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+                  child: ref.watch(_tabController) >= 3 ? Center(child: Icon(Mdi.alert)) : 
+                  [
+                    EditFlowProfilePage(flow: flow, refetch: refetch),
+                    Center(child: Icon(Mdi.tuneVariant)),
+                    FlowPermissionsPage(flow: flow)
+                    // // GeneralSettingsPage(),
+                    // // ThemeSettingsPage()
+                    // Center(child: Icon(Mdi.account)),
+                    // ThemingSettings(),
+                    // Center(child: Icon(Mdi.security)),
+                    // Center(child: Icon(Mdi.eye)),
+                    // AboutPage()
+                  ][ref.watch(_tabController)],
+                ),
+              )
+            ],
+          )
+        );
+      }
     );
   }
 

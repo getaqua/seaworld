@@ -14,7 +14,8 @@ import 'package:seaworld/widgets/pfp.dart';
 
 class EditFlowProfilePage extends StatefulWidget {
   final Flow flow;
-  const EditFlowProfilePage({ Key? key, required this.flow }) : super(key: key);
+  final Function()? refetch;
+  const EditFlowProfilePage({ Key? key, required this.flow, this.refetch }) : super(key: key);
 
   @override
   State<EditFlowProfilePage> createState() => _EditFlowProfilePageState();
@@ -56,11 +57,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                       Mutation( // Banner
                         options: MutationOptions(
                           document: gql(FlowAPI.updateFlow),
-                          onCompleted: (_) => InAppNotification.showOverlayIn(context, InAppNotification(
-                            icon: Icon(Mdi.check, color: Colors.green),
-                            title: Text("upload.success.banner.title".tr()),
-                            corner: Corner.bottomStart,
-                          )),
+                          onCompleted: (_) {
+                            widget.refetch?.call();
+                            InAppNotification.showOverlayIn(context, InAppNotification(
+                              icon: Icon(Mdi.check, color: Colors.green),
+                              title: Text("upload.success.banner.title".tr()),
+                              corner: Corner.bottomStart,
+                            ));
+                          },
                           onError: (error) {
                             InAppNotification.showOverlayIn(context, InAppNotification(
                               icon: Icon(Mdi.uploadOff, color: Colors.red),
@@ -145,11 +149,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                       Mutation( // Avatar
                         options: MutationOptions(
                           document: gql(FlowAPI.updateFlow),
-                          onCompleted: (_) => InAppNotification.showOverlayIn(context, InAppNotification(
-                            icon: Icon(Mdi.check, color: Colors.green),
-                            title: Text("upload.success.avatar.title".tr()),
-                            corner: Corner.bottomStart,
-                          )),
+                          onCompleted: (_) {
+                            widget.refetch?.call();
+                            InAppNotification.showOverlayIn(context, InAppNotification(
+                              icon: Icon(Mdi.check, color: Colors.green),
+                              title: Text("upload.success.avatar.title".tr()),
+                              corner: Corner.bottomStart,
+                            ));
+                          },
                           onError: (error) {
                             InAppNotification.showOverlayIn(context, InAppNotification(
                               icon: Icon(Mdi.uploadOff, color: Colors.red),
@@ -239,11 +246,14 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                     child: Mutation(
                       options: MutationOptions(
                         document: gql(FlowAPI.updateFlow),
-                        onCompleted: (_) => InAppNotification.showOverlayIn(context, InAppNotification(
-                          icon: Icon(Mdi.check, color: Colors.green),
-                          title: Text("flow.update.success".tr()),
-                          corner: Corner.bottomStart,
-                        )),
+                        onCompleted: (_) {
+                          widget.refetch?.call();
+                          InAppNotification.showOverlayIn(context, InAppNotification(
+                            icon: Icon(Mdi.check, color: Colors.green),
+                            title: Text("flow.update.success".tr()),
+                            corner: Corner.bottomStart,
+                          ));
+                        },
                         onError: (error) {
                           InAppNotification.showOverlayIn(context, InAppNotification(
                             icon: Icon(Mdi.uploadOff, color: Colors.red),
@@ -280,11 +290,13 @@ class _EditFlowProfilePageState extends State<EditFlowProfilePage> {
                     child: Mutation(
                       options: MutationOptions(
                         document: gql(FlowAPI.updateFlow),
-                        onCompleted: (_) => InAppNotification.showOverlayIn(context, InAppNotification(
-                          icon: Icon(Mdi.check, color: Colors.green),
-                          title: Text("flow.update.success".tr()),
-                          corner: Corner.bottomStart,
-                        )),
+                        onCompleted: (_) {
+                          InAppNotification.showOverlayIn(context, InAppNotification(
+                            icon: Icon(Mdi.check, color: Colors.green),
+                            title: Text("flow.update.success".tr()),
+                            corner: Corner.bottomStart,
+                          ));
+                        },
                         onError: (error) {
                           InAppNotification.showOverlayIn(context, InAppNotification(
                             icon: Icon(Mdi.uploadOff, color: Colors.red),

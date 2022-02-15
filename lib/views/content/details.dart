@@ -23,6 +23,7 @@ import 'package:seaworld/widgets/flowpreview.dart';
 import 'package:seaworld/widgets/inappnotif.dart';
 import 'package:seaworld/widgets/pfp.dart';
 import 'package:seaworld/widgets/semitransparent.dart';
+import 'package:super_scaffold/super_scaffold.dart';
 
 class ContentDetailView extends StatefulWidget {
   final Content content;
@@ -45,15 +46,15 @@ class _ContentDetailViewState extends State<ContentDetailView> {
       ),
       builder: (result, {fetchMore, refetch}) => result.isConcrete ? FlowView(
         flow: Flow.fromJSON(result.data!["getFlow"]),
-        builder: (result, flow, refetch) => Material(
-          //height: MediaQuery.of(context).size.height,
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: ConstrainedBox(
-            constraints: BoxConstraints.loose(Size.fromWidth(720)),
-            child: CustomScrollView(
-              slivers: [
+        builder: (result, flow, refetch) => Expanded(
+          child: Container(
+            //constraints: const BoxConstraints(maxWidth: 720),
+            width: 720,
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 _build(context),
               ],
+              body: ListView(),
             ),
           ),
         )
@@ -85,11 +86,34 @@ class _ContentDetailViewState extends State<ContentDetailView> {
       builder: (result, {fetchMore, refetch}) {
         // TODO: handle errors
         final Content content = Content.fromJSON(result.data!["getContent"]);
-        return SliverList(
-          delegate: SliverChildListDelegate([
-            Column(
+        return SliverToBoxAdapter(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (MediaQuery.of(context).orientation == Orientation.portrait) Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Tooltip(
+                        message: "general.back".tr(),
+                        child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: Icon(Mdi.arrowLeft)
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Tooltip(
+                        message: "flow.menu".tr(),
+                        child: IconButton(
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                          icon: Icon(Mdi.menu)
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Container( // Profile
                   padding: EdgeInsets.only(right: 16.0),
                   // decoration: BoxDecoration(
@@ -108,38 +132,32 @@ class _ContentDetailViewState extends State<ContentDetailView> {
                           child: Material(
                             borderRadius: BorderRadius.circular(64),
                             color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {},
-                              // onTapDown: (details) => showMenu(
-                              //   context: context, 
-                              //   position: RelativeRect.fromRect(
-                              //     details.globalPosition & Size(40, 40), 
-                              //     Offset.zero & MediaQuery.of(context).size
-                              //   ),
-                              //   items: [
-                              //     FlowPreviewPopupMenu()
-                              //   ]
-                              // ),
-                              onTapDown: (details) => FlowPreviewPopupMenu().show(
-                                context: context,
-                                flow: content.author.member, 
-                                //position: details.globalPosition & Size(40, 40)
-                              ),
-                              borderRadius: BorderRadius.circular(64),
-                              onHover: (nv) => setState(() => _viewProfilePrompt = nv),
-                              child: Stack(children: [
-                                Positioned.fill(
-                                  child: ProfilePicture(
-                                    child: content.author.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+content.author.avatarUrl!) : null,
-                                    size: 48, notchSize: 16,
-                                    fallbackChild: FallbackProfilePicture(flow: content.author.member)
+                            child: Builder(
+                              builder: (context) {
+                                return InkWell(
+                                  onTap: () {},
+                                  onTapDown: (details) => FlowPreviewPopupMenu().show(
+                                    context: context,
+                                    flow: content.author.member,
+                                    position: (context.findRenderObject() as RenderBox).localToGlobal(Offset(16, 16))
                                   ),
-                                ),
-                                if (_viewProfilePrompt) ...[
-                                  Container(decoration:BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(64))),
-                                  Center(child: Icon(Mdi.accountBox, color: Colors.white)),
-                                ],
-                              ])
+                                  borderRadius: BorderRadius.circular(64),
+                                  onHover: (nv) => setState(() => _viewProfilePrompt = nv),
+                                  child: Stack(children: [
+                                    Positioned.fill(
+                                      child: ProfilePicture(
+                                        child: content.author.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+content.author.avatarUrl!) : null,
+                                        size: 48, notchSize: 16,
+                                        fallbackChild: FallbackProfilePicture(flow: content.author.member)
+                                      ),
+                                    ),
+                                    if (_viewProfilePrompt) ...[
+                                      Container(decoration:BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(64))),
+                                      Center(child: Icon(Mdi.accountBox, color: Colors.white)),
+                                    ],
+                                  ])
+                                );
+                              }
                             ),
                           ),
                         ),
@@ -151,22 +169,17 @@ class _ContentDetailViewState extends State<ContentDetailView> {
                             onTap: () => context.go("/flow/"+content.author.member.snowflake),
                             child: Padding(
                               padding: EdgeInsets.only(left: 9.0, top: 16.0, bottom: 16.0, right: 16.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      children: [
-                                        Text(content.author.name, style: context.textTheme().subtitle1),
-                                        // TODO: badges
-                                      ],
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                child: Column(
+                                  children: [
+                                    Text(content.author.name, style: context.textTheme().subtitle1),
+                                    // TODO: badges
+                                  ],
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                ),
                               ),
                             ),
                           ),
@@ -292,7 +305,6 @@ class _ContentDetailViewState extends State<ContentDetailView> {
                 ),
               ],
             )
-          ]),
         );
       }
     );

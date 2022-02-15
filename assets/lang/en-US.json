@@ -152,8 +152,10 @@
     },
     "flow": {
         "actor": "Active Flow",
+        "youarein": "You are in",
         "showpreview": "Show profile",
         "open": "Open {id}",
+        "menu": "Open Flow sidebar",
         "follow": "Follow",
         "unfollow": "Unfollow",
         "join": "Join",
@@ -321,5 +323,9 @@
         "content": {
             "loading": "Checking for new Content..."
         }
+    },
+    "general": {
+        "back": "Back",
+        "menu": "Menu"
     }
 }
