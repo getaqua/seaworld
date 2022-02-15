@@ -77,142 +77,198 @@ class _FlowViewState extends State<FlowView> {
         }
         return SuperScaffold(
           drawer: Drawer(
-            child: ListView(
+            child: CustomScrollView(
               controller: drawerScrollController,
-              children: [
+              slivers: [
                 Theme(
                   data: Theme.of(context).copyWith(dividerTheme: DividerThemeData(thickness: 0, space: 0, color: Colors.transparent)),
-                  child: Material(
-                    color: context.theme().colorScheme.secondary,
-                    borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
-                    child: DrawerHeader(
-                      margin: EdgeInsets.zero,
-                      decoration: flow.bannerUrl?.isNotEmpty == true ? BoxDecoration(
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
-                        image: DecorationImage(
-                          image: NetworkImage(API.get.urlScheme+Config.server+flow.bannerUrl!),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken)
-                        ),
-                      ) : null,
-                      child: Stack(
-                        fit: StackFit.passthrough,
-                        children: [
-                          Column(
-                            children: [
-                              // Align(
-                              //   heightFactor: 1,
-                              //   alignment: Alignment.topLeft,
-                              //   child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Mdi.arrowLeft)),
-                              // ),
-                              Expanded(child: Container()),
-                              Align(
-                                heightFactor: 1,
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                  child: SliverToBoxAdapter(
+                    child: Material(
+                      color: context.theme().colorScheme.secondary,
+                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
+                      child: DrawerHeader(
+                        margin: EdgeInsets.zero,
+                        decoration: flow.bannerUrl?.isNotEmpty == true ? BoxDecoration(
+                          borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
+                          image: DecorationImage(
+                            image: NetworkImage(API.get.urlScheme+Config.server+flow.bannerUrl!),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken)
+                          ),
+                        ) : null,
+                        child: Stack(
+                          fit: StackFit.passthrough,
+                          children: [
+                            Column(
+                              children: [
+                                // Align(
+                                //   heightFactor: 1,
+                                //   alignment: Alignment.topLeft,
+                                //   child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Mdi.arrowLeft)),
+                                // ),
+                                Expanded(child: Container()),
+                                Align(
+                                  heightFactor: 1,
+                                  alignment: Alignment.centerLeft,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: ProfilePicture(
+                                          child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
+                                          size: 48, notchSize: 16,
+                                          fallbackChild: FallbackProfilePicture(flow: flow)
+                                        ),
+                                      ),
+                                      Text("flow.youarein".tr(), style: context.textTheme().overline)
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(4.0),
-                                      child: ProfilePicture(
-                                        child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
-                                        size: 48, notchSize: 16,
-                                        fallbackChild: FallbackProfilePicture(flow: flow)
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            flow.name, 
+                                            style: context.textTheme().headline6,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.fade,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                          Text(
+                                            flow.id,
+                                            style: context.textTheme().caption,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.fade,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text("flow.youarein".tr(), style: context.textTheme().overline)
+                                    // Expanded(child: Container()),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(4.0),
+                                    //   child: Icon(Mdi.chevronDown),
+                                    // )
                                   ],
-                                ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          flow.name, 
-                                          style: context.textTheme().headline6,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.fade,
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        Text(
-                                          flow.id,
-                                          style: context.textTheme().caption,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.fade,
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Expanded(child: Container()),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(4.0),
-                                  //   child: Icon(Mdi.chevronDown),
-                                  // )
-                                ],
-                              )
-                              // The user's name and ID
-                            ],
-                            //mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.max,
-                          ),
-                          Builder(
-                            builder: (context) {
-                              return Positioned(
-                                top: -8, left: -8,
-                                child: IconButton(
-                                  icon: Icon(Mdi.arrowLeft),
-                                  onPressed: () {
-                                    if (Scaffold.maybeOf(context)?.isDrawerOpen == true) Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  }
                                 )
-                              );
-                            }
-                          ),
-                          // Positioned(
-                          //   top: -8, right: -8,
-                          //   child: IconButton(
-                          //     icon: Icon(Mdi.weatherLightning),
-                          //     onPressed: null
-                          //   )
-                          // )
-                        ],
+                                // The user's name and ID
+                              ],
+                              //mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.max,
+                            ),
+                            Builder(
+                              builder: (context) {
+                                return Positioned(
+                                  top: -8, left: -8,
+                                  child: IconButton(
+                                    icon: Icon(Mdi.arrowLeft),
+                                    onPressed: () {
+                                      if (Scaffold.maybeOf(context)?.isDrawerOpen == true) Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    }
+                                  )
+                                );
+                              }
+                            ),
+                            // Positioned(
+                            //   top: -8, right: -8,
+                            //   child: IconButton(
+                            //     icon: Icon(Mdi.weatherLightning),
+                            //     onPressed: null
+                            //   )
+                            // )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-                ListTile(
-                  selected: GoRouter.of(context).location == "/flow/"+flow.snowflake,
-                  onTap: () => context.go("/flow/"+flow.snowflake),
-                  title: Text("flow.feature.home".tr()),
-                ),
-                ListTile(
-                  onTap: () {},
-                  title: Text("Placeholder page"),
-                ),
-                ListTile(
-                  onTap: () {},
-                  title: Text("flow.feature.chat".tr()),
-                ),
-                ListTile(
-                  onTap: () {},
-                  title: Text("Placeholder page #2"),
-                ),
-                if (flow.myPermissions.update == AllowDeny.allow) ListTile(
-                  onTap: () => context.go("/flow/"+flow.snowflake+"/settings", extra: flow),
-                  title: Text("flow.feature.settings".tr()),
-                ),
-              ],
-            ),
+                SliverList(delegate: SliverChildListDelegate([
+                  ListTile(
+                    selected: GoRouter.of(context).location == "/flow/"+flow.snowflake,
+                    onTap: () => context.go("/flow/"+flow.snowflake),
+                    title: Text("flow.feature.home".tr()),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    title: Text("Placeholder page"),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    title: Text("flow.feature.chat".tr()),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    title: Text("Placeholder page #2"),
+                  ),
+                  if (flow.myPermissions.update == AllowDeny.allow) ListTile(
+                    onTap: () => context.go("/flow/"+flow.snowflake+"/settings", extra: flow),
+                    title: Text("flow.feature.settings".tr()),
+                  ),
+                ])),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: PopupMenuButton(
+                              child: ProfilePicture(
+                                child: flow.avatarUrl != null ? NetworkImage(API.get.urlScheme+Config.server+flow.avatarUrl!) : null,
+                                size: 36, notchSize: 12,
+                                fallbackChild: FallbackProfilePicture(flow: flow)
+                              ),
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  padding: EdgeInsets.zero,
+                                  enabled: false,
+                                  child: ListTile(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      // TODO: open member profile editing screen
+                                    },
+                                    leading: Icon(Mdi.accountEditOutline),
+                                    title: Text("flow.editme".tr()),
+                                  )
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(Config.cache.userFlow.name),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ]
+                  ),
+                )
+              ]
+            )
           ),
           body: RefreshIndicator(
             onRefresh: () async {
